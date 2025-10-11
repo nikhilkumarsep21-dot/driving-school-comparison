@@ -14,6 +14,16 @@ import { LicenseCategory } from '@/lib/types';
 export default function ComparePage() {
   const { schools, removeSchool } = useComparisonStore();
 
+  const getAllLicenseTypes = () => {
+    const types = new Set<string>();
+    schools.forEach(school => {
+      school.license_categories?.forEach(cat => types.add(cat.type));
+    });
+    return Array.from(types);
+  };
+
+  const licenseTypes = getAllLicenseTypes();
+
   if (schools.length === 0) {
     return (
       <Container>
@@ -35,16 +45,6 @@ export default function ComparePage() {
       </Container>
     );
   }
-
-  const getAllLicenseTypes = () => {
-    const types = new Set<string>();
-    schools.forEach(school => {
-      school.license_categories?.forEach(cat => types.add(cat.type));
-    });
-    return Array.from(types);
-  };
-
-  const licenseTypes = getAllLicenseTypes();
 
   return (
     <div>
