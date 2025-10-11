@@ -15,43 +15,22 @@ import Image from 'next/image';
 import { ArrowLeft, Phone, Mail, Globe, MapPin, Clock, Calendar, CheckCircle2, GitCompare } from 'lucide-react';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
-import { useScrollAnimation } from '@/hooks/use-scroll-animation';
 
 export default function SchoolDetailPage() {
   const params = useParams();
   const slug = params.slug as string;
   const [school, setSchool] = useState<School | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const { addSchool, removeSchool, isInComparison, canAddMore } = useComparisonStore();
-  const imageSection = useScrollAnimation({ threshold: 0.2 });
-  const aboutSection = useScrollAnimation({ threshold: 0.2 });
-  const coursesSection = useScrollAnimation({ threshold: 0.2 });
-  const contactSection = useScrollAnimation({ threshold: 0.2 });
 
   useEffect(() => {
     const fetchSchool = async () => {
       try {
-        console.log('Fetching school with slug:', slug);
         const response = await fetch(`/api/schools/${slug}`);
         const data = await response.json();
-        console.log('API response:', { ok: response.ok, status: response.status, data });
-
-        if (!response.ok) {
-          setError(data.error || 'Failed to fetch school');
-          return;
-        }
-
-        if (data.school) {
-          console.log('School data loaded successfully:', data.school.name);
-          setSchool(data.school);
-        } else {
-          console.warn('No school data in response');
-          setError('School not found');
-        }
+        setSchool(data.school);
       } catch (error) {
         console.error('Failed to fetch school:', error);
-        setError('Failed to load school data');
       } finally {
         setLoading(false);
       }
@@ -98,19 +77,15 @@ export default function SchoolDetailPage() {
     );
   }
 
-  if (error || !school) {
+  if (!school) {
     return (
       <Container>
         <div className="flex min-h-[60vh] flex-col items-center justify-center py-16 text-center">
-          <h1 className="mb-4 text-3xl font-bold text-gray-900">
-            {error || 'School Not Found'}
-          </h1>
+          <h1 className="mb-4 text-3xl font-bold text-gray-900">School Not Found</h1>
           <p className="mb-8 text-gray-600">
-            {error === 'School not found'
-              ? "The driving school you're looking for doesn't exist."
-              : "There was a problem loading the school data."}
+            The driving school you're looking for doesn't exist.
           </p>
-          <Link href="/schools">
+          <Link href="/">
             <Button className="bg-gold-500 hover:bg-gold-600">
               <ArrowLeft className="mr-2 h-4 w-4" />
               Browse Schools
@@ -128,10 +103,9 @@ export default function SchoolDetailPage() {
       <Container>
         <div className="py-8">
           <motion.div
-            ref={imageSection.ref as any}
-            initial={{ opacity: 0, y: 40 }}
-            animate={imageSection.isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6, ease: 'easeOut' }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
           >
             <div className="relative mb-8 overflow-hidden rounded-3xl shadow-soft-lg">
               <div className="relative aspect-[21/9]">
@@ -168,24 +142,12 @@ export default function SchoolDetailPage() {
 
             <div className="grid gap-8 lg:grid-cols-3">
               <div className="lg:col-span-2">
-                <motion.div
-                  ref={aboutSection.ref as any}
-                  initial={{ opacity: 0, y: 40 }}
-                  animate={aboutSection.isInView ? { opacity: 1, y: 0 } : {}}
-                  transition={{ duration: 0.6, ease: 'easeOut' }}
-                  className="mb-8 rounded-2xl bg-white p-6 shadow-soft"
-                >
+                <div className="mb-8 rounded-2xl bg-white p-6 shadow-soft">
                   <h2 className="mb-4 text-2xl font-bold text-gray-900">About This School</h2>
                   <p className="leading-relaxed text-gray-600">{school.description}</p>
-                </motion.div>
+                </div>
 
-                <motion.div
-                  ref={coursesSection.ref as any}
-                  initial={{ opacity: 0, y: 40 }}
-                  animate={coursesSection.isInView ? { opacity: 1, y: 0 } : {}}
-                  transition={{ duration: 0.6, ease: 'easeOut' }}
-                  className="mb-8"
-                >
+                <div className="mb-8">
                   <h2 className="mb-6 text-2xl font-bold text-gray-900">Available Courses</h2>
                   <div className="space-y-4">
                     {school.license_categories?.map((category, index) => (
@@ -230,16 +192,10 @@ export default function SchoolDetailPage() {
                       </motion.div>
                     ))}
                   </div>
-                </motion.div>
+                </div>
               </div>
 
-              <motion.div
-                ref={contactSection.ref as any}
-                initial={{ opacity: 0, x: 40 }}
-                animate={contactSection.isInView ? { opacity: 1, x: 0 } : {}}
-                transition={{ duration: 0.6, ease: 'easeOut' }}
-                className="space-y-6"
-              >
+              <div className="space-y-6">
                 <div className="sticky top-24 space-y-6">
                   <div className="rounded-2xl bg-white p-6 shadow-soft">
                     <h3 className="mb-4 text-lg font-bold text-gray-900">Contact Information</h3>
@@ -333,7 +289,7 @@ export default function SchoolDetailPage() {
                     </div>
                   )}
                 </div>
-              </motion.div>
+              </div>
             </div>
           </motion.div>
         </div>
