@@ -99,54 +99,49 @@ export default function ComparePage() {
               <table className="w-full border-collapse min-w-[800px]">
                 <thead>
                   <tr>
-                    <th className="sticky left-0 z-20 bg-gradient-to-br from-white to-sand-50 border-b-2 border-gold-200 p-6 text-left shadow-md">
+                    <th className="sticky left-0 z-20 bg-white border-b border-gray-200 p-6 text-left">
                       <h3 className="text-sm font-semibold uppercase tracking-wider text-gray-500">
                         Comparison Criteria
                       </h3>
                     </th>
                     {schools.map((school, schoolIndex) => (
-                      <th key={school.id} className="border-b-2 border-gold-200 p-6 min-w-[320px]">
+                      <th key={school.id} className="bg-white border-b border-gray-200 p-6 min-w-[320px]">
                         <motion.div
                           initial={{ opacity: 0, y: 20 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ delay: schoolIndex * 0.1 }}
+                          className="relative"
                         >
-                          <Card className="relative overflow-hidden bg-white shadow-xl border-2 border-gold-300 hover:shadow-2xl transition-shadow duration-300">
-                            <button
-                              onClick={() => removeSchool(school.id)}
-                              className="absolute right-3 top-3 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 backdrop-blur-sm text-gray-600 shadow-lg transition-all hover:bg-red-500 hover:text-white hover:scale-110"
-                            >
-                              <X className="h-4 w-4" />
-                            </button>
+                          <button
+                            onClick={() => removeSchool(school.id)}
+                            className="absolute right-0 top-0 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-gray-600 transition-all hover:bg-red-500 hover:text-white hover:scale-110"
+                          >
+                            <X className="h-4 w-4" />
+                          </button>
 
-                            <div className="relative aspect-[4/3] overflow-hidden">
-                              <Image
-                                src={school.image_url}
-                                alt={school.name}
-                                fill
-                                className="object-cover transition-transform duration-300 hover:scale-105"
-                              />
-                              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                          <div className="relative aspect-[4/3] overflow-hidden rounded-lg mb-4">
+                            <Image
+                              src={school.image_url}
+                              alt={school.name}
+                              fill
+                              className="object-cover"
+                            />
+                          </div>
+
+                          <div className="space-y-3">
+                            <h3 className="text-lg font-bold text-gray-900">{school.name}</h3>
+                            <div className="flex items-center justify-center gap-2">
+                              <StarRating rating={school.rating} size="sm" />
+                              <span className="text-sm text-gray-600">
+                                {school.rating} ({school.review_count})
+                              </span>
                             </div>
-
-                            <div className="p-6 space-y-4">
-                              <div>
-                                <h3 className="text-xl font-bold text-gray-900 mb-2">{school.name}</h3>
-                                <div className="flex items-center justify-center gap-2 py-2 px-3 bg-gold-50 rounded-lg">
-                                  <StarRating rating={school.rating} size="sm" />
-                                  <span className="text-sm font-medium text-gray-700">
-                                    {school.rating} ({school.review_count})
-                                  </span>
-                                </div>
-                              </div>
-
-                              <Link href={`/school/${school.slug}`}>
-                                <Button className="w-full bg-gold-500 hover:bg-gold-600 shadow-md hover:shadow-lg transition-all">
-                                  View Full Details
-                                </Button>
-                              </Link>
-                            </div>
-                          </Card>
+                            <Link href={`/school/${school.slug}`}>
+                              <Button className="w-full bg-gold-500 hover:bg-gold-600">
+                                View Details
+                              </Button>
+                            </Link>
+                          </div>
                         </motion.div>
                       </th>
                     ))}
@@ -170,7 +165,6 @@ export default function ComparePage() {
                     icon={<Clock className="h-5 w-5" />}
                     label="Operating Hours"
                     schools={schools}
-                    alternate
                     renderCell={(school) => (
                       <p className="text-center font-medium text-gray-900">{school.operating_hours}</p>
                     )}
@@ -189,9 +183,9 @@ export default function ComparePage() {
                     )}
                   />
 
-                  {licenseTypes.map((type, index) => (
-                    <tr key={type} className={index % 2 === 0 ? 'bg-sand-50/30' : 'bg-white'}>
-                      <td className="sticky left-0 z-10 bg-white border-t border-gray-200 p-6 shadow-sm">
+                  {licenseTypes.map((type) => (
+                    <tr key={type}>
+                      <td className="sticky left-0 z-10 bg-white border-t border-gray-200 p-6">
                         <div className="flex items-center gap-3">
                           <LicenseBadge type={type as any} />
                         </div>
@@ -200,42 +194,36 @@ export default function ComparePage() {
                       {schools.map((school) => {
                         const category = school.license_categories?.find(cat => cat.type === type);
                         return (
-                          <td key={school.id} className="border-t border-gray-200 p-6">
-                            <div className={`rounded-xl p-4 shadow-md transition-all duration-300 ${
-                              category
-                                ? 'bg-gradient-to-br from-white to-gold-50 border-2 border-gold-200 hover:border-gold-300'
-                                : 'bg-gray-50 border border-gray-200'
-                            }`}>
-                              {category ? (
-                                <div className="space-y-3">
-                                  <div className="text-center">
-                                    <PriceDisplay
-                                      price={category.price}
-                                      label=""
-                                      className="justify-center text-2xl font-bold text-gray-900"
-                                    />
-                                    <p className="mt-2 text-sm font-medium text-gray-600 bg-white px-3 py-1 rounded-full inline-block">
-                                      {category.duration}
-                                    </p>
+                          <td key={school.id} className="bg-white border-t border-gray-200 p-6">
+                            {category ? (
+                              <div className="space-y-3">
+                                <div className="text-center">
+                                  <PriceDisplay
+                                    price={category.price}
+                                    label=""
+                                    className="justify-center text-2xl font-bold text-gray-900"
+                                  />
+                                  <p className="mt-2 text-sm font-medium text-gray-600">
+                                    {category.duration}
+                                  </p>
+                                </div>
+                                {category.features && category.features.length > 0 && (
+                                  <div className="space-y-2 pt-3">
+                                    {category.features.slice(0, 4).map((feature, i) => (
+                                      <div key={i} className="flex items-start gap-2">
+                                        <Check className="h-4 w-4 text-gold-600 flex-shrink-0 mt-0.5" />
+                                        <span className="text-xs text-gray-700">{feature}</span>
+                                      </div>
+                                    ))}
                                   </div>
-                                  {category.features && category.features.length > 0 && (
-                                    <div className="space-y-2 pt-3 border-t border-gold-200">
-                                      {category.features.slice(0, 4).map((feature, i) => (
-                                        <div key={i} className="flex items-start gap-2">
-                                          <Check className="h-4 w-4 text-gold-600 flex-shrink-0 mt-0.5" />
-                                          <span className="text-xs text-gray-700">{feature}</span>
-                                        </div>
-                                      ))}
-                                    </div>
-                                  )}
-                                </div>
-                              ) : (
-                                <div className="flex flex-col items-center justify-center py-4 text-gray-400">
-                                  <Minus className="h-6 w-6 mb-1" />
-                                  <span className="text-sm">Not offered</span>
-                                </div>
-                              )}
-                            </div>
+                                )}
+                              </div>
+                            ) : (
+                              <div className="flex flex-col items-center justify-center py-4 text-gray-400">
+                                <Minus className="h-6 w-6 mb-1" />
+                                <span className="text-sm">Not offered</span>
+                              </div>
+                            )}
                           </td>
                         );
                       })}
@@ -246,19 +234,18 @@ export default function ComparePage() {
                     icon={<Phone className="h-5 w-5" />}
                     label="Contact Info"
                     schools={schools}
-                    alternate={licenseTypes.length % 2 === 0}
                     renderCell={(school) => (
                       <div className="space-y-2">
                         <a
                           href={`tel:${school.phone}`}
-                          className="flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-gray-50 text-gray-900 hover:bg-gold-50 hover:text-gold-700 transition-colors"
+                          className="flex items-center justify-center gap-2 text-gray-900 hover:text-gold-600 transition-colors"
                         >
                           <Phone className="h-4 w-4" />
                           <span className="text-sm font-medium">{school.phone}</span>
                         </a>
                         <a
                           href={`mailto:${school.email}`}
-                          className="flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-gray-50 text-gray-900 hover:bg-gold-50 hover:text-gold-700 transition-colors"
+                          className="flex items-center justify-center gap-2 text-gray-900 hover:text-gold-600 transition-colors"
                         >
                           <Mail className="h-4 w-4" />
                           <span className="text-sm font-medium truncate">{school.email}</span>
@@ -268,7 +255,7 @@ export default function ComparePage() {
                             href={school.website}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-gray-50 text-gray-900 hover:bg-gold-50 hover:text-gold-700 transition-colors"
+                            className="flex items-center justify-center gap-2 text-gray-900 hover:text-gold-600 transition-colors"
                           >
                             <Globe className="h-4 w-4" />
                             <span className="text-sm font-medium">Visit Website</span>
@@ -295,10 +282,10 @@ interface ComparisonRowDataProps {
   renderCell: (school: any) => React.ReactNode;
 }
 
-function ComparisonRowData({ icon, label, schools, alternate = false, renderCell }: ComparisonRowDataProps) {
+function ComparisonRowData({ icon, label, schools, renderCell }: ComparisonRowDataProps) {
   return (
-    <tr className={alternate ? 'bg-sand-50/30' : 'bg-white'}>
-      <td className="sticky left-0 z-10 bg-white border-t border-gray-200 p-6 shadow-sm">
+    <tr>
+      <td className="sticky left-0 z-10 bg-white border-t border-gray-200 p-6">
         <div className="flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gold-100 text-gold-600">
             {icon}
@@ -307,7 +294,7 @@ function ComparisonRowData({ icon, label, schools, alternate = false, renderCell
         </div>
       </td>
       {schools.map((school) => (
-        <td key={school.id} className="border-t border-gray-200 p-6">
+        <td key={school.id} className="bg-white border-t border-gray-200 p-6">
           {renderCell(school)}
         </td>
       ))}
