@@ -78,40 +78,6 @@ export default function Home() {
         </Container>
       </section>
 
-      <section ref={featuredRef.ref as any} className="py-20 sm:py-28 bg-white">
-        <Container>
-          <motion.div
-            className="mx-auto max-w-3xl text-center mb-16"
-            initial={{ opacity: 0, y: 30 }}
-            animate={featuredRef.isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-            transition={{ duration: 0.7, ease: "easeOut" }}
-          >
-            <h2 className="text-4xl font-bold text-gray-900 sm:text-5xl mb-4">
-              Featured Partner Schools
-            </h2>
-            <p className="text-lg text-gray-600">
-              Top-rated driving schools trusted by thousands of students across Dubai
-            </p>
-          </motion.div>
-
-          <FeaturedSchools />
-
-          <motion.div
-            className="mt-12 text-center"
-            initial={{ opacity: 0, y: 20 }}
-            animate={featuredRef.isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-            transition={{ duration: 0.7, delay: 0.2, ease: "easeOut" }}
-          >
-            <Link href="/schools">
-              <Button size="lg" variant="outline" className="h-12 px-8 border-2 border-gold-200 hover:bg-gold-50 hover:border-gold-300">
-                View All Schools
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-            </Link>
-          </motion.div>
-        </Container>
-      </section>
-
       <section ref={howItWorksRef.ref as any} className="pt-4 pb-12 sm:pt-8 sm:pb-20 bg-white">
         <Container>
           <motion.div
@@ -201,6 +167,40 @@ export default function Home() {
               </div>
             </motion.div>
           </div>
+        </Container>
+      </section>
+
+      <section ref={featuredRef.ref as any} className="py-20 sm:py-28 bg-white">
+        <Container>
+          <motion.div
+            className="mx-auto max-w-3xl text-center mb-16"
+            initial={{ opacity: 0, y: 30 }}
+            animate={featuredRef.isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+            transition={{ duration: 0.7, ease: "easeOut" }}
+          >
+            <h2 className="text-4xl font-bold text-gray-900 sm:text-5xl mb-4">
+              Featured Partner Schools
+            </h2>
+            <p className="text-lg text-gray-600">
+              Top-rated driving schools trusted by thousands of students across Dubai
+            </p>
+          </motion.div>
+
+          <FeaturedSchools />
+
+          <motion.div
+            className="mt-12 text-center"
+            initial={{ opacity: 0, y: 20 }}
+            animate={featuredRef.isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+            transition={{ duration: 0.7, delay: 0.2, ease: "easeOut" }}
+          >
+            <Link href="/schools">
+              <Button size="lg" variant="outline" className="h-12 px-8 border-2 border-gold-200 hover:bg-gold-50 hover:border-gold-300">
+                View All Schools
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </Link>
+          </motion.div>
         </Container>
       </section>
 
