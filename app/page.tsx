@@ -14,7 +14,7 @@ export default function Home() {
       <section className="relative overflow-hidden py-20 sm:py-32">
 
         <Container className="relative">
-          <div className="mx-auto max-w-4xl text-center">
+          <div className="text-center">
             <div className="mb-8 flex justify-center">
               <div className="inline-flex items-center gap-2 rounded-full bg-gold-100 px-6 py-3 text-sm font-medium text-gold-800 shadow-soft">
                 <Award className="h-5 w-5" />
