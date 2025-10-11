@@ -96,7 +96,7 @@ export default function ComparePage() {
         <Container>
           <div className="py-8">
             <div className="overflow-x-auto -mx-4 px-4">
-              <table className="w-full border-collapse min-w-[800px]">
+              <table className="w-full border-collapse min-w-[800px] border-l border-gray-200">
                 <thead>
                   <tr>
                     <th className="sticky left-0 z-20 bg-white border-b border-r border-gray-200 p-6 text-left">
@@ -261,6 +261,11 @@ export default function ComparePage() {
                     )}
                   />
                 </tbody>
+                <tfoot>
+                  <tr>
+                    <td colSpan={schools.length + 1} className="border-t border-gray-200"></td>
+                  </tr>
+                </tfoot>
               </table>
             </div>
           </div>
