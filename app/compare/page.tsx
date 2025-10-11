@@ -239,9 +239,10 @@ export default function ComparePage() {
                 </tr>
               </tbody>
             </table>
+            </div>
           </div>
-        </div>
-      </Container>
+        </Container>
+      </div>
     </div>
   );
 }
