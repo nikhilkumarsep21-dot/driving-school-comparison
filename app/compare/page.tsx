@@ -73,21 +73,15 @@ export default function ComparePage() {
 
   return (
     <div className="min-h-screen bg-white">
-      <section className="py-12 bg-white border-b border-gray-200">
+      <section className="py-12 sm:py-16 bg-sand-50">
         <Container>
-          <Link href="/" className="mb-6 inline-flex items-center text-sm font-medium text-gray-600 transition-all hover:text-gray-900 hover:gap-3 gap-2">
-            <ArrowLeft className="h-4 w-4" />
-            Back to Schools
-          </Link>
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 sm:text-4xl">
-                Compare Driving Schools
-              </h1>
-              <p className="mt-2 text-gray-600">
-                Side-by-side comparison of {schools.length} {schools.length === 1 ? 'school' : 'schools'}
-              </p>
-            </div>
+          <div className="mx-auto max-w-3xl text-center">
+            <h1 className="mb-4 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
+              Compare Driving Schools
+            </h1>
+            <p className="text-lg text-gray-600">
+              Side-by-side comparison of {schools.length} {schools.length === 1 ? 'school' : 'schools'}
+            </p>
           </div>
         </Container>
       </section>
