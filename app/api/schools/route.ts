@@ -54,7 +54,6 @@ export async function GET(request: NextRequest) {
     const { data: schools, error } = await query;
 
     if (error) {
-      console.error('Supabase error:', error);
       return NextResponse.json(
         { error: 'Failed to fetch schools' },
         { status: 500 }
@@ -107,7 +106,6 @@ export async function GET(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('Server error:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

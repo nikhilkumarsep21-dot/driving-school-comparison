@@ -20,7 +20,6 @@ export async function GET(
       .maybeSingle();
 
     if (error) {
-      console.error('Supabase error:', error);
       return NextResponse.json(
         { error: 'Failed to fetch school' },
         { status: 500 }
@@ -37,7 +36,6 @@ export async function GET(
     return NextResponse.json({ school });
 
   } catch (error) {
-    console.error('Server error:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
