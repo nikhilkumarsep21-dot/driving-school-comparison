@@ -22,6 +22,7 @@ export default function SchoolDetailPage() {
   const slug = params.slug as string;
   const [school, setSchool] = useState<School | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const { addSchool, removeSchool, isInComparison, canAddMore } = useComparisonStore();
   const imageSection = useScrollAnimation({ threshold: 0.2 });
   const aboutSection = useScrollAnimation({ threshold: 0.2 });
@@ -31,11 +32,26 @@ export default function SchoolDetailPage() {
   useEffect(() => {
     const fetchSchool = async () => {
       try {
+        console.log('Fetching school with slug:', slug);
         const response = await fetch(`/api/schools/${slug}`);
         const data = await response.json();
-        setSchool(data.school);
+        console.log('API response:', { ok: response.ok, status: response.status, data });
+
+        if (!response.ok) {
+          setError(data.error || 'Failed to fetch school');
+          return;
+        }
+
+        if (data.school) {
+          console.log('School data loaded successfully:', data.school.name);
+          setSchool(data.school);
+        } else {
+          console.warn('No school data in response');
+          setError('School not found');
+        }
       } catch (error) {
         console.error('Failed to fetch school:', error);
+        setError('Failed to load school data');
       } finally {
         setLoading(false);
       }
@@ -82,15 +98,19 @@ export default function SchoolDetailPage() {
     );
   }
 
-  if (!school) {
+  if (error || !school) {
     return (
       <Container>
         <div className="flex min-h-[60vh] flex-col items-center justify-center py-16 text-center">
-          <h1 className="mb-4 text-3xl font-bold text-gray-900">School Not Found</h1>
+          <h1 className="mb-4 text-3xl font-bold text-gray-900">
+            {error || 'School Not Found'}
+          </h1>
           <p className="mb-8 text-gray-600">
-            The driving school you're looking for doesn't exist.
+            {error === 'School not found'
+              ? "The driving school you're looking for doesn't exist."
+              : "There was a problem loading the school data."}
           </p>
-          <Link href="/">
+          <Link href="/schools">
             <Button className="bg-gold-500 hover:bg-gold-600">
               <ArrowLeft className="mr-2 h-4 w-4" />
               Browse Schools
