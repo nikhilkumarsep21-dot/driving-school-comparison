@@ -94,19 +94,13 @@ export default function Home() {
             </p>
           </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={featuredRef.isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
-            transition={{ duration: 0.7, delay: 0.2, ease: "easeOut" }}
-          >
-            <FeaturedSchools />
-          </motion.div>
+          <FeaturedSchools />
 
           <motion.div
             className="mt-12 text-center"
             initial={{ opacity: 0, y: 20 }}
             animate={featuredRef.isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-            transition={{ duration: 0.7, delay: 0.4, ease: "easeOut" }}
+            transition={{ duration: 0.7, delay: 0.2, ease: "easeOut" }}
           >
             <Link href="/schools">
               <Button size="lg" variant="outline" className="h-12 px-8 border-2 border-gold-200 hover:bg-gold-50 hover:border-gold-300">
@@ -118,7 +112,7 @@ export default function Home() {
         </Container>
       </section>
 
-      <section ref={howItWorksRef.ref as any} className="py-20 sm:py-28 bg-white">
+      <section ref={howItWorksRef.ref as any} className="py-12 sm:py-20 bg-white">
         <Container>
           <motion.div
             className="mx-auto max-w-3xl text-center mb-16"
