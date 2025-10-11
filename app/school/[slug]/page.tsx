@@ -99,16 +99,17 @@ export default function SchoolDetailPage() {
   const inComparison = isInComparison(school.id);
 
   return (
-    <div className="pb-20">
-      <section className="relative overflow-hidden bg-gradient-to-br from-white via-sand-50 to-gold-50 py-8">
+    <div className="pb-20 bg-white">
+      <section className="py-12 sm:py-16 bg-sand-50">
         <Container>
-          <Link
-            href="/"
-            className="mb-6 inline-flex items-center text-sm font-medium text-gray-600 transition-colors hover:text-gold-600"
-          >
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Schools
-          </Link>
+          <div className="mx-auto max-w-3xl text-center">
+            <h1 className="mb-4 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
+              School Details
+            </h1>
+            <p className="text-lg text-gray-600">
+              Comprehensive information about your selected driving school
+            </p>
+          </div>
         </Container>
       </section>
 
