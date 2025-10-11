@@ -112,7 +112,7 @@ export default function Home() {
         </Container>
       </section>
 
-      <section ref={howItWorksRef.ref as any} className="py-10 sm:py-20 bg-white">
+      <section ref={howItWorksRef.ref as any} className="py-0 sm:py-20 bg-white">
         <Container>
           <motion.div
             className="mx-auto max-w-3xl text-center mb-16"
