@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { getSupabaseClient } from '@/lib/supabase';
 import { School, LicenseCategory } from '@/lib/types';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET(request: NextRequest) {
   try {
+    const supabase = getSupabaseClient();
     const searchParams = request.nextUrl.searchParams;
     const search = searchParams.get('search');
     const categories = searchParams.get('categories')?.split(',').filter(Boolean);
