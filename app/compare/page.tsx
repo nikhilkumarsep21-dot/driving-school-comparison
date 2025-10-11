@@ -47,25 +47,26 @@ export default function ComparePage() {
   const licenseTypes = getAllLicenseTypes();
 
   return (
-    <div className="pb-20 bg-white">
-      <section className="bg-gradient-to-br from-gold-600 to-gold-700 py-12">
+    <div>
+      <section className="py-12 bg-sand-50">
         <Container>
-          <Link href="/" className="mb-6 inline-flex items-center text-sm font-medium text-gold-100 transition-colors hover:text-white">
+          <Link href="/" className="mb-6 inline-flex items-center text-sm font-medium text-gray-600 transition-colors hover:text-gray-900">
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Schools
           </Link>
-          <h1 className="text-3xl font-bold text-white sm:text-4xl">
+          <h1 className="text-3xl font-bold text-gray-900 sm:text-4xl">
             Compare Driving Schools
           </h1>
-          <p className="mt-2 text-gold-100">
+          <p className="mt-2 text-gray-600">
             Side-by-side comparison of {schools.length} {schools.length === 1 ? 'school' : 'schools'}
           </p>
         </Container>
       </section>
 
-      <Container>
-        <div className="py-12">
-          <div className="overflow-x-auto">
+      <div className="bg-white pb-20">
+        <Container>
+          <div className="py-12">
+            <div className="overflow-x-auto">
             <table className="w-full border-collapse">
               <thead>
                 <tr>
