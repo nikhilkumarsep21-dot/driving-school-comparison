@@ -15,6 +15,11 @@ const nextConfig = {
       'i.ytimg.com',
     ],
   },
+    webpack: (config) => {
+    // 🚫 Disable Webpack filesystem cache (prevents ENOENT issues on Bolt)
+    config.cache = false;
+    return config;
+  },
 };
 
 module.exports = nextConfig;
