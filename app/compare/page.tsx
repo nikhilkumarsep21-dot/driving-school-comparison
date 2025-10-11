@@ -72,7 +72,7 @@ export default function ComparePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-sand-50 to-white">
+    <div className="min-h-screen bg-white">
       <section className="py-12 bg-white border-b border-gray-200">
         <Container>
           <Link href="/" className="mb-6 inline-flex items-center text-sm font-medium text-gray-600 transition-all hover:text-gray-900 hover:gap-3 gap-2">
@@ -99,13 +99,13 @@ export default function ComparePage() {
               <table className="w-full border-collapse min-w-[800px]">
                 <thead>
                   <tr>
-                    <th className="sticky left-0 z-20 bg-white border-b border-gray-200 p-6 text-left">
+                    <th className="sticky left-0 z-20 bg-white border-b border-r border-gray-200 p-6 text-left">
                       <h3 className="text-sm font-semibold uppercase tracking-wider text-gray-500">
                         Comparison Criteria
                       </h3>
                     </th>
                     {schools.map((school, schoolIndex) => (
-                      <th key={school.id} className="bg-white border-b border-gray-200 p-6 min-w-[320px]">
+                      <th key={school.id} className="bg-white border-b border-r border-gray-200 p-6 min-w-[320px]">
                         <motion.div
                           initial={{ opacity: 0, y: 20 }}
                           animate={{ opacity: 1, y: 0 }}
@@ -150,7 +150,6 @@ export default function ComparePage() {
 
                 <tbody>
                   <ComparisonRowData
-                    icon={<MapPin className="h-5 w-5" />}
                     label="Location"
                     schools={schools}
                     renderCell={(school) => (
@@ -162,7 +161,6 @@ export default function ComparePage() {
                   />
 
                   <ComparisonRowData
-                    icon={<Clock className="h-5 w-5" />}
                     label="Operating Hours"
                     schools={schools}
                     renderCell={(school) => (
@@ -171,7 +169,6 @@ export default function ComparePage() {
                   />
 
                   <ComparisonRowData
-                    icon={<GraduationCap className="h-5 w-5" />}
                     label="License Types"
                     schools={schools}
                     renderCell={(school) => (
@@ -185,16 +182,16 @@ export default function ComparePage() {
 
                   {licenseTypes.map((type) => (
                     <tr key={type}>
-                      <td className="sticky left-0 z-10 bg-white border-t border-gray-200 p-6">
-                        <div className="flex items-center gap-3">
+                      <td className="sticky left-0 z-10 bg-white border-t border-r border-gray-200 p-6">
+                        <div>
                           <LicenseBadge type={type as any} />
+                          <p className="mt-2 text-xs text-gray-500">Pricing & Details</p>
                         </div>
-                        <p className="mt-2 text-xs text-gray-500">Pricing & Details</p>
                       </td>
                       {schools.map((school) => {
                         const category = school.license_categories?.find(cat => cat.type === type);
                         return (
-                          <td key={school.id} className="bg-white border-t border-gray-200 p-6">
+                          <td key={school.id} className="bg-white border-t border-r border-gray-200 p-6">
                             {category ? (
                               <div className="space-y-3">
                                 <div className="text-center">
@@ -231,7 +228,6 @@ export default function ComparePage() {
                   ))}
 
                   <ComparisonRowData
-                    icon={<Phone className="h-5 w-5" />}
                     label="Contact Info"
                     schools={schools}
                     renderCell={(school) => (
@@ -275,26 +271,19 @@ export default function ComparePage() {
 }
 
 interface ComparisonRowDataProps {
-  icon: React.ReactNode;
   label: string;
   schools: any[];
-  alternate?: boolean;
   renderCell: (school: any) => React.ReactNode;
 }
 
-function ComparisonRowData({ icon, label, schools, renderCell }: ComparisonRowDataProps) {
+function ComparisonRowData({ label, schools, renderCell }: ComparisonRowDataProps) {
   return (
     <tr>
-      <td className="sticky left-0 z-10 bg-white border-t border-gray-200 p-6">
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gold-100 text-gold-600">
-            {icon}
-          </div>
-          <h3 className="font-semibold text-gray-900">{label}</h3>
-        </div>
+      <td className="sticky left-0 z-10 bg-white border-t border-r border-gray-200 p-6">
+        <h3 className="font-semibold text-gray-900">{label}</h3>
       </td>
       {schools.map((school) => (
-        <td key={school.id} className="bg-white border-t border-gray-200 p-6">
+        <td key={school.id} className="bg-white border-t border-r border-gray-200 p-6">
           {renderCell(school)}
         </td>
       ))}
