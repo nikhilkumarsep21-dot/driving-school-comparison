@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-      "build": "rm -rf .next && rm -rf node_modules/.cache && next build",
+    "build": "rm -rf .next && rm -rf node_modules/.cache && next build",
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit"
