@@ -15,6 +15,7 @@ import Image from 'next/image';
 import { ArrowLeft, Phone, Mail, Globe, MapPin, Clock, Calendar, CheckCircle2, GitCompare } from 'lucide-react';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
+import { useScrollAnimation } from '@/hooks/use-scroll-animation';
 
 export default function SchoolDetailPage() {
   const params = useParams();
@@ -22,6 +23,10 @@ export default function SchoolDetailPage() {
   const [school, setSchool] = useState<School | null>(null);
   const [loading, setLoading] = useState(true);
   const { addSchool, removeSchool, isInComparison, canAddMore } = useComparisonStore();
+  const imageSection = useScrollAnimation({ threshold: 0.2 });
+  const aboutSection = useScrollAnimation({ threshold: 0.2 });
+  const coursesSection = useScrollAnimation({ threshold: 0.2 });
+  const contactSection = useScrollAnimation({ threshold: 0.2 });
 
   useEffect(() => {
     const fetchSchool = async () => {
@@ -103,9 +108,10 @@ export default function SchoolDetailPage() {
       <Container>
         <div className="py-8">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
+            ref={imageSection.ref as any}
+            initial={{ opacity: 0, y: 40 }}
+            animate={imageSection.isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.6, ease: 'easeOut' }}
           >
             <div className="relative mb-8 overflow-hidden rounded-3xl shadow-soft-lg">
               <div className="relative aspect-[21/9]">
@@ -142,12 +148,24 @@ export default function SchoolDetailPage() {
 
             <div className="grid gap-8 lg:grid-cols-3">
               <div className="lg:col-span-2">
-                <div className="mb-8 rounded-2xl bg-white p-6 shadow-soft">
+                <motion.div
+                  ref={aboutSection.ref as any}
+                  initial={{ opacity: 0, y: 40 }}
+                  animate={aboutSection.isInView ? { opacity: 1, y: 0 } : {}}
+                  transition={{ duration: 0.6, ease: 'easeOut' }}
+                  className="mb-8 rounded-2xl bg-white p-6 shadow-soft"
+                >
                   <h2 className="mb-4 text-2xl font-bold text-gray-900">About This School</h2>
                   <p className="leading-relaxed text-gray-600">{school.description}</p>
-                </div>
+                </motion.div>
 
-                <div className="mb-8">
+                <motion.div
+                  ref={coursesSection.ref as any}
+                  initial={{ opacity: 0, y: 40 }}
+                  animate={coursesSection.isInView ? { opacity: 1, y: 0 } : {}}
+                  transition={{ duration: 0.6, ease: 'easeOut' }}
+                  className="mb-8"
+                >
                   <h2 className="mb-6 text-2xl font-bold text-gray-900">Available Courses</h2>
                   <div className="space-y-4">
                     {school.license_categories?.map((category, index) => (
@@ -192,10 +210,16 @@ export default function SchoolDetailPage() {
                       </motion.div>
                     ))}
                   </div>
-                </div>
+                </motion.div>
               </div>
 
-              <div className="space-y-6">
+              <motion.div
+                ref={contactSection.ref as any}
+                initial={{ opacity: 0, x: 40 }}
+                animate={contactSection.isInView ? { opacity: 1, x: 0 } : {}}
+                transition={{ duration: 0.6, ease: 'easeOut' }}
+                className="space-y-6"
+              >
                 <div className="sticky top-24 space-y-6">
                   <div className="rounded-2xl bg-white p-6 shadow-soft">
                     <h3 className="mb-4 text-lg font-bold text-gray-900">Contact Information</h3>
@@ -289,7 +313,7 @@ export default function SchoolDetailPage() {
                     </div>
                   )}
                 </div>
-              </div>
+              </motion.div>
             </div>
           </motion.div>
         </div>
