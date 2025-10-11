@@ -100,19 +100,6 @@ export default function SchoolDetailPage() {
 
   return (
     <div className="pb-20 bg-white">
-      <section className="py-12 sm:py-16 bg-sand-50">
-        <Container>
-          <div className="mx-auto max-w-3xl text-center">
-            <h1 className="mb-4 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
-              School Details
-            </h1>
-            <p className="text-lg text-gray-600">
-              Comprehensive information about your selected driving school
-            </p>
-          </div>
-        </Container>
-      </section>
-
       <Container>
         <div className="py-8">
           <motion.div
