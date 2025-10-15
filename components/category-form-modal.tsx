@@ -394,8 +394,8 @@ export function CategoryFormModal({ isOpen, onClose, selectedCategory }: Categor
               )}
 
               {currentStep === 4 && (
-                <div className="space-y-6">
-                  <div className="text-center mb-6">
+                <div className="flex items-center justify-center min-h-[300px]">
+                  <div className="text-center">
                     <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-100 mb-4">
                       <CheckCircle2 className="w-8 h-8 text-green-600" />
                     </div>
