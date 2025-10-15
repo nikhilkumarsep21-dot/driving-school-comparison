@@ -400,18 +400,7 @@ export function CategoryFormModal({ isOpen, onClose, selectedCategory }: Categor
                       <CheckCircle2 className="w-8 h-8 text-green-600" />
                     </div>
                     <h3 className="text-xl font-semibold mb-2">All Set!</h3>
-                    <p className="text-gray-600">Review your information before continuing</p>
-                  </div>
-
-                  <div className="bg-gray-50 rounded-lg p-6 space-y-4">
-                    <div>
-                      <p className="text-sm text-gray-600 mb-1">License Type</p>
-                      <p className="font-semibold">{LICENSE_TYPES[selectedCategory].label}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-600 mb-1">Location</p>
-                      <p className="font-semibold">{location}</p>
-                    </div>
+                    <p className="text-gray-600">You're ready to find the perfect driving school</p>
                   </div>
                 </div>
               )}
