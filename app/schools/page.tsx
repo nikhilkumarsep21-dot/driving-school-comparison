@@ -1,14 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { Container } from "@/components/layout/container";
 import { SchoolCard } from "@/components/school-card";
 import { Filters } from "@/components/filters";
 import { LoadingCard } from "@/components/ui/loading-card";
-import { School, FilterOptions } from "@/lib/types";
+import { School, FilterOptions, LicenseType } from "@/lib/types";
 import { GraduationCap } from "lucide-react";
 
 export default function SchoolsPage() {
+  const searchParams = useSearchParams();
   const [schools, setSchools] = useState<School[]>([]);
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState<FilterOptions>({
@@ -20,6 +22,21 @@ export default function SchoolsPage() {
     minRating: 0,
     sortBy: "recommended",
   });
+  const [preAppliedFilters, setPreAppliedFilters] = useState(false);
+
+  useEffect(() => {
+    const category = searchParams.get("category") as LicenseType | null;
+    const location = searchParams.get("location");
+
+    if ((category || location) && !preAppliedFilters) {
+      setFilters((prev) => ({
+        ...prev,
+        categories: category ? [category] : prev.categories,
+        locations: location ? [location] : prev.locations,
+      }));
+      setPreAppliedFilters(true);
+    }
+  }, [searchParams, preAppliedFilters]);
 
   useEffect(() => {
     const fetchSchools = async () => {
@@ -83,6 +100,13 @@ export default function SchoolsPage() {
             </aside>
 
             <main className="flex-1 min-w-0">
+              {preAppliedFilters && ((filters.categories?.length ?? 0) > 0 || (filters.locations?.length ?? 0) > 0) && (
+                <div className="mb-6 rounded-lg bg-gold-50 border border-gold-200 p-4">
+                  <p className="text-sm text-gold-800">
+                    Showing results based on your selected preferences
+                  </p>
+                </div>
+              )}
               {loading ? (
                 <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
                   {Array.from({ length: 6 }).map((_, i) => (

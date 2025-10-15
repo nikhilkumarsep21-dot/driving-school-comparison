@@ -1,9 +1,11 @@
 export const LICENSE_TYPES = {
   motorcycle: { label: 'Motorcycle', color: 'bg-orange-100 text-orange-700' },
-  light_vehicle: { label: 'Light Vehicle', color: 'bg-blue-100 text-blue-700' },
-  heavy_truck: { label: 'Heavy Truck', color: 'bg-green-100 text-green-700' },
-  bus: { label: 'Bus', color: 'bg-purple-100 text-purple-700' },
-  taxi: { label: 'Taxi', color: 'bg-yellow-100 text-yellow-700' },
+  light_motor_vehicle: { label: 'Light Motor Vehicle', color: 'bg-blue-100 text-blue-700' },
+  heavy_truck: { label: 'Heavy Truck', color: 'bg-emerald-100 text-emerald-700' },
+  light_bus: { label: 'Light Bus', color: 'bg-amber-100 text-amber-700' },
+  heavy_bus: { label: 'Heavy Bus', color: 'bg-red-100 text-red-700' },
+  light_forklift: { label: 'Light Forklift', color: 'bg-slate-100 text-slate-700' },
+  heavy_forklift: { label: 'Heavy Forklift', color: 'bg-stone-100 text-stone-700' },
 } as const;
 
 export const DUBAI_AREAS = [

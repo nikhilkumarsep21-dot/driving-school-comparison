@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { Container } from '@/components/layout/container';
 import { Button } from '@/components/ui/button';
 import { FeaturedSchools } from '@/components/featured-schools';
+import { CategorySelection } from '@/components/category-selection';
 import { useScrollAnimation } from '@/hooks/use-scroll-animation';
 import {
   Award,
@@ -13,6 +14,7 @@ import {
 } from 'lucide-react';
 
 export default function Home() {
+  const categoryRef = useScrollAnimation({ threshold: 0.2 });
   const featuredRef = useScrollAnimation({ threshold: 0.2 });
   const howItWorksRef = useScrollAnimation({ threshold: 0.2 });
   const ctaRef = useScrollAnimation({ threshold: 0.3 });
@@ -75,6 +77,18 @@ export default function Home() {
               </Link>
             </motion.div>
           </div>
+        </Container>
+      </section>
+
+      <section ref={categoryRef.ref as any} className="py-20 sm:py-28 bg-gradient-to-b from-white to-gray-50">
+        <Container>
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={categoryRef.isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+            transition={{ duration: 0.7, ease: "easeOut" }}
+          >
+            <CategorySelection />
+          </motion.div>
         </Container>
       </section>
 

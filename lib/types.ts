@@ -1,4 +1,4 @@
-export type LicenseType = 'motorcycle' | 'light_vehicle' | 'heavy_truck' | 'bus' | 'taxi';
+export type LicenseType = 'motorcycle' | 'light_motor_vehicle' | 'heavy_truck' | 'light_bus' | 'heavy_bus' | 'light_forklift' | 'heavy_forklift';
 
 export interface LicenseCategory {
   id: string;
@@ -60,4 +60,29 @@ export interface PriceRange {
   min: number;
   max: number;
   average: number;
+}
+
+export interface UserInquiry {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  selected_category: LicenseType;
+  location: string;
+  email_verified: boolean;
+  otp_code?: string;
+  otp_expires_at?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface UserDetails {
+  name: string;
+  email: string;
+  phone: string;
+}
+
+export interface OTPVerification {
+  email: string;
+  otp: string;
 }
