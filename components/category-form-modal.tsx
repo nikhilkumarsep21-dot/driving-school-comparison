@@ -35,7 +35,7 @@ interface CategoryFormModalProps {
 }
 
 const STEPS = [
-  { step: 1, title: 'Category & Location', description: 'Choose your license type and location' },
+  { step: 1, title: 'Location', description: 'Choose your preferred area' },
   { step: 2, title: 'Your Details', description: 'Enter your contact information' },
   { step: 3, title: 'Verify Email', description: 'Confirm your email address' },
   { step: 4, title: 'Confirmation', description: 'Review and submit' },
@@ -270,13 +270,6 @@ export function CategoryFormModal({ isOpen, onClose, selectedCategory }: Categor
               {currentStep === 1 && (
                 <div className="space-y-6">
                   <div>
-                    <Label className="text-base font-semibold mb-2 block">Selected License</Label>
-                    <div className={`inline-flex rounded-xl ${LICENSE_TYPES[selectedCategory].color} px-6 py-3 text-base font-medium`}>
-                      {LICENSE_TYPES[selectedCategory].label}
-                    </div>
-                  </div>
-
-                  <div>
                     <Label htmlFor="location" className="text-base font-semibold mb-2 block">
                       Select Location
                     </Label>
@@ -418,18 +411,6 @@ export function CategoryFormModal({ isOpen, onClose, selectedCategory }: Categor
                     <div>
                       <p className="text-sm text-gray-600 mb-1">Location</p>
                       <p className="font-semibold">{location}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-600 mb-1">Name</p>
-                      <p className="font-semibold">{name}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-600 mb-1">Email</p>
-                      <p className="font-semibold">{email}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-600 mb-1">Phone</p>
-                      <p className="font-semibold">{phone}</p>
                     </div>
                   </div>
                 </div>
