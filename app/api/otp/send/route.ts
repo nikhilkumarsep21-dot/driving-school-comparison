@@ -4,6 +4,20 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
+function getSupabaseClient() {
+  return createClient(supabaseUrl, supabaseKey, {
+    auth: {
+      persistSession: false,
+      autoRefreshToken: false,
+    },
+    global: {
+      headers: {
+        'x-my-custom-header': 'otp-send',
+      },
+    },
+  });
+}
+
 function generateOTP(): string {
   return Math.floor(100000 + Math.random() * 900000).toString();
 }
@@ -20,7 +34,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const supabase = createClient(supabaseUrl, supabaseKey);
+    const supabase = getSupabaseClient();
     const otp = generateOTP();
     const expiresAt = new Date();
     expiresAt.setMinutes(expiresAt.getMinutes() + 10);

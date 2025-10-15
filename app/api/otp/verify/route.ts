@@ -4,6 +4,20 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
+function getSupabaseClient() {
+  return createClient(supabaseUrl, supabaseKey, {
+    auth: {
+      persistSession: false,
+      autoRefreshToken: false,
+    },
+    global: {
+      headers: {
+        'x-my-custom-header': 'otp-verify',
+      },
+    },
+  });
+}
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -16,7 +30,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const supabase = createClient(supabaseUrl, supabaseKey);
+    const supabase = getSupabaseClient();
 
     const { data: inquiry, error: fetchError } = await supabase
       .from('user_inquiries')
@@ -58,22 +72,36 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { error: updateError } = await supabase
+    const { data: updateData, error: updateError } = await supabase
       .from('user_inquiries')
       .update({
         email_verified: true,
         otp_code: null,
         otp_expires_at: null,
       })
-      .eq('id', inquiry.id);
+      .eq('id', inquiry.id)
+      .select()
+      .single();
 
     if (updateError) {
-      console.error('Error updating verification status:', updateError);
+      console.error('Error updating verification status:', {
+        error: updateError,
+        message: updateError.message,
+        details: updateError.details,
+        hint: updateError.hint,
+        code: updateError.code,
+        inquiryId: inquiry.id,
+      });
       return NextResponse.json(
-        { error: 'Failed to verify email' },
+        {
+          error: 'Failed to verify email',
+          details: updateError.message
+        },
         { status: 500 }
       );
     }
+
+    console.log('Successfully updated inquiry:', updateData);
 
     return NextResponse.json({
       success: true,
