@@ -22,6 +22,9 @@ export async function POST(request: NextRequest) {
       .from('user_inquiries')
       .select('*')
       .eq('email', email)
+      .eq('email_verified', false)
+      .order('created_at', { ascending: false })
+      .limit(1)
       .maybeSingle();
 
     if (fetchError || !inquiry) {
@@ -62,7 +65,7 @@ export async function POST(request: NextRequest) {
         otp_code: null,
         otp_expires_at: null,
       })
-      .eq('email', email);
+      .eq('id', inquiry.id);
 
     if (updateError) {
       console.error('Error updating verification status:', updateError);
