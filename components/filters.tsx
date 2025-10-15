@@ -84,6 +84,43 @@ export function Filters({ filters, onFiltersChange }: FiltersProps) {
 
   return (
     <div className="space-y-6">
+      {activeFilterCount > 0 && (
+        <div className="rounded-2xl bg-gold-50 p-4">
+          <div className="mb-3 flex items-center justify-between">
+            <span className="text-sm font-semibold text-gray-700">Active Filters</span>
+            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-gold-600 text-xs font-bold text-white">
+              {activeFilterCount}
+            </span>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {filters.categories?.map((category) => (
+              <Button
+                key={category}
+                variant="secondary"
+                size="sm"
+                onClick={() => handleCategoryToggle(category)}
+                className="h-7 text-xs"
+              >
+                {LICENSE_TYPES[category].label}
+                <X className="ml-1 h-3 w-3" />
+              </Button>
+            ))}
+            {filters.locations?.map((location) => (
+              <Button
+                key={location}
+                variant="secondary"
+                size="sm"
+                onClick={() => handleLocationToggle(location)}
+                className="h-7 text-xs"
+              >
+                {location}
+                <X className="ml-1 h-3 w-3" />
+              </Button>
+            ))}
+          </div>
+        </div>
+      )}
+
       <div className="rounded-2xl bg-white p-6 shadow-soft">
         <div className="mb-6 flex items-center justify-between">
           <h2 className="text-lg font-bold text-gray-900">Filters</h2>
@@ -215,43 +252,6 @@ export function Filters({ filters, onFiltersChange }: FiltersProps) {
           </div>
         </div>
       </div>
-
-      {activeFilterCount > 0 && (
-        <div className="rounded-2xl bg-gold-50 p-4">
-          <div className="mb-3 flex items-center justify-between">
-            <span className="text-sm font-semibold text-gray-700">Active Filters</span>
-            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-gold-600 text-xs font-bold text-white">
-              {activeFilterCount}
-            </span>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {filters.categories?.map((category) => (
-              <Button
-                key={category}
-                variant="secondary"
-                size="sm"
-                onClick={() => handleCategoryToggle(category)}
-                className="h-7 text-xs"
-              >
-                {LICENSE_TYPES[category].label}
-                <X className="ml-1 h-3 w-3" />
-              </Button>
-            ))}
-            {filters.locations?.map((location) => (
-              <Button
-                key={location}
-                variant="secondary"
-                size="sm"
-                onClick={() => handleLocationToggle(location)}
-                className="h-7 text-xs"
-              >
-                {location}
-                <X className="ml-1 h-3 w-3" />
-              </Button>
-            ))}
-          </div>
-        </div>
-      )}
     </div>
   );
 }
