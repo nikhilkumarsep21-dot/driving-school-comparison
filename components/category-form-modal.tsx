@@ -1,20 +1,27 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
-import { X, ArrowLeft, ArrowRight, Mail, CheckCircle2, Loader2 } from 'lucide-react';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  X,
+  ArrowLeft,
+  ArrowRight,
+  Mail,
+  CheckCircle2,
+  Loader2,
+} from "lucide-react";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from "@/components/ui/select";
 import {
   Stepper,
   StepperItem,
@@ -22,11 +29,14 @@ import {
   StepperIndicator,
   StepperTitle,
   StepperSeparator,
-} from '@/components/ui/stepper';
-import { LicenseType } from '@/lib/types';
-import { LICENSE_TYPES, DUBAI_AREAS } from '@/lib/constants';
-import { getUserDetailsFromCookie, saveUserDetailsToCookie } from '@/lib/cookies';
-import { toast } from 'sonner';
+} from "@/components/ui/stepper";
+import { LicenseType } from "@/lib/types";
+import { LICENSE_TYPES, DUBAI_AREAS } from "@/lib/constants";
+import {
+  getUserDetailsFromCookie,
+  saveUserDetailsToCookie,
+} from "@/lib/cookies";
+import { toast } from "sonner";
 
 interface CategoryFormModalProps {
   isOpen: boolean;
@@ -35,20 +45,28 @@ interface CategoryFormModalProps {
 }
 
 const STEPS = [
-  { step: 1, title: 'Location', description: 'Choose your preferred area' },
-  { step: 2, title: 'Your Details', description: 'Enter your contact information' },
-  { step: 3, title: 'Verify Email', description: 'Confirm your email address' },
-  { step: 4, title: 'Confirmation', description: 'Review and submit' },
+  { step: 1, title: "Location", description: "Choose your preferred area" },
+  {
+    step: 2,
+    title: "Your Details",
+    description: "Enter your contact information",
+  },
+  { step: 3, title: "Verify Email", description: "Confirm your email address" },
+  { step: 4, title: "Confirmation", description: "Review and submit" },
 ];
 
-export function CategoryFormModal({ isOpen, onClose, selectedCategory }: CategoryFormModalProps) {
+export function CategoryFormModal({
+  isOpen,
+  onClose,
+  selectedCategory,
+}: CategoryFormModalProps) {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(1);
-  const [location, setLocation] = useState('');
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
-  const [otp, setOtp] = useState('');
+  const [location, setLocation] = useState("");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [otp, setOtp] = useState("");
   const [otpExpiry, setOtpExpiry] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [canResend, setCanResend] = useState(false);
@@ -79,21 +97,24 @@ export function CategoryFormModal({ isOpen, onClose, selectedCategory }: Categor
     const newErrors: Record<string, string> = {};
 
     if (step === 1) {
-      if (!location) newErrors.location = 'Please select a location';
+      if (!location) newErrors.location = "Please select a location";
     }
 
     if (step === 2) {
-      if (!name.trim()) newErrors.name = 'Name is required';
-      if (name.trim().length < 2) newErrors.name = 'Name must be at least 2 characters';
-      if (!email.trim()) newErrors.email = 'Email is required';
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) newErrors.email = 'Invalid email format';
-      if (!phone.trim()) newErrors.phone = 'Phone number is required';
-      if (!/^\+?[\d\s-()]+$/.test(phone)) newErrors.phone = 'Invalid phone number format';
+      if (!name.trim()) newErrors.name = "Name is required";
+      if (name.trim().length < 2)
+        newErrors.name = "Name must be at least 2 characters";
+      if (!email.trim()) newErrors.email = "Email is required";
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
+        newErrors.email = "Invalid email format";
+      if (!phone.trim()) newErrors.phone = "Phone number is required";
+      if (!/^\+?[\d\s-()]+$/.test(phone))
+        newErrors.phone = "Invalid phone number format";
     }
 
     if (step === 3) {
-      if (!otp.trim()) newErrors.otp = 'OTP is required';
-      if (otp.trim().length !== 6) newErrors.otp = 'OTP must be 6 digits';
+      if (!otp.trim()) newErrors.otp = "OTP is required";
+      if (otp.trim().length !== 6) newErrors.otp = "OTP must be 6 digits";
     }
 
     setErrors(newErrors);
@@ -103,9 +124,9 @@ export function CategoryFormModal({ isOpen, onClose, selectedCategory }: Categor
   const sendOTP = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch('/api/otp/send', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/otp/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           email,
           name,
@@ -118,15 +139,17 @@ export function CategoryFormModal({ isOpen, onClose, selectedCategory }: Categor
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Failed to send OTP');
+        throw new Error(data.error || "Failed to send OTP");
       }
 
       setOtpExpiry(data.expiresAt);
-      toast.success('OTP sent to your email');
+      toast.success("OTP sent to your email");
       setCanResend(false);
       setResendTimer(60);
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Failed to send OTP');
+      toast.error(
+        error instanceof Error ? error.message : "Failed to send OTP"
+      );
       throw error;
     } finally {
       setIsLoading(false);
@@ -136,22 +159,24 @@ export function CategoryFormModal({ isOpen, onClose, selectedCategory }: Categor
   const verifyOTP = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch('/api/otp/verify', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/otp/verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, otp }),
       });
 
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Failed to verify OTP');
+        throw new Error(data.error || "Failed to verify OTP");
       }
 
-      toast.success('Email verified successfully');
+      toast.success("Email verified successfully");
       return true;
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Failed to verify OTP');
+      toast.error(
+        error instanceof Error ? error.message : "Failed to verify OTP"
+      );
       return false;
     } finally {
       setIsLoading(false);
@@ -187,7 +212,7 @@ export function CategoryFormModal({ isOpen, onClose, selectedCategory }: Categor
   const handleSubmit = () => {
     saveUserDetailsToCookie({ name, email, phone });
 
-    toast.success('Registration complete!');
+    toast.success("Registration complete!");
 
     const params = new URLSearchParams({
       category: selectedCategory,
@@ -203,17 +228,17 @@ export function CategoryFormModal({ isOpen, onClose, selectedCategory }: Categor
     try {
       await sendOTP();
     } catch (error) {
-      console.error('Failed to resend OTP:', error);
+      console.error("Failed to resend OTP:", error);
     }
   };
 
   const handleModalClose = () => {
     setCurrentStep(1);
-    setLocation('');
-    setName('');
-    setEmail('');
-    setPhone('');
-    setOtp('');
+    setLocation("");
+    setName("");
+    setEmail("");
+    setPhone("");
+    setOtp("");
     setErrors({});
     setOtpExpiry(null);
     onClose();
@@ -223,18 +248,23 @@ export function CategoryFormModal({ isOpen, onClose, selectedCategory }: Categor
     <Dialog open={isOpen} onOpenChange={handleModalClose}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <div className="relative">
-          <button
+          {/* Only one close button at the top right */}
+          {/* <button
             onClick={handleModalClose}
             className="absolute right-0 top-0 rounded-full p-2 hover:bg-gray-100 transition-colors"
           >
             <X className="h-5 w-5" />
-          </button>
+          </button> */}
+
+          {/* Remove any other close button below this line if present */}
 
           <div className="mb-8">
             <h2 className="text-2xl font-bold text-gray-900 mb-2">
               {LICENSE_TYPES[selectedCategory].label}
             </h2>
-            <p className="text-gray-600">Complete the steps below to get started</p>
+            <p className="text-gray-600">
+              Complete the steps below to get started
+            </p>
           </div>
 
           <Stepper value={currentStep} className="mb-8">
@@ -247,13 +277,17 @@ export function CategoryFormModal({ isOpen, onClose, selectedCategory }: Categor
               >
                 <StepperTrigger asChild className="max-md:flex-col">
                   <div className="flex items-center gap-3">
-                    <StepperIndicator />
+                    <span>
+                      <StepperIndicator />
+                    </span>
                     <div className="text-left hidden md:block">
                       <StepperTitle>{title}</StepperTitle>
                     </div>
                   </div>
                 </StepperTrigger>
-                {step < STEPS.length && <StepperSeparator className="max-md:mt-3.5 md:mx-4" />}
+                {step < STEPS.length && (
+                  <StepperSeparator className="max-md:mt-3.5 md:mx-4" />
+                )}
               </StepperItem>
             ))}
           </Stepper>
@@ -270,7 +304,10 @@ export function CategoryFormModal({ isOpen, onClose, selectedCategory }: Categor
               {currentStep === 1 && (
                 <div className="space-y-6">
                   <div>
-                    <Label htmlFor="location" className="text-base font-semibold mb-2 block">
+                    <Label
+                      htmlFor="location"
+                      className="text-base font-semibold mb-2 block"
+                    >
                       Select Location
                     </Label>
                     <Select value={location} onValueChange={setLocation}>
@@ -286,7 +323,9 @@ export function CategoryFormModal({ isOpen, onClose, selectedCategory }: Categor
                       </SelectContent>
                     </Select>
                     {errors.location && (
-                      <p className="text-sm text-red-600 mt-1">{errors.location}</p>
+                      <p className="text-sm text-red-600 mt-1">
+                        {errors.location}
+                      </p>
                     )}
                   </div>
                 </div>
@@ -295,7 +334,10 @@ export function CategoryFormModal({ isOpen, onClose, selectedCategory }: Categor
               {currentStep === 2 && (
                 <div className="space-y-6">
                   <div>
-                    <Label htmlFor="name" className="text-base font-semibold mb-2 block">
+                    <Label
+                      htmlFor="name"
+                      className="text-base font-semibold mb-2 block"
+                    >
                       Full Name
                     </Label>
                     <Input
@@ -312,7 +354,10 @@ export function CategoryFormModal({ isOpen, onClose, selectedCategory }: Categor
                   </div>
 
                   <div>
-                    <Label htmlFor="email" className="text-base font-semibold mb-2 block">
+                    <Label
+                      htmlFor="email"
+                      className="text-base font-semibold mb-2 block"
+                    >
                       Email Address
                     </Label>
                     <Input
@@ -324,12 +369,17 @@ export function CategoryFormModal({ isOpen, onClose, selectedCategory }: Categor
                       className="h-12"
                     />
                     {errors.email && (
-                      <p className="text-sm text-red-600 mt-1">{errors.email}</p>
+                      <p className="text-sm text-red-600 mt-1">
+                        {errors.email}
+                      </p>
                     )}
                   </div>
 
                   <div>
-                    <Label htmlFor="phone" className="text-base font-semibold mb-2 block">
+                    <Label
+                      htmlFor="phone"
+                      className="text-base font-semibold mb-2 block"
+                    >
                       Phone Number
                     </Label>
                     <Input
@@ -341,7 +391,9 @@ export function CategoryFormModal({ isOpen, onClose, selectedCategory }: Categor
                       className="h-12"
                     />
                     {errors.phone && (
-                      <p className="text-sm text-red-600 mt-1">{errors.phone}</p>
+                      <p className="text-sm text-red-600 mt-1">
+                        {errors.phone}
+                      </p>
                     )}
                   </div>
                 </div>
@@ -353,14 +405,19 @@ export function CategoryFormModal({ isOpen, onClose, selectedCategory }: Categor
                     <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gold-100 mb-4">
                       <Mail className="w-8 h-8 text-gold-600" />
                     </div>
-                    <h3 className="text-lg font-semibold mb-2">Check Your Email</h3>
+                    <h3 className="text-lg font-semibold mb-2">
+                      Check Your Email
+                    </h3>
                     <p className="text-gray-600">
                       We've sent a 6-digit code to <strong>{email}</strong>
                     </p>
                   </div>
 
                   <div>
-                    <Label htmlFor="otp" className="text-base font-semibold mb-2 block">
+                    <Label
+                      htmlFor="otp"
+                      className="text-base font-semibold mb-2 block"
+                    >
                       Enter OTP Code
                     </Label>
                     <Input
@@ -368,7 +425,9 @@ export function CategoryFormModal({ isOpen, onClose, selectedCategory }: Categor
                       type="text"
                       placeholder="000000"
                       value={otp}
-                      onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                      onChange={(e) =>
+                        setOtp(e.target.value.replace(/\D/g, "").slice(0, 6))
+                      }
                       className="h-12 text-center text-2xl tracking-widest"
                       maxLength={6}
                     />
@@ -383,7 +442,7 @@ export function CategoryFormModal({ isOpen, onClose, selectedCategory }: Categor
                       disabled={!canResend || isLoading}
                       className="text-sm text-gold-600 hover:text-gold-700 disabled:text-gray-400 disabled:cursor-not-allowed"
                     >
-                      {canResend ? 'Resend OTP' : `Resend in ${resendTimer}s`}
+                      {canResend ? "Resend OTP" : `Resend in ${resendTimer}s`}
                     </button>
                   </div>
 
@@ -400,7 +459,9 @@ export function CategoryFormModal({ isOpen, onClose, selectedCategory }: Categor
                       <CheckCircle2 className="w-8 h-8 text-green-600" />
                     </div>
                     <h3 className="text-xl font-semibold mb-2">All Set!</h3>
-                    <p className="text-gray-600">You're ready to find the perfect driving school</p>
+                    <p className="text-gray-600">
+                      You're ready to find the perfect driving school
+                    </p>
                   </div>
                 </div>
               )}
@@ -420,7 +481,7 @@ export function CategoryFormModal({ isOpen, onClose, selectedCategory }: Categor
               </Button>
             )}
 
-            <div className={currentStep === 1 ? 'ml-auto' : 'ml-auto'}>
+            <div className={currentStep === 1 ? "ml-auto" : "ml-auto"}>
               {currentStep < 4 ? (
                 <Button
                   onClick={handleNext}
