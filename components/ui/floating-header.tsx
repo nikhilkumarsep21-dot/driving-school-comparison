@@ -26,9 +26,9 @@ export function FloatingHeader() {
       )}
     >
       <nav className="mx-auto flex items-center justify-between p-1.5">
-        <Link href="/" className="hover:bg-accent flex cursor-pointer items-center gap-2 rounded-md px-2 py-1 duration-100">
+        <Link href="/" className="flex cursor-pointer items-center gap-2 rounded-md px-2 py-1">
           <GraduationCap className="size-5" />
-          <p className="font-mono text-base font-bold">Simple</p>
+          <p className="font-mono text-base">Simple</p>
         </Link>
         <div className="hidden items-center gap-1 lg:flex ml-auto">
           {links.map((link) => (
