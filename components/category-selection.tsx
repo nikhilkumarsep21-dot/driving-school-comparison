@@ -88,7 +88,13 @@ export function CategorySelection() {
             <motion.button
               key={category.type}
               onClick={() => handleCategoryClick(category.type)}
-              className="group relative overflow-hidden rounded-2xl bg-white p-6 text-left shadow-md transition-all hover:shadow-xl border border-gray-100 hover:border-gold-300"
+              className={[
+                "group relative overflow-hidden",
+                "rounded-xl border bg-card text-card-foreground p-8 flex flex-col items-center text-center",
+                "transition-all duration-300 ease-in-out",
+                "hover:shadow-lg hover:-translate-y-2",
+                // Remove old shadow/border classes
+              ].join(" ")}
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: index * 0.1 }}

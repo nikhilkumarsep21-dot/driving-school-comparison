@@ -1,17 +1,17 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { School } from '@/lib/types';
-import { StarRating } from './ui/star-rating';
-import { LicenseBadge } from './ui/license-badge';
-import { PriceDisplay } from './ui/price-display';
-import { MapPin, Users, GitCompare, Check, GraduationCap } from 'lucide-react';
-import { Button } from './ui/button';
-import { useComparisonStore } from '@/store/comparison-store';
-import { toast } from 'sonner';
-import Link from 'next/link';
-import Image from 'next/image';
-import { motion } from 'framer-motion';
+import React from "react";
+import { School } from "@/lib/types";
+import { StarRating } from "./ui/star-rating";
+import { LicenseBadge } from "./ui/license-badge";
+import { PriceDisplay } from "./ui/price-display";
+import { MapPin, Users, GitCompare, Check, GraduationCap } from "lucide-react";
+import { Button } from "./ui/button";
+import { useComparisonStore } from "@/store/comparison-store";
+import { toast } from "sonner";
+import Link from "next/link";
+import Image from "next/image";
+import { motion } from "framer-motion";
 
 interface SchoolCardProps {
   school: School;
@@ -19,16 +19,18 @@ interface SchoolCardProps {
 }
 
 export function SchoolCard({ school, index = 0 }: SchoolCardProps) {
-  const { addSchool, removeSchool, isInComparison, canAddMore } = useComparisonStore();
+  const { addSchool, removeSchool, isInComparison, canAddMore } =
+    useComparisonStore();
   const inComparison = isInComparison(school.id);
   const [imageError, setImageError] = React.useState(false);
 
-  const minPrice = school.license_categories && school.license_categories.length > 0
-    ? Math.min(...school.license_categories.map(cat => cat.price))
-    : 0;
+  const minPrice =
+    school.license_categories && school.license_categories.length > 0
+      ? Math.min(...school.license_categories.map((cat) => cat.price))
+      : 0;
 
   const uniqueTypes = school.license_categories
-    ? Array.from(new Set(school.license_categories.map(cat => cat.type)))
+    ? Array.from(new Set(school.license_categories.map((cat) => cat.type)))
     : [];
 
   const handleCompareClick = (e: React.MouseEvent) => {
@@ -42,7 +44,7 @@ export function SchoolCard({ school, index = 0 }: SchoolCardProps) {
       const success = addSchool(school);
       if (!success) {
         if (!canAddMore()) {
-          toast.error('You can only compare up to 3 schools');
+          toast.error("You can only compare up to 3 schools");
         }
       } else {
         toast.success(`${school.name} added to comparison`);
@@ -55,27 +57,34 @@ export function SchoolCard({ school, index = 0 }: SchoolCardProps) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: index * 0.1 }}
-      className="group relative overflow-hidden rounded-2xl bg-white shadow-soft transition-all duration-300 hover:-translate-y-1 hover:shadow-soft-lg"
+      className={[
+        "bg-card text-card-foreground rounded-xl border flex flex-col items-center text-center",
+        "transition-all duration-300 ease-in-out",
+        "hover:shadow-lg hover:-translate-y-2",
+        "group relative overflow-hidden",
+      ].join(" ")}
     >
-      <Link href={`/school/${school.slug}`}>
-        <div className="relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-gold-100 to-sand-100">
-          {!imageError ? (
-            <Image
-              src={school.image_url}
-              alt={`${school.name} - Driving School in ${school.location_area}`}
-              fill
-              className="object-cover transition-transform duration-500 group-hover:scale-105"
-              onError={() => setImageError(true)}
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            />
-          ) : (
-            <div className="absolute inset-0 flex items-center justify-center">
-              <GraduationCap className="h-24 w-24 text-gold-300" />
-            </div>
-          )}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-        </div>
-      </Link>
+      <div className="w-full">
+        <Link href={`/school/${school.slug}`}>
+          <div className="relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-gold-100 to-sand-100 w-full">
+            {!imageError ? (
+              <Image
+                src={school.image_url}
+                alt={`${school.name} - Driving School in ${school.location_area}`}
+                fill
+                className="object-cover transition-transform duration-500 group-hover:scale-105"
+                onError={() => setImageError(true)}
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              />
+            ) : (
+              <div className="absolute inset-0 flex items-center justify-center">
+                <GraduationCap className="h-24 w-24 text-gold-300" />
+              </div>
+            )}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+          </div>
+        </Link>
+      </div>
 
       <div className="absolute right-3 top-3 z-10">
         <Button
@@ -83,8 +92,8 @@ export function SchoolCard({ school, index = 0 }: SchoolCardProps) {
           onClick={handleCompareClick}
           className={
             inComparison
-              ? 'bg-gold-600 text-white hover:bg-gold-700 shadow-lg'
-              : 'bg-white/90 text-gray-700 hover:bg-white shadow-soft backdrop-blur-sm'
+              ? "bg-gold-600 text-white hover:bg-gold-700 shadow-lg"
+              : "bg-white/90 text-gray-700 hover:bg-white shadow-soft backdrop-blur-sm"
           }
         >
           {inComparison ? (
