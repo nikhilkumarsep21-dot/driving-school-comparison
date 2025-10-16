@@ -1,5 +1,5 @@
 import React from "react";
-import { Grid2x2PlusIcon, MenuIcon } from "lucide-react";
+import { GraduationCap, MenuIcon } from "lucide-react";
 import { Sheet, SheetContent, SheetFooter } from "@/components/ui/sheet";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -30,8 +30,8 @@ export function FloatingHeader() {
     >
       <nav className="mx-auto flex items-center justify-between p-1.5">
         <div className="hover:bg-accent flex cursor-pointer items-center gap-2 rounded-md px-2 py-1 duration-100">
-          <Grid2x2PlusIcon className="size-5" />
-          <p className="font-mono text-base font-bold">Asme</p>
+          <GraduationCap className="size-5" />
+          <p className="font-mono text-base font-bold">Simple</p>
         </div>
         <div className="hidden items-center gap-1 lg:flex">
           {links.map((link) => (
@@ -44,7 +44,6 @@ export function FloatingHeader() {
           ))}
         </div>
         <div className="flex items-center gap-2">
-          <Button size="sm">Login</Button>
           <Sheet open={open} onOpenChange={setOpen}>
             <Button
               size="icon"
@@ -72,10 +71,6 @@ export function FloatingHeader() {
                   </a>
                 ))}
               </div>
-              <SheetFooter>
-                <Button variant="outline">Sign In</Button>
-                <Button>Get Started</Button>
-              </SheetFooter>
             </SheetContent>
           </Sheet>
         </div>
