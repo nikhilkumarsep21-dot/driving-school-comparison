@@ -16,7 +16,8 @@ export default function Home() {
   const ctaRef = useScrollAnimation({ threshold: 0.3 });
   return (
     <div className="flex flex-col">
-      <section className="relative overflow-hidden py-20 sm:py-32">
+      <section className="relative overflow-hidden bg-gradient-to-br from-gold-600 to-gold-700 pt-20 py-20 sm:py-32">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_white_1px,_transparent_1px)] bg-[length:24px_24px] opacity-20" />
         <Container className="relative">
           <div className="text-center">
             <motion.div
@@ -25,26 +26,26 @@ export default function Home() {
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.6, ease: "easeOut" }}
             >
-              <div className="inline-flex items-center gap-2 rounded-full bg-gold-100 px-6 py-3 text-sm font-medium text-gold-800 shadow-soft">
+              <div className="inline-flex items-center gap-2 rounded-full bg-white/80 px-6 py-3 text-sm font-medium text-gold-800 shadow-soft">
                 <Award className="h-5 w-5" />
                 Dubai's Most Trusted Driving School Platform
               </div>
             </motion.div>
 
             <motion.h1
-              className="mb-6 text-5xl font-bold tracking-tight text-gray-900 sm:text-6xl lg:text-7xl"
+              className="mb-6 text-5xl font-bold tracking-tight text-white sm:text-6xl lg:text-7xl"
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.2, ease: "easeOut" }}
             >
               Find Your Perfect
-              <span className="block bg-gradient-to-r from-gold-600 to-gold-500 bg-clip-text text-transparent">
+              <span className="block bg-gradient-to-r from-white to-gold-100 bg-clip-text text-transparent">
                 Driving School
               </span>
             </motion.h1>
 
             <motion.p
-              className="mb-12 text-xl text-gray-600 sm:text-2xl leading-relaxed"
+              className="mb-12 text-xl text-gold-100 sm:text-2xl leading-relaxed"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.4, ease: "easeOut" }}
@@ -63,7 +64,8 @@ export default function Home() {
               <Link href="/schools">
                 <Button
                   size="lg"
-                  className="h-14 w-full px-8 text-base font-semibold shadow-lg hover:shadow-xl transition-all sm:w-auto bg-gold-600 hover:bg-gold-700"
+                  variant="secondary"
+                  className="h-14 w-full px-10 text-base font-semibold shadow-xl hover:shadow-2xl transition-all bg-white text-gold-700 hover:bg-sand-50 sm:w-auto"
                 >
                   Browse All Schools
                   <ArrowRight className="ml-2 h-5 w-5" />
@@ -72,8 +74,8 @@ export default function Home() {
               <Link href="/compare">
                 <Button
                   size="lg"
-                  variant="outline"
-                  className="h-14 w-full px-8 text-base font-semibold border-2 sm:w-auto"
+                  variant="secondary"
+                  className="h-14 w-full px-10 text-base font-semibold shadow-xl hover:shadow-2xl transition-all bg-white/10 text-white border-2 border-white/30 hover:bg-white/20 sm:w-auto"
                 >
                   <GitCompare className="mr-2 h-5 w-5" />
                   Compare Schools
@@ -294,68 +296,6 @@ export default function Home() {
               </Button>
             </Link>
           </motion.div>
-        </Container>
-      </section>
-
-      <section
-        ref={ctaRef.ref as any}
-        className="relative overflow-hidden bg-gradient-to-br from-gold-600 to-gold-700 py-20 sm:py-28"
-      >
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_white_1px,_transparent_1px)] bg-[length:24px_24px] opacity-20" />
-
-        <Container className="relative">
-          <div className="mx-auto text-center">
-            <motion.h2
-              className="text-4xl font-bold text-white sm:text-5xl mb-6 leading-tight"
-              initial={{ opacity: 0, y: 30 }}
-              animate={
-                ctaRef.isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }
-              }
-              transition={{ duration: 0.7, ease: "easeOut" }}
-            >
-              Ready to Start Your Driving Journey?
-            </motion.h2>
-            <motion.p
-              className="text-xl text-gold-100 mb-10 leading-relaxed"
-              initial={{ opacity: 0, y: 20 }}
-              animate={
-                ctaRef.isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }
-              }
-              transition={{ duration: 0.7, delay: 0.2, ease: "easeOut" }}
-            >
-              Compare Dubai's best driving schools and find the perfect match
-              for your needs today.
-            </motion.p>
-            <motion.div
-              className="flex flex-col gap-4 sm:flex-row sm:justify-center"
-              initial={{ opacity: 0, y: 20 }}
-              animate={
-                ctaRef.isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }
-              }
-              transition={{ duration: 0.7, delay: 0.4, ease: "easeOut" }}
-            >
-              <Link href="/schools">
-                <Button
-                  size="lg"
-                  variant="secondary"
-                  className="h-14 w-full px-10 text-base font-semibold shadow-xl hover:shadow-2xl transition-all bg-white text-gold-700 hover:bg-sand-50 sm:w-auto"
-                >
-                  Explore All Schools
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
-              </Link>
-              <Link href="/compare">
-                <Button
-                  size="lg"
-                  variant="secondary"
-                  className="h-14 w-full px-10 text-base font-semibold shadow-xl hover:shadow-2xl transition-all bg-white/10 text-white border-2 border-white/30 hover:bg-white/20 sm:w-auto"
-                >
-                  <GitCompare className="mr-2 h-5 w-5" />
-                  Compare Schools
-                </Button>
-              </Link>
-            </motion.div>
-          </div>
         </Container>
       </section>
     </div>
