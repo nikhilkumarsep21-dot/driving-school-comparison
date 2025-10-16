@@ -17,6 +17,7 @@ export default function Home() {
   return (
     <div className="flex flex-col">
       <section className="relative overflow-hidden py-20 sm:py-32">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(0,0,0,0.04)_1px,_transparent_1px)] bg-[length:24px_24px]" />
         <Container className="relative">
           <div className="text-center">
             <motion.div
