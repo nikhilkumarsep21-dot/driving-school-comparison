@@ -214,10 +214,11 @@ export default function Home() {
 
       <section
         ref={categoryRef.ref as any}
-        className="py-20 sm:py-28 bg-gradient-to-b from-white to-gray-50"
+        className="py-20 sm:py-28 bg-gray-50"
       >
         <Container>
           <motion.div
+            className="mx-auto max-w-3xl text-center mb-16"
             initial={{ opacity: 0, y: 30 }}
             animate={
               categoryRef.isInView
@@ -226,133 +227,26 @@ export default function Home() {
             }
             transition={{ duration: 0.7, ease: "easeOut" }}
           >
-            <CategorySelection />
-          </motion.div>
-        </Container>
-      </section>
-
-      <section ref={featuredRef.ref as any} className="py-20 sm:py-28 bg-white">
-        <Container>
-          <motion.div
-            className="mx-auto max-w-3xl text-center mb-16"
-            initial={{ opacity: 0, y: 30 }}
-            animate={
-              howItWorksRef.isInView
-                ? { opacity: 1, y: 0 }
-                : { opacity: 0, y: 30 }
-            }
-            transition={{ duration: 0.7, ease: "easeOut" }}
-          >
             <h2 className="text-4xl font-bold text-gray-900 sm:text-5xl mb-4">
-              How It Works
+              Choose Your License Type
             </h2>
             <p className="text-lg text-gray-600">
-              Three simple steps to find your ideal driving school
+              Select the driving license category that matches your needs and
+              start exploring schools
             </p>
           </motion.div>
 
-          <div className="grid gap-8 md:grid-cols-3">
-            <motion.div
-              className="relative"
-              initial={{ opacity: 0, y: 40 }}
-              animate={
-                howItWorksRef.isInView
-                  ? { opacity: 1, y: 0 }
-                  : { opacity: 0, y: 40 }
-              }
-              transition={{ duration: 0.7, delay: 0.2, ease: "easeOut" }}
-            >
-              <div className="flex flex-col items-center text-center">
-                <motion.div
-                  className="mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-gold-600 text-2xl font-bold text-white shadow-lg"
-                  initial={{ scale: 0.8, rotate: -10 }}
-                  animate={
-                    howItWorksRef.isInView
-                      ? { scale: 1, rotate: 0 }
-                      : { scale: 0.8, rotate: -10 }
-                  }
-                  transition={{ duration: 0.6, delay: 0.3, ease: "easeOut" }}
-                >
-                  1
-                </motion.div>
-                <h3 className="mb-3 text-2xl font-bold text-gray-900">
-                  Browse & Filter
-                </h3>
-                <p className="text-gray-600 leading-relaxed">
-                  Explore driving schools across Dubai. Use filters to find
-                  schools that match your location, budget, and license type
-                  preferences.
-                </p>
-              </div>
-            </motion.div>
-
-            <motion.div
-              className="relative"
-              initial={{ opacity: 0, y: 40 }}
-              animate={
-                howItWorksRef.isInView
-                  ? { opacity: 1, y: 0 }
-                  : { opacity: 0, y: 40 }
-              }
-              transition={{ duration: 0.7, delay: 0.4, ease: "easeOut" }}
-            >
-              <div className="flex flex-col items-center text-center">
-                <motion.div
-                  className="mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-gold-600 text-2xl font-bold text-white shadow-lg"
-                  initial={{ scale: 0.8, rotate: -10 }}
-                  animate={
-                    howItWorksRef.isInView
-                      ? { scale: 1, rotate: 0 }
-                      : { scale: 0.8, rotate: -10 }
-                  }
-                  transition={{ duration: 0.6, delay: 0.5, ease: "easeOut" }}
-                >
-                  2
-                </motion.div>
-                <h3 className="mb-3 text-2xl font-bold text-gray-900">
-                  Compare Options
-                </h3>
-                <p className="text-gray-600 leading-relaxed">
-                  Select up to 3 schools to compare side-by-side. Review
-                  pricing, ratings, features, and student feedback to make an
-                  informed choice.
-                </p>
-              </div>
-            </motion.div>
-
-            <motion.div
-              className="relative"
-              initial={{ opacity: 0, y: 40 }}
-              animate={
-                howItWorksRef.isInView
-                  ? { opacity: 1, y: 0 }
-                  : { opacity: 0, y: 40 }
-              }
-              transition={{ duration: 0.7, delay: 0.6, ease: "easeOut" }}
-            >
-              <div className="flex flex-col items-center text-center">
-                <motion.div
-                  className="mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-gold-600 text-2xl font-bold text-white shadow-lg"
-                  initial={{ scale: 0.8, rotate: -10 }}
-                  animate={
-                    howItWorksRef.isInView
-                      ? { scale: 1, rotate: 0 }
-                      : { scale: 0.8, rotate: -10 }
-                  }
-                  transition={{ duration: 0.6, delay: 0.7, ease: "easeOut" }}
-                >
-                  3
-                </motion.div>
-                <h3 className="mb-3 text-2xl font-bold text-gray-900">
-                  Enroll & Learn
-                </h3>
-                <p className="text-gray-600 leading-relaxed">
-                  Contact your chosen school directly to enroll. Start your
-                  journey to becoming a confident, licensed driver in Dubai.
-                </p>
-              </div>
-            </motion.div>
-          </div>
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={
+              categoryRef.isInView
+                ? { opacity: 1, y: 0 }
+                : { opacity: 0, y: 30 }
+            }
+            transition={{ duration: 0.7, delay: 0.2, ease: "easeOut" }}
+          >
+            <CategorySelection />
+          </motion.div>
         </Container>
       </section>
 
