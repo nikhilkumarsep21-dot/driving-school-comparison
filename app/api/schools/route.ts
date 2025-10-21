@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
-import { School, LicenseCategory } from '@/lib/types';
+import { BranchWithSchool } from '@/lib/types';
 
 export const dynamic = 'force-dynamic';
 
@@ -8,7 +8,7 @@ export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
     const search = searchParams.get('search');
-    const categories = searchParams.get('categories')?.split(',').filter(Boolean);
+    const categories = searchParams.get('categories')?.split(',').filter(Boolean).map(Number);
     const locations = searchParams.get('locations')?.split(',').filter(Boolean);
     const minPrice = searchParams.get('minPrice');
     const maxPrice = searchParams.get('maxPrice');
@@ -16,96 +16,83 @@ export async function GET(request: NextRequest) {
     const sortBy = searchParams.get('sortBy') || 'recommended';
 
     let query = supabase
-      .from('schools')
+      .from('branches')
       .select(`
         *,
-        license_categories (*)
+        school:schools(*)
       `);
 
     if (search) {
-      query = query.or(`name.ilike.%${search}%,location_area.ilike.%${search}%,description.ilike.%${search}%`);
+      query = query.or(`name.ilike.%${search}%,address.ilike.%${search}%,city.ilike.%${search}%`);
     }
 
     if (locations && locations.length > 0) {
-      query = query.in('location_area', locations);
-    }
-
-    if (minRating) {
-      query = query.gte('rating', parseFloat(minRating));
+      query = query.in('city', locations);
     }
 
     switch (sortBy) {
       case 'rating':
-        query = query.order('rating', { ascending: false });
-        break;
-      case 'price_low':
-        query = query.order('name');
-        break;
-      case 'price_high':
-        query = query.order('name');
         break;
       case 'newest':
         query = query.order('created_at', { ascending: false });
         break;
       default:
-        query = query.order('review_count', { ascending: false });
+        query = query.order('id', { ascending: true });
     }
 
-    const { data: schools, error } = await query;
+    const { data: branches, error } = await query;
 
     if (error) {
+      console.error('Error fetching branches:', error);
       return NextResponse.json(
-        { error: 'Failed to fetch schools' },
+        { error: 'Failed to fetch branches' },
         { status: 500 }
       );
     }
 
-    let filteredSchools = schools || [];
+    let filteredBranches = branches || [];
 
     if (categories && categories.length > 0) {
-      filteredSchools = filteredSchools.filter((school: any) => {
-        const schoolCategories = school.license_categories || [];
-        return schoolCategories.some((cat: LicenseCategory) =>
-          categories.includes(cat.type)
-        );
-      });
+      const branchesWithCategories = await Promise.all(
+        filteredBranches.map(async (branch: any) => {
+          const { data: details } = await supabase
+            .from('details')
+            .select('category_id')
+            .eq('school_id', branch.school_id)
+            .in('category_id', categories);
+
+          return {
+            ...branch,
+            hasCategories: details && details.length > 0
+          };
+        })
+      );
+
+      filteredBranches = branchesWithCategories.filter((b: any) => b.hasCategories);
     }
 
-    if (minPrice || maxPrice) {
-      const min = minPrice ? parseFloat(minPrice) : 0;
-      const max = maxPrice ? parseFloat(maxPrice) : Infinity;
-
-      filteredSchools = filteredSchools.filter((school: any) => {
-        const prices = (school.license_categories || []).map((cat: LicenseCategory) => cat.price);
-        if (prices.length === 0) return false;
-        const minSchoolPrice = Math.min(...prices);
-        const maxSchoolPrice = Math.max(...prices);
-        return maxSchoolPrice >= min && minSchoolPrice <= max;
-      });
+    if (minRating) {
+      const minRatingNum = parseFloat(minRating);
+      filteredBranches = filteredBranches.filter((branch: any) =>
+        branch.school && branch.school.rating >= minRatingNum
+      );
     }
 
-    if (sortBy === 'price_low') {
-      filteredSchools.sort((a: any, b: any) => {
-        const getPrices = (school: any) => (school.license_categories || []).map((cat: LicenseCategory) => cat.price);
-        const minA = Math.min(...getPrices(a), Infinity);
-        const minB = Math.min(...getPrices(b), Infinity);
-        return minA - minB;
-      });
-    } else if (sortBy === 'price_high') {
-      filteredSchools.sort((a: any, b: any) => {
-        const getPrices = (school: any) => (school.license_categories || []).map((cat: LicenseCategory) => cat.price);
-        const maxA = Math.max(...getPrices(a), 0);
-        const maxB = Math.max(...getPrices(b), 0);
-        return maxB - maxA;
+    if (sortBy === 'rating') {
+      filteredBranches.sort((a: any, b: any) => {
+        const ratingA = a.school?.rating || 0;
+        const ratingB = b.school?.rating || 0;
+        return ratingB - ratingA;
       });
     }
 
     return NextResponse.json({
-      schools: filteredSchools,
-      count: filteredSchools.length
+      schools: filteredBranches,
+      count: filteredBranches.length
     });
 
   } catch (error) {
+    console.error('Internal server error:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

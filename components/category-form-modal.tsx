@@ -30,8 +30,23 @@ import {
   StepperTitle,
   StepperSeparator,
 } from "@/components/ui/stepper";
-import { LicenseType } from "@/lib/types";
-import { LICENSE_TYPES, DUBAI_AREAS } from "@/lib/constants";
+import { CATEGORY_TYPES } from "@/lib/constants";
+
+const DUBAI_AREAS = [
+  'Dubai Marina',
+  'Downtown Dubai',
+  'Jumeirah',
+  'Deira',
+  'Al Barsha',
+  'Al Qusais',
+  'Al Garhoud',
+  'Al Quoz',
+  'Motor City',
+  'Dubai Silicon Oasis',
+  'Business Bay',
+  'Nad Al Hamar',
+  'Al Aweer',
+];
 import {
   getUserDetailsFromCookie,
   saveUserDetailsToCookie,
@@ -41,7 +56,7 @@ import { toast } from "sonner";
 interface CategoryFormModalProps {
   isOpen: boolean;
   onClose: () => void;
-  selectedCategory: LicenseType;
+  selectedCategory: number;
 }
 
 const STEPS = [
@@ -215,7 +230,7 @@ export function CategoryFormModal({
     toast.success("Registration complete!");
 
     const params = new URLSearchParams({
-      category: selectedCategory,
+      category: selectedCategory.toString(),
       location: location,
     });
 
@@ -260,7 +275,7 @@ export function CategoryFormModal({
 
           <div className="mb-8">
             <h2 className="text-2xl font-bold text-gray-900 mb-2">
-              {LICENSE_TYPES[selectedCategory].label}
+              {CATEGORY_TYPES[selectedCategory]?.label || 'License Category'}
             </h2>
             <p className="text-gray-600">
               Complete the steps below to get started

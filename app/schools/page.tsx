@@ -6,12 +6,12 @@ import { Container } from "@/components/layout/container";
 import { SchoolCard } from "@/components/school-card";
 import { Filters } from "@/components/filters";
 import { LoadingCard } from "@/components/ui/loading-card";
-import { School, FilterOptions, LicenseType } from "@/lib/types";
+import { BranchWithSchool, FilterOptions } from "@/lib/types";
 import { GraduationCap } from "lucide-react";
 
 export default function SchoolsPage() {
   const searchParams = useSearchParams();
-  const [schools, setSchools] = useState<School[]>([]);
+  const [schools, setSchools] = useState<BranchWithSchool[]>([]);
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState<FilterOptions>({
     search: "",
@@ -25,13 +25,13 @@ export default function SchoolsPage() {
   const [preAppliedFilters, setPreAppliedFilters] = useState(false);
 
   useEffect(() => {
-    const category = searchParams.get("category") as LicenseType | null;
+    const category = searchParams.get("category");
     const location = searchParams.get("location");
 
     if ((category || location) && !preAppliedFilters) {
       setFilters((prev) => ({
         ...prev,
-        categories: category ? [category] : prev.categories,
+        categories: category ? [parseInt(category, 10)] : prev.categories,
         locations: location ? [location] : prev.locations,
       }));
       setPreAppliedFilters(true);

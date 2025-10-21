@@ -1,14 +1,14 @@
-import { LicenseType } from '@/lib/types';
-import { LICENSE_TYPES } from '@/lib/constants';
+import { CATEGORY_TYPES } from '@/lib/constants';
 import { cn } from '@/lib/utils';
 
 interface LicenseBadgeProps {
-  type: LicenseType;
+  type: number | string;
   className?: string;
 }
 
 export function LicenseBadge({ type, className }: LicenseBadgeProps) {
-  const config = LICENSE_TYPES[type];
+  const categoryId = typeof type === 'string' ? parseInt(type, 10) : type;
+  const config = CATEGORY_TYPES[categoryId];
 
   if (!config) return null;
 

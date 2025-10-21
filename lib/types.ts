@@ -1,54 +1,67 @@
-export type LicenseType = 'motorcycle' | 'light_motor_vehicle' | 'heavy_truck' | 'light_bus' | 'heavy_bus' | 'light_forklift' | 'heavy_forklift';
-
-export interface LicenseCategory {
-  id: string;
-  school_id: string;
-  type: LicenseType;
-  name: string;
-  price: number;
-  duration: string;
-  description: string;
-  features?: string[];
-  created_at?: string;
-}
+export type CategoryType = 'motorcycle' | 'light_motor_vehicle' | 'heavy_truck' | 'light_bus' | 'heavy_bus' | 'light_forklift' | 'heavy_forklift';
 
 export interface School {
-  id: string;
+  id: number;
   name: string;
-  slug: string;
+  website?: string;
+  contact?: string;
+  logo_url?: string;
   rating: number;
   review_count: number;
-  location_area: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface Category {
+  id: number;
+  name: string;
+  description?: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface Branch {
+  id: number;
+  school_id: number;
+  name: string;
   address: string;
+  city?: string;
+  contact?: string;
+  email?: string;
+  normal_hours?: string;
+  directions_url?: string;
   coordinates?: {
     lat: number;
     lng: number;
   };
-  image_url: string;
-  logo_url?: string;
-  description: string;
-  phone: string;
-  email: string;
-  website?: string;
-  operating_hours: string;
-  established_year?: number;
-  license_categories?: LicenseCategory[];
   created_at?: string;
+  updated_at?: string;
 }
 
-export interface Review {
+export interface BranchWithSchool extends Branch {
+  school: School;
+}
+
+export interface Detail {
   id: string;
-  school_id: string;
-  author_name: string;
-  rating: number;
-  comment: string;
-  date: string;
+  school_id: number;
+  category_id: number;
+  documents_required?: any;
+  course_details?: any;
+  lecture_details?: any;
+  fees?: any;
   created_at?: string;
+  updated_at?: string;
+}
+
+export interface BranchWithDetails extends BranchWithSchool {
+  categories?: Category[];
+  details?: Detail[];
 }
 
 export interface FilterOptions {
   search?: string;
-  categories?: LicenseType[];
+  categories?: number[];
   locations?: string[];
   minPrice?: number;
   maxPrice?: number;
@@ -67,7 +80,7 @@ export interface UserInquiry {
   name: string;
   email: string;
   phone: string;
-  selected_category: LicenseType;
+  selected_category: number;
   location: string;
   email_verified: boolean;
   otp_code?: string;

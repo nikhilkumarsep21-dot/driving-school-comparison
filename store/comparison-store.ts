@@ -1,13 +1,13 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { School } from '@/lib/types';
+import { BranchWithSchool } from '@/lib/types';
 
 interface ComparisonState {
-  schools: School[];
-  addSchool: (school: School) => boolean;
-  removeSchool: (schoolId: string) => void;
+  schools: BranchWithSchool[];
+  addSchool: (school: BranchWithSchool) => boolean;
+  removeSchool: (schoolId: number) => void;
   clearAll: () => void;
-  isInComparison: (schoolId: string) => boolean;
+  isInComparison: (schoolId: number) => boolean;
   canAddMore: () => boolean;
 }
 
@@ -16,7 +16,7 @@ export const useComparisonStore = create<ComparisonState>()(
     (set, get) => ({
       schools: [],
 
-      addSchool: (school: School) => {
+      addSchool: (school: BranchWithSchool) => {
         const state = get();
 
         if (state.schools.length >= 3) {
@@ -31,7 +31,7 @@ export const useComparisonStore = create<ComparisonState>()(
         return true;
       },
 
-      removeSchool: (schoolId: string) => {
+      removeSchool: (schoolId: number) => {
         set(state => ({
           schools: state.schools.filter(s => s.id !== schoolId)
         }));
@@ -41,7 +41,7 @@ export const useComparisonStore = create<ComparisonState>()(
         set({ schools: [] });
       },
 
-      isInComparison: (schoolId: string) => {
+      isInComparison: (schoolId: number) => {
         return get().schools.some(s => s.id === schoolId);
       },
 
