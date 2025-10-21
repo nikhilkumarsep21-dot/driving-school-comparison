@@ -75,27 +75,8 @@ export interface PriceRange {
   average: number;
 }
 
-export interface UserInquiry {
-  id: string;
-  name: string;
-  email: string;
-  phone: string;
-  selected_category: number;
-  location: string;
-  email_verified: boolean;
-  otp_code?: string;
-  otp_expires_at?: string;
-  created_at: string;
-  updated_at: string;
-}
-
 export interface UserDetails {
   name: string;
   email: string;
   phone: string;
-}
-
-export interface OTPVerification {
-  email: string;
-  otp: string;
 }
