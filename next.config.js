@@ -13,6 +13,7 @@ const nextConfig = {
       'd2hucwwplm5rxi.cloudfront.net',
       'www.thenationalnews.com',
       'i.ytimg.com',
+      'ui-avatars.com',
     ],
   },
     webpack: (config) => {
