@@ -1,13 +1,28 @@
-export type CategoryType = 'motorcycle' | 'light_motor_vehicle' | 'heavy_truck' | 'light_bus' | 'heavy_bus' | 'light_forklift' | 'heavy_forklift';
+export type CategoryType =
+  | "motorcycle"
+  | "light_motor_vehicle"
+  | "heavy_truck"
+  | "light_bus"
+  | "heavy_bus"
+  | "light_forklift"
+  | "heavy_forklift";
 
 export interface School {
   id: number;
   name: string;
   website?: string;
   contact?: string;
+  phone?: string;
+  email?: string;
+  address?: string;
+  location_area?: string;
+  description?: string;
+  established_year?: number;
+  operating_hours?: string;
   logo_url?: string;
   rating: number;
   review_count: number;
+  license_categories?: any[];
   created_at?: string;
   updated_at?: string;
 }
@@ -122,7 +137,7 @@ export interface FilterOptions {
   minPrice?: number;
   maxPrice?: number;
   minRating?: number;
-  sortBy?: 'recommended' | 'rating' | 'price_low' | 'price_high' | 'newest';
+  sortBy?: "recommended" | "rating" | "price_low" | "price_high" | "newest";
 }
 
 export interface PriceRange {

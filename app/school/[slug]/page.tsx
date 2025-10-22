@@ -9,7 +9,16 @@ import { LicenseBadge } from "@/components/ui/license-badge";
 import { PriceDisplay } from "@/components/ui/price-display";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useComparisonStore } from "@/store/comparison-store";
-import { School } from "@/lib/types";
+import { BranchWithSchool, Detail, Category } from "@/lib/types";
+import { CourseNavigation } from "@/components/course-navigation";
+import {
+  SectionNavigation,
+  CourseSection,
+} from "@/components/section-navigation";
+import { CourseDetailsSection } from "@/components/course-details-section";
+import { DocumentsSection } from "@/components/documents-section";
+import { LectureDetailsSection } from "@/components/lecture-details-section";
+import { FeesSection } from "@/components/fees-section";
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -22,6 +31,7 @@ import {
   Calendar,
   CheckCircle2,
   GitCompare,
+  ExternalLink,
 } from "lucide-react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
@@ -36,6 +46,11 @@ export default function SchoolDetailPage() {
   const slug = params.slug as string;
   const [branch, setBranch] = useState<BranchData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(
+    null
+  );
+  const [selectedSection, setSelectedSection] =
+    useState<CourseSection>("details");
   const { addSchool, removeSchool, isInComparison, canAddMore } =
     useComparisonStore();
 
@@ -50,7 +65,7 @@ export default function SchoolDetailPage() {
           setSelectedCategoryId(data.school.categories[0].id);
         }
       } catch (error) {
-  console.error("Failed to fetch school:", error);
+        console.error("Failed to fetch branch:", error);
       } finally {
         setLoading(false);
       }
@@ -71,7 +86,7 @@ export default function SchoolDetailPage() {
       const success = addSchool(branch);
       if (!success) {
         if (!canAddMore()) {
-          toast.error("You can only compare up to 3 schools");
+          toast.error("You can only compare up to 3 branches");
         }
       } else {
         toast.success(`${branch.name} added to comparison`);
@@ -102,7 +117,7 @@ export default function SchoolDetailPage() {
       <Container>
         <div className="flex min-h-[60vh] flex-col items-center justify-center py-16 text-center">
           <h1 className="mb-4 text-3xl font-bold text-gray-900">
-            School Not Found
+            Branch Not Found
           </h1>
           <p className="mb-8 text-gray-600">
             The driving school branch you're looking for doesn't exist.
@@ -144,11 +159,16 @@ export default function SchoolDetailPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <div className="relative mb-8 overflow-hidden rounded-xl border bg-card text-card-foreground transition-all duration-300">
-              <div className="relative aspect-[21/9]">
+            <div className="relative mb-8 overflow-hidden rounded-3xl shadow-soft-lg">
+              <div className="relative aspect-[21/9] bg-gradient-to-br from-gold-100 to-sand-100">
                 <Image
-                  src={school?.logo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(school?.name || 'School')}&background=f59e0b&color=fff&size=800`}
-                  alt={school?.name || 'School'}
+                  src={
+                    school?.logo_url ||
+                    `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                      school?.name || "School"
+                    )}&background=f59e0b&color=fff&size=800`
+                  }
+                  alt={school?.name || "School"}
                   fill
                   className="object-cover"
                   priority
@@ -157,25 +177,22 @@ export default function SchoolDetailPage() {
 
                 <div className="absolute bottom-0 left-0 right-0 p-8 text-white">
                   <h1 className="mb-3 text-4xl font-bold sm:text-5xl">
-                    {school.name}
+                    {branch.name}
                   </h1>
-                  <div className="flex flex-wrap items-center gap-4">
-                    <StarRating
-                      rating={school.rating}
-                      size="lg"
-                      className="text-white"
-                    />
-                    <span className="text-sm opacity-90">
-                      {school.review_count} reviews
-                    </span>
-                    <span className="flex items-center gap-1 text-sm opacity-90">
-                      <MapPin className="h-4 w-4" />
-                      {school.location_area}
-                    </span>
-                    {school.established_year && (
+                  <p className="mb-2 text-lg opacity-90">{school?.name}</p>
+                  {school && (
+                    <div className="flex flex-wrap items-center gap-4">
+                      <StarRating
+                        rating={school.rating}
+                        size="lg"
+                        className="text-white"
+                      />
+                      <span className="text-sm opacity-90">
+                        {school.review_count} reviews
+                      </span>
                       <span className="flex items-center gap-1 text-sm opacity-90">
                         <MapPin className="h-4 w-4" />
-                        {branch.city || 'Dubai'}
+                        {branch.city || "Dubai"}
                       </span>
                     </div>
                   )}
@@ -185,120 +202,127 @@ export default function SchoolDetailPage() {
 
             <div className="grid gap-8 lg:grid-cols-3">
               <div className="lg:col-span-2">
-                <div className="mb-8 rounded-xl border bg-card text-card-foreground p-6 transition-all duration-300">
+                <div className="mb-8 rounded-2xl bg-white p-6 shadow-soft">
                   <h2 className="mb-4 text-2xl font-bold text-gray-900">
-                    About This School
+                    About This Branch
                   </h2>
                   <p className="leading-relaxed text-gray-600">
-                    {school.description}
+                    {branch.name} is a branch of {school?.name}, one of Dubai's
+                    trusted driving schools. Located in {branch.city || "Dubai"}
+                    , this branch offers comprehensive driving instruction with
+                    experienced instructors and modern facilities.
                   </p>
                 </div>
 
-                <div className="mb-8">
-                  <h2 className="mb-6 text-2xl font-bold text-gray-900">
-                    Available Courses
-                  </h2>
-                  <div className="space-y-4">
-                    {school.license_categories?.map((category, index) => (
-                      <motion.div
-                        key={category.id}
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.4, delay: index * 0.1 }}
-                        className="overflow-hidden rounded-xl border bg-card text-card-foreground transition-all duration-300"
-                      >
-                        <div className="p-6">
-                          <div className="mb-4 flex flex-wrap items-start justify-between gap-4">
-                            <div>
-                              <LicenseBadge
-                                type={category.type}
-                                className="mb-2"
+                {branch.details &&
+                branch.details.length > 0 &&
+                branch.categories &&
+                branch.categories.length > 0 ? (
+                  <div className="mb-8">
+                    <h2 className="mb-6 text-2xl font-bold text-gray-900">
+                      Available Courses
+                    </h2>
+
+                    <div className="mb-6 rounded-2xl bg-white shadow-soft overflow-hidden sticky top-20 z-30">
+                      <CourseNavigation
+                        categories={branch.categories}
+                        selectedCategoryId={
+                          selectedCategoryId || branch.categories[0].id
+                        }
+                        onSelectCategory={(id) => {
+                          setSelectedCategoryId(id);
+                          setSelectedSection("details");
+                        }}
+                      />
+                    </div>
+
+                    {selectedDetail && selectedCategory && (
+                      <div className="rounded-2xl bg-white shadow-soft overflow-hidden">
+                        <div className="sticky top-36 z-20">
+                          <SectionNavigation
+                            selectedSection={selectedSection}
+                            onSelectSection={setSelectedSection}
+                            availableSections={availableSections}
+                          />
+                        </div>
+
+                        <div className="p-6 min-h-[400px]">
+                          <motion.div
+                            key={`${selectedCategoryId}-${selectedSection}`}
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.3 }}
+                          >
+                            {selectedSection === "details" && (
+                              <CourseDetailsSection
+                                detail={selectedDetail}
+                                category={selectedCategory}
                               />
-                              <h3 className="text-xl font-bold text-gray-900">
-                                {category.name}
-                              </h3>
-                            </div>
-                            <div className="text-right">
-                              <PriceDisplay price={category.price} size="lg" />
-                              <div className="mt-1 flex items-center gap-1 text-sm text-gray-600">
-                                <Clock className="h-3 w-3" />
-                                {category.duration}
-                              </div>
-                            </div>
-                          </div>
-
-                          <p className="mb-4 text-gray-600">
-                            {category.description}
-                          </p>
-
-                          {category.features &&
-                            category.features.length > 0 && (
-                              <div className="space-y-2">
-                                <h4 className="text-sm font-semibold text-gray-900">
-                                  What's Included:
-                                </h4>
-                                <div className="grid gap-2 sm:grid-cols-2">
-                                  {category.features.map((feature, i) => (
-                                    <div
-                                      key={i}
-                                      className="flex items-start gap-2"
-                                    >
-                                      <CheckCircle2 className="h-4 w-4 flex-shrink-0 text-gold-500" />
-                                      <span className="text-sm text-gray-600">
-                                        {feature}
-                                      </span>
-                                    </div>
-                                  ))}
-                                </div>
-                              </div>
                             )}
+                            {selectedSection === "documents" && (
+                              <DocumentsSection detail={selectedDetail} />
+                            )}
+                            {selectedSection === "lectures" && (
+                              <LectureDetailsSection detail={selectedDetail} />
+                            )}
+                            {selectedSection === "fees" && (
+                              <FeesSection detail={selectedDetail} />
+                            )}
+                          </motion.div>
                         </div>
                       </div>
                     )}
                   </div>
                 ) : (
                   <div className="mb-8 rounded-2xl bg-gray-50 p-8 text-center">
-                    <p className="text-gray-600">Course details will be available soon. Please contact the branch directly for pricing and schedule information.</p>
+                    <p className="text-gray-600">
+                      Course details will be available soon. Please contact the
+                      branch directly for pricing and schedule information.
+                    </p>
                   </div>
                 )}
               </div>
 
               <div className="space-y-6">
                 <div className="sticky top-24 space-y-6">
-                  <div className="rounded-xl border bg-card text-card-foreground p-6 transition-all duration-300">
+                  <div className="rounded-2xl bg-white p-6 shadow-soft">
                     <h3 className="mb-4 text-lg font-bold text-gray-900">
                       Contact Information
                     </h3>
                     <div className="space-y-4">
-                      <a
-                        href={`tel:${school.phone}`}
-                        className="flex items-center gap-3 text-gray-600 transition-colors hover:text-gold-600"
-                      >
-                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gold-50">
-                          <Phone className="h-5 w-5 text-gold-600" />
-                        </div>
-                        <div>
-                          <div className="text-xs text-gray-500">Phone</div>
-                          <div className="font-medium text-gray-900">
-                            {school.phone}
+                      {branch.contact && (
+                        <a
+                          href={`tel:${branch.contact}`}
+                          className="flex items-center gap-3 text-gray-600 transition-colors hover:text-gold-600"
+                        >
+                          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gold-50">
+                            <Phone className="h-5 w-5 text-gold-600" />
                           </div>
-                        </div>
-                      </a>
+                          <div>
+                            <div className="text-xs text-gray-500">Phone</div>
+                            <div className="font-medium text-gray-900">
+                              {branch.contact}
+                            </div>
+                          </div>
+                        </a>
+                      )}
 
-                      <a
-                        href={`mailto:${school.email}`}
-                        className="flex items-center gap-3 text-gray-600 transition-colors hover:text-gold-600"
-                      >
-                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gold-50">
-                          <Mail className="h-5 w-5 text-gold-600" />
-                        </div>
-                        <div className="min-w-0 flex-1">
-                          <div className="text-xs text-gray-500">Email</div>
-                          <div className="truncate font-medium text-gray-900">
-                            {school.email}
+                      {branch.email && (
+                        <a
+                          href={`mailto:${branch.email}`}
+                          className="flex items-center gap-3 text-gray-600 transition-colors hover:text-gold-600"
+                        >
+                          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gold-50">
+                            <Mail className="h-5 w-5 text-gold-600" />
                           </div>
-                        </div>
-                      </a>
+                          <div className="min-w-0 flex-1">
+                            <div className="text-xs text-gray-500">Email</div>
+                            <div className="truncate font-medium text-gray-900">
+                              {branch.email}
+                            </div>
+                          </div>
+                        </a>
+                      )}
 
                       {school?.website && (
                         <a
@@ -311,7 +335,9 @@ export default function SchoolDetailPage() {
                             <Globe className="h-5 w-5 text-gold-600" />
                           </div>
                           <div>
-                            <div className="text-xs text-gray-500">Website</div>
+                            <div className="text-xs text-gray-500">
+                              School Website
+                            </div>
                             <div className="font-medium text-gray-900">
                               Visit Website
                             </div>
@@ -330,8 +356,12 @@ export default function SchoolDetailPage() {
                             <ExternalLink className="h-5 w-5 text-gold-600" />
                           </div>
                           <div>
-                            <div className="text-xs text-gray-500">Directions</div>
-                            <div className="font-medium text-gray-900">Get Directions</div>
+                            <div className="text-xs text-gray-500">
+                              Directions
+                            </div>
+                            <div className="font-medium text-gray-900">
+                              Get Directions
+                            </div>
                           </div>
                         </a>
                       )}
@@ -343,21 +373,23 @@ export default function SchoolDetailPage() {
                         <div>
                           <div className="text-xs text-gray-500">Address</div>
                           <div className="font-medium text-gray-900">
-                            {school.address}
+                            {branch.address}
                           </div>
                         </div>
                       </div>
 
-                      <div className="flex items-start gap-3">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gold-50">
-                          <Clock className="h-5 w-5 text-gold-600" />
-                        </div>
-                        <div>
-                          <div className="text-xs text-gray-500">
-                            Operating Hours
+                      {branch.normal_hours && (
+                        <div className="flex items-start gap-3">
+                          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gold-50">
+                            <Clock className="h-5 w-5 text-gold-600" />
                           </div>
-                          <div className="font-medium text-gray-900">
-                            {school.operating_hours}
+                          <div>
+                            <div className="text-xs text-gray-500">
+                              Operating Hours
+                            </div>
+                            <div className="whitespace-pre-wrap font-medium text-gray-900">
+                              {branch.normal_hours}
+                            </div>
                           </div>
                         </div>
                       )}
@@ -379,8 +411,8 @@ export default function SchoolDetailPage() {
                       : "Add to Comparison"}
                   </Button>
 
-                  {school.coordinates && (
-                    <div className="overflow-hidden rounded-xl border bg-card text-card-foreground transition-all duration-300">
+                  {branch.coordinates && (
+                    <div className="overflow-hidden rounded-2xl shadow-soft">
                       <div className="aspect-square w-full bg-gray-200">
                         <iframe
                           width="100%"
