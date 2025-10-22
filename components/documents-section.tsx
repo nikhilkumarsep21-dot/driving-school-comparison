@@ -53,10 +53,9 @@ export function DocumentsSection({ detail }: DocumentsSectionProps) {
               );
             }
 
-            const docName = doc.name || doc.title || doc.document;
             const docType = doc.type || doc.category;
-            const docDescription = doc.description || doc.details;
             const docNotes = doc.notes || doc.additional_info || doc.remarks;
+            const docList = doc.documents || [];
 
             return (
               <motion.div
@@ -66,47 +65,30 @@ export function DocumentsSection({ detail }: DocumentsSectionProps) {
                 transition={{ duration: 0.3, delay: index * 0.1 }}
                 className="bg-white rounded-lg border border-gray-200 p-5 space-y-3 hover:shadow-md transition-shadow"
               >
-                <div className="flex items-start gap-3">
-                  <FileText className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
-                  <div className="flex-1 space-y-2">
-                    {docName && (
-                      <h4 className="text-lg font-bold text-gray-900">{docName}</h4>
-                    )}
+                <div className="space-y-3">
+                  {docType && (
+                    <div className="flex items-center gap-2">
+                      <FileText className="h-5 w-5 text-blue-600 flex-shrink-0" />
+                      <h4 className="text-lg font-bold text-gray-900">{docType}</h4>
+                    </div>
+                  )}
 
-                    {docType && (
-                      <div className="inline-block px-3 py-1 bg-blue-100 text-blue-800 text-sm font-medium rounded-full">
-                        {docType}
-                      </div>
-                    )}
+                  {Array.isArray(docList) && docList.length > 0 && (
+                    <ul className="space-y-2 ml-7">
+                      {docList.map((item: string, idx: number) => (
+                        <li key={idx} className="flex items-start gap-2 text-gray-700 leading-relaxed">
+                          <span className="text-blue-600 mt-1.5 flex-shrink-0">•</span>
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
 
-                    {docDescription && (
-                      <p className="text-gray-700 leading-relaxed">{docDescription}</p>
-                    )}
-
-                    {typeof doc === 'object' && Object.keys(doc).length > 0 && (
-                      <div className="space-y-2 mt-3">
-                        {Object.entries(doc)
-                          .filter(([key]) =>
-                            !['name', 'title', 'document', 'type', 'category', 'description', 'details', 'notes', 'additional_info', 'remarks'].includes(key)
-                          )
-                          .map(([key, value]) => (
-                            <div key={key} className="flex gap-2">
-                              <span className="text-sm font-medium text-gray-600 capitalize">
-                                {key.replace(/_/g, ' ')}:
-                              </span>
-                              <span className="text-sm text-gray-700">{renderValue(value)}</span>
-                            </div>
-                          ))
-                        }
-                      </div>
-                    )}
-
-                    {docNotes && (
-                      <div className="mt-3 p-3 bg-amber-50 border border-amber-200 rounded-lg">
-                        <p className="text-sm text-amber-900 leading-relaxed">{docNotes}</p>
-                      </div>
-                    )}
-                  </div>
+                  {docNotes && (
+                    <div className="mt-3 p-3 bg-amber-50 border border-amber-200 rounded-lg ml-7">
+                      <p className="text-sm text-amber-900 leading-relaxed">{docNotes}</p>
+                    </div>
+                  )}
                 </div>
               </motion.div>
             );

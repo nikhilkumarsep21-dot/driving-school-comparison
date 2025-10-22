@@ -35,7 +35,7 @@ export function DocumentsComparison({
 
     if (Array.isArray(documents)) {
       return (
-        <div className="space-y-2">
+        <div className="space-y-3">
           {documents.map((doc: any, index: number) => {
             if (typeof doc === 'string') {
               return (
@@ -46,29 +46,36 @@ export function DocumentsComparison({
               );
             }
 
-            const docName =
-              doc.name || doc.title || doc.document;
+            const docType = doc.type || doc.category;
+            const docList = doc.documents || [];
+            const docNotes = doc.notes || doc.additional_info || doc.remarks;
+
             return (
               <div
                 key={index}
-                className="bg-gray-50 rounded p-2 border border-gray-200 space-y-1"
+                className="bg-gray-50 rounded p-2 border border-gray-200 space-y-2"
               >
-                <div className="flex items-start gap-2">
-                  <FileText className="h-3 w-3 text-blue-600 mt-0.5 flex-shrink-0" />
-                  <div className="flex-1">
-                    {docName && (
-                      <p className="font-semibold text-gray-900 text-xs">{docName}</p>
-                    )}
-                    {doc.type && (
-                      <span className="inline-block mt-1 px-2 py-0.5 bg-blue-100 text-blue-800 text-xs rounded-full">
-                        {doc.type}
-                      </span>
-                    )}
-                    {doc.description && (
-                      <p className="text-xs text-gray-600 mt-1">{doc.description}</p>
-                    )}
+                {docType && (
+                  <div className="flex items-center gap-2">
+                    <FileText className="h-3 w-3 text-blue-600 flex-shrink-0" />
+                    <p className="font-semibold text-gray-900 text-xs">{docType}</p>
                   </div>
-                </div>
+                )}
+                {Array.isArray(docList) && docList.length > 0 && (
+                  <ul className="space-y-1 ml-5">
+                    {docList.map((item: string, idx: number) => (
+                      <li key={idx} className="flex items-start gap-1.5 text-xs text-gray-700">
+                        <span className="text-blue-600 mt-0.5 flex-shrink-0">•</span>
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                {docNotes && (
+                  <div className="mt-2 p-1.5 bg-amber-50 border border-amber-200 rounded">
+                    <p className="text-xs text-amber-900">{docNotes}</p>
+                  </div>
+                )}
               </div>
             );
           })}
