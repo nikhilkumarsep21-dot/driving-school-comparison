@@ -10,6 +10,12 @@ import { PriceDisplay } from '@/components/ui/price-display';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useComparisonStore } from '@/store/comparison-store';
 import { BranchWithSchool, Detail, Category } from '@/lib/types';
+import { CourseNavigation } from '@/components/course-navigation';
+import { SectionNavigation, CourseSection } from '@/components/section-navigation';
+import { CourseDetailsSection } from '@/components/course-details-section';
+import { DocumentsSection } from '@/components/documents-section';
+import { LectureDetailsSection } from '@/components/lecture-details-section';
+import { FeesSection } from '@/components/fees-section';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowLeft, Phone, Mail, Globe, MapPin, Clock, Calendar, CheckCircle2, GitCompare, ExternalLink } from 'lucide-react';
@@ -26,6 +32,8 @@ export default function SchoolDetailPage() {
   const slug = params.slug as string;
   const [branch, setBranch] = useState<BranchData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
+  const [selectedSection, setSelectedSection] = useState<CourseSection>('details');
   const { addSchool, removeSchool, isInComparison, canAddMore } = useComparisonStore();
 
   useEffect(() => {
@@ -34,6 +42,10 @@ export default function SchoolDetailPage() {
         const response = await fetch(`/api/schools/${slug}`);
         const data = await response.json();
         setBranch(data.school);
+
+        if (data.school?.categories && data.school.categories.length > 0) {
+          setSelectedCategoryId(data.school.categories[0].id);
+        }
       } catch (error) {
         console.error('Failed to fetch branch:', error);
       } finally {
@@ -104,6 +116,20 @@ export default function SchoolDetailPage() {
   const school = branch.school;
   const inComparison = isInComparison(branch.id);
 
+  const selectedDetail = branch.details?.find(
+    (detail) => detail.category_id === selectedCategoryId
+  );
+  const selectedCategory = branch.categories?.find(
+    (cat) => cat.id === selectedCategoryId
+  );
+
+  const availableSections = {
+    details: !!selectedDetail?.course_details,
+    documents: !!selectedDetail?.documents_required,
+    lectures: !!selectedDetail?.lecture_details,
+    fees: !!selectedDetail?.fees,
+  };
+
   return (
     <div className="pb-20 bg-white">
       <Container>
@@ -154,48 +180,57 @@ export default function SchoolDetailPage() {
                   </p>
                 </div>
 
-                {branch.details && branch.details.length > 0 ? (
+                {branch.details && branch.details.length > 0 && branch.categories && branch.categories.length > 0 ? (
                   <div className="mb-8">
                     <h2 className="mb-6 text-2xl font-bold text-gray-900">Available Courses</h2>
-                    <div className="space-y-4">
-                      {branch.details.map((detail: Detail, index: number) => {
-                        const category = branch.categories?.find((c: Category) => c.id === detail.category_id);
-                        return (
-                          <motion.div
-                            key={detail.id}
-                            initial={{ opacity: 0, x: -20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ duration: 0.4, delay: index * 0.1 }}
-                            className="overflow-hidden rounded-2xl bg-white shadow-soft transition-all duration-300 hover:shadow-soft-md"
-                          >
-                            <div className="p-6">
-                              <div className="mb-4">
-                                <h3 className="text-xl font-bold text-gray-900">{category?.name}</h3>
-                                {category?.description && (
-                                  <p className="mt-2 text-gray-600">{category.description}</p>
-                                )}
-                              </div>
-                              {detail.fees && (
-                                <div className="mb-4 rounded-lg bg-gold-50 p-4">
-                                  <h4 className="mb-2 font-semibold text-gray-900">Fees & Pricing</h4>
-                                  <div className="text-sm text-gray-700">
-                                    <pre className="whitespace-pre-wrap font-sans">{JSON.stringify(detail.fees, null, 2)}</pre>
-                                  </div>
-                                </div>
-                              )}
-                              {detail.course_details && (
-                                <div className="mb-4">
-                                  <h4 className="mb-2 font-semibold text-gray-900">Course Details</h4>
-                                  <div className="text-sm text-gray-700">
-                                    <pre className="whitespace-pre-wrap font-sans">{JSON.stringify(detail.course_details, null, 2)}</pre>
-                                  </div>
-                                </div>
-                              )}
-                            </div>
-                          </motion.div>
-                        );
-                      })}
+
+                    <div className="mb-6 rounded-2xl bg-white shadow-soft overflow-hidden sticky top-20 z-30">
+                      <CourseNavigation
+                        categories={branch.categories}
+                        selectedCategoryId={selectedCategoryId || branch.categories[0].id}
+                        onSelectCategory={(id) => {
+                          setSelectedCategoryId(id);
+                          setSelectedSection('details');
+                        }}
+                      />
                     </div>
+
+                    {selectedDetail && selectedCategory && (
+                      <div className="rounded-2xl bg-white shadow-soft overflow-hidden">
+                        <div className="sticky top-36 z-20">
+                          <SectionNavigation
+                            selectedSection={selectedSection}
+                            onSelectSection={setSelectedSection}
+                            availableSections={availableSections}
+                          />
+                        </div>
+
+                        <div className="p-6 min-h-[400px]">
+                          <motion.div
+                            key={`${selectedCategoryId}-${selectedSection}`}
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.3 }}
+                          >
+                            {selectedSection === 'details' && (
+                              <CourseDetailsSection
+                                detail={selectedDetail}
+                                category={selectedCategory}
+                              />
+                            )}
+                            {selectedSection === 'documents' && (
+                              <DocumentsSection detail={selectedDetail} />
+                            )}
+                            {selectedSection === 'lectures' && (
+                              <LectureDetailsSection detail={selectedDetail} />
+                            )}
+                            {selectedSection === 'fees' && (
+                              <FeesSection detail={selectedDetail} />
+                            )}
+                          </motion.div>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 ) : (
                   <div className="mb-8 rounded-2xl bg-gray-50 p-8 text-center">
