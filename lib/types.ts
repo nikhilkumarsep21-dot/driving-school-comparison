@@ -42,9 +42,25 @@ export interface BranchWithSchool extends Branch {
   school: School;
 }
 
-export interface CourseFee {
-  category: string;
-  min_age: number;
+export interface RTAFeeItem {
+  type: string;
+  amount: number;
+}
+
+export interface SimpleCourseFee {
+  hours?: number;
+  duration?: string;
+  normal_fee?: string;
+  sunday_fee?: string;
+  shift_fee?: string;
+  eligibility?: string;
+  notes?: string;
+  [key: string]: any;
+}
+
+export interface NestedCourseFee {
+  category?: string;
+  min_age?: number;
   internal_training?: string;
   road_training?: string;
   total_hours?: number;
@@ -57,12 +73,22 @@ export interface CourseFee {
     total: number | number[];
   };
   notes?: string;
+  [key: string]: any;
 }
+
+export interface RTAStyleCourseFee {
+  category?: string;
+  rta_fees?: RTAFeeItem[];
+  training_rates?: Record<string, number>;
+  notes?: string;
+  [key: string]: any;
+}
+
+export type CourseFee = SimpleCourseFee | NestedCourseFee | RTAStyleCourseFee;
 
 export interface OtherFee {
   type: string;
-  RTA: number | null;
-  DDC: number | null;
+  [key: string]: number | string | null;
 }
 
 export interface Fees {

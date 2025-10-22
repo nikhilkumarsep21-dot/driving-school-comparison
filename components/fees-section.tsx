@@ -1,8 +1,13 @@
 'use client';
 
-import { Detail, CourseFee, OtherFee } from '@/lib/types';
+import { Detail, OtherFee } from '@/lib/types';
 import { DollarSign, Clock, CreditCard, FileText, Calendar } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { formatCurrency } from '@/lib/fee-utils';
+import { detectFeePattern, isSimpleCourseFee, isNestedCourseFee, isRTAStyleCourseFee } from '@/lib/fee-utils';
+import { SimpleCourseFeeCard } from './fees/simple-course-fee-card';
+import { NestedCourseFeeCard } from './fees/nested-course-fee-card';
+import { RTAStyleFeeCard } from './fees/rta-style-fee-card';
 
 interface FeesSectionProps {
   detail: Detail;
@@ -20,10 +25,6 @@ export function FeesSection({ detail }: FeesSectionProps) {
       </div>
     );
   }
-
-  const formatCurrency = (value: number): string => {
-    return `AED ${value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-  };
 
   const renderTimings = () => {
     if (!fees.timings || Object.keys(fees.timings).length === 0) {
@@ -85,83 +86,36 @@ export function FeesSection({ detail }: FeesSectionProps) {
           <h4 className="text-xl font-bold text-gray-900">Course Fees</h4>
         </div>
         <div className="space-y-6">
-          {fees.course_fees.map((course: CourseFee, index: number) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.3, delay: index * 0.05 }}
-              className="border border-gray-200 rounded-lg overflow-hidden"
-            >
-              <div className="bg-gradient-to-r from-green-50 to-emerald-50 px-4 py-3 border-b border-gray-200">
-                <h5 className="font-bold text-gray-900">{course.category}</h5>
-                <div className="flex flex-wrap gap-3 mt-2 text-sm text-gray-600">
-                  {course.min_age && (
-                    <span className="inline-flex items-center gap-1">
-                      <span className="font-medium">Min Age:</span> {course.min_age} years
-                    </span>
-                  )}
-                  {course.road_training && (
-                    <span className="inline-flex items-center gap-1">
-                      <span className="font-medium">Training:</span> {course.road_training}
-                    </span>
-                  )}
-                  {course.internal_training && (
-                    <span className="inline-flex items-center gap-1">
-                      <span className="font-medium">Internal:</span> {course.internal_training}
-                    </span>
-                  )}
-                  {course.total_hours && (
-                    <span className="inline-flex items-center gap-1">
-                      <span className="font-medium">Total Hours:</span> {course.total_hours}
-                    </span>
-                  )}
-                </div>
-              </div>
+          {fees.course_fees.map((courseFee, index) => {
+            const pattern = detectFeePattern(courseFee);
 
-              <div className="p-4">
-                <div className="grid md:grid-cols-2 gap-4">
-                  {course.regular_course_fees && (
-                    <div className="p-4 bg-gray-50 rounded-lg">
-                      <p className="text-sm font-semibold text-gray-600 mb-2">Regular Course</p>
-                      {course.regular_course_fees.hourly && (
-                        <p className="text-sm text-gray-700 mb-1">
-                          <span className="font-medium">Hourly Rate:</span> {formatCurrency(course.regular_course_fees.hourly)}
-                        </p>
-                      )}
-                      <p className="text-lg font-bold text-green-600">
-                        {Array.isArray(course.regular_course_fees.total)
-                          ? course.regular_course_fees.total.map(t => formatCurrency(t)).join(' / ')
-                          : formatCurrency(course.regular_course_fees.total)}
-                      </p>
-                    </div>
-                  )}
+            if (isSimpleCourseFee(courseFee)) {
+              return <SimpleCourseFeeCard key={index} courseFee={courseFee} index={index} />;
+            }
 
-                  {course.sunday_night_shift_fees && (
-                    <div className="p-4 bg-amber-50 rounded-lg border border-amber-200">
-                      <p className="text-sm font-semibold text-gray-600 mb-2">Sunday/Night Shift</p>
-                      {course.sunday_night_shift_fees.hourly && (
-                        <p className="text-sm text-gray-700 mb-1">
-                          <span className="font-medium">Hourly Rate:</span> {formatCurrency(course.sunday_night_shift_fees.hourly)}
-                        </p>
-                      )}
-                      <p className="text-lg font-bold text-amber-600">
-                        {Array.isArray(course.sunday_night_shift_fees.total)
-                          ? course.sunday_night_shift_fees.total.map(t => formatCurrency(t)).join(' / ')
-                          : formatCurrency(course.sunday_night_shift_fees.total)}
-                      </p>
-                    </div>
-                  )}
-                </div>
+            if (isNestedCourseFee(courseFee)) {
+              return <NestedCourseFeeCard key={index} courseFee={courseFee} index={index} />;
+            }
 
-                {course.notes && (
-                  <div className="mt-4 pt-4 border-t border-gray-200">
-                    <p className="text-sm text-gray-600 italic">{course.notes}</p>
-                  </div>
-                )}
-              </div>
-            </motion.div>
-          ))}
+            if (isRTAStyleCourseFee(courseFee)) {
+              return <RTAStyleFeeCard key={index} courseFee={courseFee} index={index} />;
+            }
+
+            return (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.3, delay: index * 0.05 }}
+                className="border border-gray-200 rounded-lg p-4 bg-gray-50"
+              >
+                <p className="text-sm text-gray-600">
+                  Unrecognized fee structure. Pattern: {pattern}
+                </p>
+                <pre className="text-xs mt-2 overflow-auto">{JSON.stringify(courseFee, null, 2)}</pre>
+              </motion.div>
+            );
+          })}
         </div>
       </motion.div>
     );
@@ -171,6 +125,10 @@ export function FeesSection({ detail }: FeesSectionProps) {
     if (!fees.other_fees || fees.other_fees.length === 0) {
       return null;
     }
+
+    const columns = fees.other_fees.length > 0
+      ? Object.keys(fees.other_fees[0]).filter(key => key !== 'type')
+      : [];
 
     return (
       <motion.div
@@ -190,8 +148,11 @@ export function FeesSection({ detail }: FeesSectionProps) {
             <thead>
               <tr className="border-b-2 border-gray-200">
                 <th className="text-left py-3 px-4 font-semibold text-gray-700">Fee Type</th>
-                <th className="text-right py-3 px-4 font-semibold text-gray-700">RTA</th>
-                <th className="text-right py-3 px-4 font-semibold text-gray-700">DDC</th>
+                {columns.map(col => (
+                  <th key={col} className="text-right py-3 px-4 font-semibold text-gray-700">
+                    {col.toUpperCase()}
+                  </th>
+                ))}
               </tr>
             </thead>
             <tbody>
@@ -204,12 +165,18 @@ export function FeesSection({ detail }: FeesSectionProps) {
                   className="border-b border-gray-100 hover:bg-gray-50 transition-colors"
                 >
                   <td className="py-3 px-4 text-gray-900">{fee.type}</td>
-                  <td className="py-3 px-4 text-right text-gray-700 font-medium">
-                    {fee.RTA !== null ? formatCurrency(fee.RTA) : '-'}
-                  </td>
-                  <td className="py-3 px-4 text-right text-gray-700 font-medium">
-                    {fee.DDC !== null ? formatCurrency(fee.DDC) : '-'}
-                  </td>
+                  {columns.map(col => {
+                    const value = fee[col];
+                    return (
+                      <td key={col} className="py-3 px-4 text-right text-gray-700 font-medium">
+                        {value !== null && value !== undefined
+                          ? typeof value === 'number'
+                            ? formatCurrency(value)
+                            : String(value)
+                          : '-'}
+                      </td>
+                    );
+                  })}
                 </motion.tr>
               ))}
             </tbody>
@@ -245,7 +212,7 @@ export function FeesSection({ detail }: FeesSectionProps) {
       {renderCourseFees()}
       {renderOtherFees()}
 
-      {fees.notes && (
+      {fees.notes && typeof fees.notes === 'string' && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
