@@ -45,7 +45,11 @@ export function SchoolCard({ school: branch, index = 0 }: SchoolCardProps) {
     }
   };
 
-  const imageUrl = school?.logo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(school?.name || 'School')}&background=f59e0b&color=fff&size=400`;
+  const imageUrl =
+    school?.logo_url ||
+    `https://ui-avatars.com/api/?name=${encodeURIComponent(
+      school?.name || "School"
+    )}&background=f59e0b&color=fff&size=400`;
 
   return (
     <motion.div
@@ -65,7 +69,7 @@ export function SchoolCard({ school: branch, index = 0 }: SchoolCardProps) {
             {!imageError ? (
               <Image
                 src={imageUrl}
-                alt={`${branch.name} - ${school?.name || ''}`}
+                alt={`${branch.name} - ${school?.name || ""}`}
                 fill
                 className="object-cover transition-transform duration-500 group-hover:scale-105"
                 onError={() => setImageError(true)}
@@ -111,14 +115,17 @@ export function SchoolCard({ school: branch, index = 0 }: SchoolCardProps) {
             <h3 className="text-lg font-bold text-gray-900 transition-colors hover:text-gold-600">
               {branch.name}
             </h3>
-            {school && (
-              <p className="text-sm text-gray-600">{school.name}</p>
-            )}
+            {school && <p className="text-sm text-gray-600">{school.name}</p>}
           </Link>
 
           {school && (
-            <div className="flex items-center gap-4">
-              <StarRating rating={school.rating} size="sm" />
+            <div className="flex items-center justify-between gap-4 w-full px-1">
+              <div className="flex items-center gap-1">
+                <StarRating rating={school.rating} size="sm" />
+                <span className="font-semibold text-gray-900 text-xs">
+                  {school.rating}
+                </span>
+              </div>
               <span className="flex items-center gap-1 text-xs text-gray-500">
                 <Users className="h-3 w-3" />
                 {school.review_count} reviews
@@ -128,7 +135,7 @@ export function SchoolCard({ school: branch, index = 0 }: SchoolCardProps) {
 
           <div className="flex items-center gap-1.5 text-sm text-gray-600">
             <MapPin className="h-4 w-4 text-gold-500" />
-            {branch.city || 'Dubai'}
+            {branch.city || "Dubai"}
           </div>
         </div>
 
@@ -136,7 +143,7 @@ export function SchoolCard({ school: branch, index = 0 }: SchoolCardProps) {
           <div className="text-sm text-gray-600">
             <span className="font-semibold text-gray-900">Contact:</span>
             <br />
-            {branch.contact || school?.contact || 'N/A'}
+            {branch.contact || school?.contact || "N/A"}
           </div>
           <Link href={`/school/${branch.id}`}>
             <Button

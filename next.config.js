@@ -6,44 +6,29 @@ const nextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: 'images.pexels.com',
+        protocol: "https",
+        hostname: "www.fazaa.ae",
+        pathname: "/upload/offers/dubai-driving-center-1689828346065.jpg",
       },
       {
-        protocol: 'https',
-        hostname: 'd3jvxfsgjxj1vz.cloudfront.net',
+        protocol: "https",
+        hostname: "www.gmdc.ae",
+        pathname: "/wp-content/uploads/2020/07/1.jpg",
       },
       {
-        protocol: 'https',
-        hostname: 'www.gmdc.ae',
+        protocol: "https",
+        hostname: "lh3.googleusercontent.com",
+        pathname:
+          "/p/AF1QipMEI_j3hzxXx8d6BdtT6mblAPHa73-L3vAu3yI1=s1360-w1360-h1020-rw",
       },
       {
-        protocol: 'https',
-        hostname: 'blog.sothebysrealty.ae',
-      },
-      {
-        protocol: 'https',
-        hostname: 'encrypted-tbn0.gstatic.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'd2hucwwplm5rxi.cloudfront.net',
-      },
-      {
-        protocol: 'https',
-        hostname: 'www.thenationalnews.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'i.ytimg.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'ui-avatars.com',
+        protocol: "https",
+        hostname: "ui-avatars.com",
+        pathname: "/api/",
       },
     ],
   },
-    webpack: (config) => {
+  webpack: (config) => {
     // 🚫 Disable Webpack filesystem cache (prevents ENOENT issues on Bolt)
     config.cache = false;
     return config;

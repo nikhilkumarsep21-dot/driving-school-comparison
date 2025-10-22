@@ -159,7 +159,7 @@ export default function SchoolDetailPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <div className="relative mb-8 overflow-hidden rounded-3xl shadow-soft-lg">
+            <div className="relative mb-8 overflow-hidden rounded-3xl border bg-card text-card-foreground">
               <div className="relative aspect-[21/9] bg-gradient-to-br from-gold-100 to-sand-100">
                 <Image
                   src={
@@ -202,7 +202,7 @@ export default function SchoolDetailPage() {
 
             <div className="grid gap-8 lg:grid-cols-3">
               <div className="lg:col-span-2">
-                <div className="mb-8 rounded-2xl bg-white p-6 shadow-soft">
+                <div className="mb-8 rounded-2xl border bg-card text-card-foreground p-6">
                   <h2 className="mb-4 text-2xl font-bold text-gray-900">
                     About This Branch
                   </h2>
@@ -223,7 +223,7 @@ export default function SchoolDetailPage() {
                       Available Courses
                     </h2>
 
-                    <div className="mb-6 rounded-2xl bg-white shadow-soft overflow-hidden sticky top-20 z-30">
+                    <div className="mb-6 rounded-2xl border bg-card text-card-foreground overflow-hidden sticky top-20 z-30">
                       <CourseNavigation
                         categories={branch.categories}
                         selectedCategoryId={
@@ -237,7 +237,7 @@ export default function SchoolDetailPage() {
                     </div>
 
                     {selectedDetail && selectedCategory && (
-                      <div className="rounded-2xl bg-white shadow-soft overflow-hidden">
+                      <div className="rounded-2xl border bg-card text-card-foreground">
                         <div className="sticky top-36 z-20">
                           <SectionNavigation
                             selectedSection={selectedSection}
@@ -274,7 +274,7 @@ export default function SchoolDetailPage() {
                     )}
                   </div>
                 ) : (
-                  <div className="mb-8 rounded-2xl bg-gray-50 p-8 text-center">
+                  <div className="mb-8 rounded-2xl border bg-card text-card-foreground p-8 text-center">
                     <p className="text-gray-600">
                       Course details will be available soon. Please contact the
                       branch directly for pricing and schedule information.
@@ -285,7 +285,7 @@ export default function SchoolDetailPage() {
 
               <div className="space-y-6">
                 <div className="sticky top-24 space-y-6">
-                  <div className="rounded-2xl bg-white p-6 shadow-soft">
+                  <div className="rounded-2xl border bg-card text-card-foreground p-6">
                     <h3 className="mb-4 text-lg font-bold text-gray-900">
                       Contact Information
                     </h3>
@@ -412,7 +412,7 @@ export default function SchoolDetailPage() {
                   </Button>
 
                   {branch.coordinates && (
-                    <div className="overflow-hidden rounded-2xl shadow-soft">
+                    <div className="overflow-hidden rounded-2xl border bg-card text-card-foreground">
                       <div className="aspect-square w-full bg-gray-200">
                         <iframe
                           width="100%"
