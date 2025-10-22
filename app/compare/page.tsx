@@ -1,33 +1,65 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useComparisonStore } from "@/store/comparison-store";
 import { Container } from "@/components/layout/container";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { StarRating } from "@/components/ui/star-rating";
-import { LicenseBadge } from "@/components/ui/license-badge";
-import { PriceDisplay } from "@/components/ui/price-display";
 import Link from "next/link";
 import Image from "next/image";
 import {
   ArrowLeft,
   Phone,
   Mail,
-  Globe,
   MapPin,
-  Clock,
   X,
   GraduationCap,
-  Check,
-  Minus,
+  BookOpen,
+  FileText,
+  Calendar,
+  DollarSign,
 } from "lucide-react";
-import { Category, Detail } from "@/lib/types";
+import { Category, BranchWithDetails } from "@/lib/types";
 import { motion } from "framer-motion";
+import { ComparisonCategorySelector } from "@/components/comparison-category-selector";
+import { ComparisonSection } from "@/components/comparison/comparison-section";
+import { CourseDetailsComparison } from "@/components/comparison/course-details-comparison";
+import { DocumentsComparison } from "@/components/comparison/documents-comparison";
+import { LectureDetailsComparison } from "@/components/comparison/lecture-details-comparison";
+import { FeesComparison } from "@/components/comparison/fees-comparison";
 
 export default function ComparePage() {
-  const { schools, removeSchool } = useComparisonStore();
+  const { schools, removeSchool, detailedBranches, loadBranchDetails, getBranchDetails } =
+    useComparisonStore();
+  const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(
+    null
+  );
+  const [isLoading, setIsLoading] = useState(true);
 
-  const branches = schools;
+  useEffect(() => {
+    const loadAllDetails = async () => {
+      setIsLoading(true);
+      const loadPromises = schools.map((school) => {
+        const existing = getBranchDetails(school.id);
+        if (!existing) {
+          return loadBranchDetails(school.id);
+        }
+        return Promise.resolve();
+      });
+      await Promise.all(loadPromises);
+      setIsLoading(false);
+    };
+
+    if (schools.length > 0) {
+      loadAllDetails();
+    } else {
+      setIsLoading(false);
+    }
+  }, [schools]);
+
+  const branches: BranchWithDetails[] = schools
+    .map((school) => getBranchDetails(school.id))
+    .filter((branch): branch is BranchWithDetails => branch !== undefined);
 
   if (schools.length === 0) {
     return (
@@ -75,6 +107,33 @@ export default function ComparePage() {
     );
   }
 
+  const allCategories: Category[] = [];
+  const categoryMap = new Map<number, Category>();
+
+  branches.forEach((branch) => {
+    if (branch.categories) {
+      branch.categories.forEach((cat) => {
+        if (!categoryMap.has(cat.id)) {
+          categoryMap.set(cat.id, cat);
+          allCategories.push(cat);
+        }
+      });
+    }
+  });
+
+  const filteredBranches = selectedCategoryId
+    ? branches.filter((branch) =>
+        branch.categories?.some((cat) => cat.id === selectedCategoryId)
+      )
+    : branches;
+
+  const branchAvailability: Record<number, boolean> = {};
+  allCategories.forEach((cat) => {
+    branchAvailability[cat.id] = branches.every((branch) =>
+      branch.categories?.some((c) => c.id === cat.id)
+    );
+  });
+
   return (
     <div className="min-h-screen bg-white">
       <section className="py-12 sm:py-16 bg-sand-50">
@@ -94,6 +153,15 @@ export default function ComparePage() {
       <div className="pb-20">
         <Container>
           <div className="py-8">
+            {allCategories.length > 0 && (
+              <ComparisonCategorySelector
+                categories={allCategories}
+                selectedCategoryId={selectedCategoryId}
+                onSelectCategory={setSelectedCategoryId}
+                branchAvailability={branchAvailability}
+              />
+            )}
+
             <div className="overflow-x-auto -mx-4 px-4">
               <table className="w-full border-collapse min-w-[800px] border-l border-gray-200">
                 <thead>
@@ -103,7 +171,7 @@ export default function ComparePage() {
                         Comparison Criteria
                       </h3>
                     </th>
-                    {branches.map((branch, branchIndex) => (
+                    {filteredBranches.map((branch, branchIndex) => (
                       <th
                         key={branch.id}
                         className="bg-white border-b border-r border-gray-200 p-6 min-w-[320px]"
@@ -169,7 +237,7 @@ export default function ComparePage() {
                 <tbody>
                   <ComparisonRowData
                     label="Location"
-                    schools={branches}
+                    schools={filteredBranches}
                     renderCell={(branch) => (
                       <div className="text-center">
                         <p className="font-semibold text-gray-900">
@@ -184,7 +252,7 @@ export default function ComparePage() {
 
                   <ComparisonRowData
                     label="Operating Hours"
-                    schools={branches}
+                    schools={filteredBranches}
                     renderCell={(branch) => (
                       <p className="text-center whitespace-pre-wrap font-medium text-gray-900 text-sm">
                         {branch.normal_hours || "Contact for hours"}
@@ -194,7 +262,7 @@ export default function ComparePage() {
 
                   <ComparisonRowData
                     label="Contact"
-                    schools={branches}
+                    schools={filteredBranches}
                     renderCell={(branch) => (
                       <div className="text-center">
                         <p className="font-semibold text-gray-900">
@@ -210,8 +278,8 @@ export default function ComparePage() {
                   />
 
                   <ComparisonRowData
-                    label="Directions"
-                    schools={branches}
+                    label="Contact Links"
+                    schools={filteredBranches}
                     renderCell={(branch) => (
                       <div className="space-y-2">
                         {branch.contact && (
@@ -253,16 +321,52 @@ export default function ComparePage() {
                     )}
                   />
                 </tbody>
+
+                {selectedCategoryId && (
+                  <>
+                    <CourseDetailsComparison
+                      branches={filteredBranches}
+                      categoryId={selectedCategoryId}
+                    />
+                    <DocumentsComparison
+                      branches={filteredBranches}
+                      categoryId={selectedCategoryId}
+                    />
+                    <LectureDetailsComparison
+                      branches={filteredBranches}
+                      categoryId={selectedCategoryId}
+                    />
+                    <FeesComparison
+                      branches={filteredBranches}
+                      categoryId={selectedCategoryId}
+                    />
+                  </>
+                )}
+
                 <tfoot>
                   <tr>
                     <td
-                      colSpan={schools.length + 1}
+                      colSpan={filteredBranches.length + 1}
                       className="border-t border-gray-200"
                     ></td>
                   </tr>
                 </tfoot>
               </table>
             </div>
+
+            {selectedCategoryId === null && allCategories.length > 0 && (
+              <div className="mt-8 text-center bg-blue-50 rounded-xl p-8 border border-blue-200">
+                <BookOpen className="h-12 w-12 text-blue-600 mx-auto mb-4" />
+                <h3 className="text-xl font-bold text-gray-900 mb-2">
+                  Select a Course Category
+                </h3>
+                <p className="text-gray-600 max-w-2xl mx-auto">
+                  Choose a specific course category above to compare detailed
+                  information including course details, required documents,
+                  lecture schedules, and fees.
+                </p>
+              </div>
+            )}
           </div>
         </Container>
       </div>
