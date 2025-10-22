@@ -76,13 +76,14 @@ export default function SchoolsPage() {
 
   return (
     <div className="pb-20 bg-white">
-      <section className="py-12 sm:py-16 bg-sand-50">
-        <Container>
-          <div className="mx-auto max-w-3xl text-center">
-            <h1 className="mb-4 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
+      <section className="relative overflow-hidden bg-gradient-to-br from-gold-600 to-gold-700 py-12 sm:py-16">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_white_1px,_transparent_1px)] bg-[length:24px_24px] opacity-20" />
+        <Container className="relative">
+          <div className="mx-auto max-w-3xl text-center pt-12">
+            <h1 className="mb-4 text-4xl font-bold tracking-tight text-white sm:text-5xl">
               Browse Driving Schools
             </h1>
-            <p className="text-lg text-gray-600">
+            <p className="text-lg text-gold-100">
               Compare and find the perfect driving school that matches your
               needs
             </p>
@@ -94,19 +95,21 @@ export default function SchoolsPage() {
         <div className="py-8">
           <div className="flex flex-col gap-8 lg:flex-row">
             <aside className="lg:w-80 shrink-0">
-              <div className="sticky top-20">
+              <div className="sticky top-20 rounded-xl border bg-card text-card-foreground">
                 <Filters filters={filters} onFiltersChange={setFilters} />
               </div>
             </aside>
 
             <main className="flex-1 min-w-0">
-              {preAppliedFilters && ((filters.categories?.length ?? 0) > 0 || (filters.locations?.length ?? 0) > 0) && (
-                <div className="mb-6 rounded-lg bg-gold-50 border border-gold-200 p-4">
-                  <p className="text-sm text-gold-800">
-                    Showing results based on your selected preferences
-                  </p>
-                </div>
-              )}
+              {preAppliedFilters &&
+                ((filters.categories?.length ?? 0) > 0 ||
+                  (filters.locations?.length ?? 0) > 0) && (
+                  <div className="mb-6 rounded-xl border bg-card text-card-foreground p-4">
+                    <p className="text-sm text-gold-800">
+                      Showing results based on your selected preferences
+                    </p>
+                  </div>
+                )}
               {loading ? (
                 <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
                   {Array.from({ length: 6 }).map((_, i) => (
@@ -132,7 +135,7 @@ export default function SchoolsPage() {
                   </div>
                 </>
               ) : (
-                <div className="flex flex-col items-center justify-center py-16 text-center">
+                <div className="flex flex-col items-center justify-center py-16 text-center rounded-xl border bg-card text-card-foreground">
                   <div className="mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-gray-100">
                     <GraduationCap className="h-10 w-10 text-gray-400" />
                   </div>
