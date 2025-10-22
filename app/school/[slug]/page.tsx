@@ -1,27 +1,38 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
-import { Container } from '@/components/layout/container';
-import { Button } from '@/components/ui/button';
-import { StarRating } from '@/components/ui/star-rating';
-import { LicenseBadge } from '@/components/ui/license-badge';
-import { PriceDisplay } from '@/components/ui/price-display';
-import { Skeleton } from '@/components/ui/skeleton';
-import { useComparisonStore } from '@/store/comparison-store';
-import { School } from '@/lib/types';
-import Link from 'next/link';
-import Image from 'next/image';
-import { ArrowLeft, Phone, Mail, Globe, MapPin, Clock, Calendar, CheckCircle2, GitCompare } from 'lucide-react';
-import { toast } from 'sonner';
-import { motion } from 'framer-motion';
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
+import { Container } from "@/components/layout/container";
+import { Button } from "@/components/ui/button";
+import { StarRating } from "@/components/ui/star-rating";
+import { LicenseBadge } from "@/components/ui/license-badge";
+import { PriceDisplay } from "@/components/ui/price-display";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useComparisonStore } from "@/store/comparison-store";
+import { School } from "@/lib/types";
+import Link from "next/link";
+import Image from "next/image";
+import {
+  ArrowLeft,
+  Phone,
+  Mail,
+  Globe,
+  MapPin,
+  Clock,
+  Calendar,
+  CheckCircle2,
+  GitCompare,
+} from "lucide-react";
+import { toast } from "sonner";
+import { motion } from "framer-motion";
 
 export default function SchoolDetailPage() {
   const params = useParams();
   const slug = params.slug as string;
   const [school, setSchool] = useState<School | null>(null);
   const [loading, setLoading] = useState(true);
-  const { addSchool, removeSchool, isInComparison, canAddMore } = useComparisonStore();
+  const { addSchool, removeSchool, isInComparison, canAddMore } =
+    useComparisonStore();
 
   useEffect(() => {
     const fetchSchool = async () => {
@@ -30,7 +41,7 @@ export default function SchoolDetailPage() {
         const data = await response.json();
         setSchool(data.school);
       } catch (error) {
-        console.error('Failed to fetch school:', error);
+        console.error("Failed to fetch school:", error);
       } finally {
         setLoading(false);
       }
@@ -51,7 +62,7 @@ export default function SchoolDetailPage() {
       const success = addSchool(school);
       if (!success) {
         if (!canAddMore()) {
-          toast.error('You can only compare up to 3 schools');
+          toast.error("You can only compare up to 3 schools");
         }
       } else {
         toast.success(`${school.name} added to comparison`);
@@ -81,7 +92,9 @@ export default function SchoolDetailPage() {
     return (
       <Container>
         <div className="flex min-h-[60vh] flex-col items-center justify-center py-16 text-center">
-          <h1 className="mb-4 text-3xl font-bold text-gray-900">School Not Found</h1>
+          <h1 className="mb-4 text-3xl font-bold text-gray-900">
+            School Not Found
+          </h1>
           <p className="mb-8 text-gray-600">
             The driving school you're looking for doesn't exist.
           </p>
@@ -107,7 +120,7 @@ export default function SchoolDetailPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <div className="relative mb-8 overflow-hidden rounded-3xl shadow-soft-lg">
+            <div className="relative mb-8 overflow-hidden rounded-xl border bg-card text-card-foreground transition-all duration-300">
               <div className="relative aspect-[21/9]">
                 <Image
                   src={school.image_url}
@@ -119,9 +132,15 @@ export default function SchoolDetailPage() {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
 
                 <div className="absolute bottom-0 left-0 right-0 p-8 text-white">
-                  <h1 className="mb-3 text-4xl font-bold sm:text-5xl">{school.name}</h1>
+                  <h1 className="mb-3 text-4xl font-bold sm:text-5xl">
+                    {school.name}
+                  </h1>
                   <div className="flex flex-wrap items-center gap-4">
-                    <StarRating rating={school.rating} size="lg" className="text-white" />
+                    <StarRating
+                      rating={school.rating}
+                      size="lg"
+                      className="text-white"
+                    />
                     <span className="text-sm opacity-90">
                       {school.review_count} reviews
                     </span>
@@ -142,13 +161,19 @@ export default function SchoolDetailPage() {
 
             <div className="grid gap-8 lg:grid-cols-3">
               <div className="lg:col-span-2">
-                <div className="mb-8 rounded-2xl bg-white p-6 shadow-soft">
-                  <h2 className="mb-4 text-2xl font-bold text-gray-900">About This School</h2>
-                  <p className="leading-relaxed text-gray-600">{school.description}</p>
+                <div className="mb-8 rounded-xl border bg-card text-card-foreground p-6 transition-all duration-300">
+                  <h2 className="mb-4 text-2xl font-bold text-gray-900">
+                    About This School
+                  </h2>
+                  <p className="leading-relaxed text-gray-600">
+                    {school.description}
+                  </p>
                 </div>
 
                 <div className="mb-8">
-                  <h2 className="mb-6 text-2xl font-bold text-gray-900">Available Courses</h2>
+                  <h2 className="mb-6 text-2xl font-bold text-gray-900">
+                    Available Courses
+                  </h2>
                   <div className="space-y-4">
                     {school.license_categories?.map((category, index) => (
                       <motion.div
@@ -156,13 +181,18 @@ export default function SchoolDetailPage() {
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.4, delay: index * 0.1 }}
-                        className="overflow-hidden rounded-2xl bg-white shadow-soft transition-all duration-300 hover:shadow-soft-md"
+                        className="overflow-hidden rounded-xl border bg-card text-card-foreground transition-all duration-300"
                       >
                         <div className="p-6">
                           <div className="mb-4 flex flex-wrap items-start justify-between gap-4">
                             <div>
-                              <LicenseBadge type={category.type} className="mb-2" />
-                              <h3 className="text-xl font-bold text-gray-900">{category.name}</h3>
+                              <LicenseBadge
+                                type={category.type}
+                                className="mb-2"
+                              />
+                              <h3 className="text-xl font-bold text-gray-900">
+                                {category.name}
+                              </h3>
                             </div>
                             <div className="text-right">
                               <PriceDisplay price={category.price} size="lg" />
@@ -173,21 +203,31 @@ export default function SchoolDetailPage() {
                             </div>
                           </div>
 
-                          <p className="mb-4 text-gray-600">{category.description}</p>
+                          <p className="mb-4 text-gray-600">
+                            {category.description}
+                          </p>
 
-                          {category.features && category.features.length > 0 && (
-                            <div className="space-y-2">
-                              <h4 className="text-sm font-semibold text-gray-900">What's Included:</h4>
-                              <div className="grid gap-2 sm:grid-cols-2">
-                                {category.features.map((feature, i) => (
-                                  <div key={i} className="flex items-start gap-2">
-                                    <CheckCircle2 className="h-4 w-4 flex-shrink-0 text-gold-500" />
-                                    <span className="text-sm text-gray-600">{feature}</span>
-                                  </div>
-                                ))}
+                          {category.features &&
+                            category.features.length > 0 && (
+                              <div className="space-y-2">
+                                <h4 className="text-sm font-semibold text-gray-900">
+                                  What's Included:
+                                </h4>
+                                <div className="grid gap-2 sm:grid-cols-2">
+                                  {category.features.map((feature, i) => (
+                                    <div
+                                      key={i}
+                                      className="flex items-start gap-2"
+                                    >
+                                      <CheckCircle2 className="h-4 w-4 flex-shrink-0 text-gold-500" />
+                                      <span className="text-sm text-gray-600">
+                                        {feature}
+                                      </span>
+                                    </div>
+                                  ))}
+                                </div>
                               </div>
-                            </div>
-                          )}
+                            )}
                         </div>
                       </motion.div>
                     ))}
@@ -197,8 +237,10 @@ export default function SchoolDetailPage() {
 
               <div className="space-y-6">
                 <div className="sticky top-24 space-y-6">
-                  <div className="rounded-2xl bg-white p-6 shadow-soft">
-                    <h3 className="mb-4 text-lg font-bold text-gray-900">Contact Information</h3>
+                  <div className="rounded-xl border bg-card text-card-foreground p-6 transition-all duration-300">
+                    <h3 className="mb-4 text-lg font-bold text-gray-900">
+                      Contact Information
+                    </h3>
                     <div className="space-y-4">
                       <a
                         href={`tel:${school.phone}`}
@@ -209,7 +251,9 @@ export default function SchoolDetailPage() {
                         </div>
                         <div>
                           <div className="text-xs text-gray-500">Phone</div>
-                          <div className="font-medium text-gray-900">{school.phone}</div>
+                          <div className="font-medium text-gray-900">
+                            {school.phone}
+                          </div>
                         </div>
                       </a>
 
@@ -222,7 +266,9 @@ export default function SchoolDetailPage() {
                         </div>
                         <div className="min-w-0 flex-1">
                           <div className="text-xs text-gray-500">Email</div>
-                          <div className="truncate font-medium text-gray-900">{school.email}</div>
+                          <div className="truncate font-medium text-gray-900">
+                            {school.email}
+                          </div>
                         </div>
                       </a>
 
@@ -238,7 +284,9 @@ export default function SchoolDetailPage() {
                           </div>
                           <div>
                             <div className="text-xs text-gray-500">Website</div>
-                            <div className="font-medium text-gray-900">Visit Website</div>
+                            <div className="font-medium text-gray-900">
+                              Visit Website
+                            </div>
                           </div>
                         </a>
                       )}
@@ -249,7 +297,9 @@ export default function SchoolDetailPage() {
                         </div>
                         <div>
                           <div className="text-xs text-gray-500">Address</div>
-                          <div className="font-medium text-gray-900">{school.address}</div>
+                          <div className="font-medium text-gray-900">
+                            {school.address}
+                          </div>
                         </div>
                       </div>
 
@@ -258,8 +308,12 @@ export default function SchoolDetailPage() {
                           <Clock className="h-5 w-5 text-gold-600" />
                         </div>
                         <div>
-                          <div className="text-xs text-gray-500">Operating Hours</div>
-                          <div className="font-medium text-gray-900">{school.operating_hours}</div>
+                          <div className="text-xs text-gray-500">
+                            Operating Hours
+                          </div>
+                          <div className="font-medium text-gray-900">
+                            {school.operating_hours}
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -267,15 +321,21 @@ export default function SchoolDetailPage() {
 
                   <Button
                     onClick={handleCompareToggle}
-                    variant={inComparison ? 'outline' : 'default'}
-                    className={inComparison ? 'w-full' : 'w-full bg-gold-500 hover:bg-gold-600'}
+                    variant={inComparison ? "outline" : "default"}
+                    className={
+                      inComparison
+                        ? "w-full"
+                        : "w-full bg-gold-500 hover:bg-gold-600"
+                    }
                   >
                     <GitCompare className="mr-2 h-4 w-4" />
-                    {inComparison ? 'Remove from Comparison' : 'Add to Comparison'}
+                    {inComparison
+                      ? "Remove from Comparison"
+                      : "Add to Comparison"}
                   </Button>
 
                   {school.coordinates && (
-                    <div className="overflow-hidden rounded-2xl shadow-soft">
+                    <div className="overflow-hidden rounded-xl border bg-card text-card-foreground transition-all duration-300">
                       <div className="aspect-square w-full bg-gray-200">
                         <iframe
                           width="100%"
