@@ -1,8 +1,7 @@
 'use client';
 
 import { Detail } from '@/lib/types';
-import { Card } from '@/components/ui/card';
-import { DollarSign, CheckCircle, Info, Tag } from 'lucide-react';
+import { DollarSign, Clock, CreditCard, FileText } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 interface FeesSectionProps {
@@ -43,74 +42,137 @@ export function FeesSection({ detail }: FeesSectionProps) {
     return String(value);
   };
 
-  const isCurrencyField = (key: string): boolean => {
-    const currencyKeywords = ['price', 'fee', 'cost', 'amount', 'total', 'charge', 'payment'];
-    return currencyKeywords.some((keyword) => key.toLowerCase().includes(keyword));
+  const isTimingField = (key: string): boolean => {
+    const timingKeywords = ['timing', 'schedule', 'duration', 'hours', 'days', 'period', 'time'];
+    return timingKeywords.some((keyword) => key.toLowerCase().includes(keyword));
   };
 
-  const renderFeeCard = (key: string, value: any, index: number) => {
-    const isCurrency = isCurrencyField(key);
+  const isCourseFeesField = (key: string): boolean => {
+    const courseFeeKeywords = ['course_fee', 'tuition', 'training_fee', 'lesson_fee', 'package', 'total_fee'];
+    return courseFeeKeywords.some((keyword) => key.toLowerCase().includes(keyword));
+  };
 
+  const isOtherFeesField = (key: string): boolean => {
+    const otherFeeKeywords = ['registration', 'material', 'exam', 'test', 'book', 'uniform', 'certificate', 'application', 'processing', 'administrative'];
+    return otherFeeKeywords.some((keyword) => key.toLowerCase().includes(keyword));
+  };
+
+  const isNoteField = (key: string): boolean => {
+    const noteKeywords = ['note', 'remark', 'info', 'additional'];
+    return noteKeywords.some((keyword) => key.toLowerCase().includes(keyword));
+  };
+
+  const renderListItem = (key: string, value: any, index: number) => {
     return (
-      <motion.div
+      <motion.li
         key={key}
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
+        initial={{ opacity: 0, x: -10 }}
+        animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.3, delay: index * 0.05 }}
+        className="text-gray-900"
       >
-        <Card className="p-6 hover:shadow-md transition-shadow border-l-4 border-l-green-500">
-          <div className="flex items-start gap-4">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-green-100">
-              {isCurrency ? (
-                <DollarSign className="h-5 w-5 text-green-700" />
-              ) : (
-                <Tag className="h-5 w-5 text-green-700" />
-              )}
-            </div>
-            <div className="flex-1 min-w-0">
-              <h4 className="text-sm font-medium text-gray-500 mb-1 capitalize">
-                {key.replace(/_/g, ' ')}
-              </h4>
-              <p className={`text-lg font-bold break-words ${isCurrency ? 'text-green-700' : 'text-gray-900'}`}>
-                {renderValue(value)}
-              </p>
-            </div>
-          </div>
-        </Card>
-      </motion.div>
+        <span className="font-medium capitalize">{key.replace(/_/g, ' ')}:</span>{' '}
+        <span className="text-gray-700">{renderValue(value)}</span>
+      </motion.li>
     );
   };
 
   const renderFeesStructure = () => {
     if (typeof fees === 'object' && !Array.isArray(fees)) {
       const feeEntries = Object.entries(fees);
-      const mainFees = feeEntries.filter(([key]) => isCurrencyField(key));
-      const otherInfo = feeEntries.filter(([key]) => !isCurrencyField(key));
+      const timingItems = feeEntries.filter(([key]) => isTimingField(key));
+      const courseFeeItems = feeEntries.filter(([key]) => isCourseFeesField(key));
+      const otherFeeItems = feeEntries.filter(([key]) => isOtherFeesField(key));
+      const noteItems = feeEntries.filter(([key]) => isNoteField(key));
+      const otherItems = feeEntries.filter(([key]) =>
+        !isTimingField(key) && !isCourseFeesField(key) && !isOtherFeesField(key) && !isNoteField(key)
+      );
 
       return (
-        <div className="space-y-6">
-          {mainFees.length > 0 && (
-            <div>
-              <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                <DollarSign className="h-5 w-5 text-green-600" />
-                Pricing
-              </h4>
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {mainFees.map(([key, value], index) => renderFeeCard(key, value, index))}
+        <div className="space-y-8">
+          {timingItems.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <div className="flex items-center gap-2 mb-4">
+                <Clock className="h-5 w-5 text-blue-600" />
+                <h4 className="text-xl font-bold text-gray-900">Timing</h4>
               </div>
-            </div>
+              <ul className="space-y-3 ml-6 list-disc marker:text-blue-600">
+                {timingItems.map(([key, value], index) => renderListItem(key, value, index))}
+              </ul>
+              {noteItems.filter(([key]) => key.toLowerCase().includes('timing')).map(([key, value]) => (
+                <p key={key} className="text-sm text-gray-400 mt-4 ml-6">{renderValue(value)}</p>
+              ))}
+            </motion.div>
           )}
 
-          {otherInfo.length > 0 && (
-            <div>
-              <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                <Info className="h-5 w-5 text-blue-600" />
-                Additional Information
-              </h4>
-              <div className="grid gap-4 sm:grid-cols-2">
-                {otherInfo.map(([key, value], index) => renderFeeCard(key, value, index + mainFees.length))}
+          {courseFeeItems.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: 0.1 }}
+            >
+              <div className="flex items-center gap-2 mb-4">
+                <DollarSign className="h-5 w-5 text-green-600" />
+                <h4 className="text-xl font-bold text-gray-900">Course Fees</h4>
               </div>
-            </div>
+              <ul className="space-y-3 ml-6 list-disc marker:text-green-600">
+                {courseFeeItems.map(([key, value], index) => renderListItem(key, value, index))}
+              </ul>
+              {noteItems.filter(([key]) => key.toLowerCase().includes('course') || key.toLowerCase().includes('tuition')).map(([key, value]) => (
+                <p key={key} className="text-sm text-gray-400 mt-4 ml-6">{renderValue(value)}</p>
+              ))}
+            </motion.div>
+          )}
+
+          {otherFeeItems.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: 0.2 }}
+            >
+              <div className="flex items-center gap-2 mb-4">
+                <CreditCard className="h-5 w-5 text-amber-600" />
+                <h4 className="text-xl font-bold text-gray-900">Other Fees</h4>
+              </div>
+              <ul className="space-y-3 ml-6 list-disc marker:text-amber-600">
+                {otherFeeItems.map(([key, value], index) => renderListItem(key, value, index))}
+              </ul>
+              {noteItems.filter(([key]) => key.toLowerCase().includes('other') || key.toLowerCase().includes('additional')).map(([key, value]) => (
+                <p key={key} className="text-sm text-gray-400 mt-4 ml-6">{renderValue(value)}</p>
+              ))}
+            </motion.div>
+          )}
+
+          {otherItems.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: 0.3 }}
+            >
+              <div className="flex items-center gap-2 mb-4">
+                <FileText className="h-5 w-5 text-gray-600" />
+                <h4 className="text-xl font-bold text-gray-900">Additional Information</h4>
+              </div>
+              <ul className="space-y-3 ml-6 list-disc marker:text-gray-600">
+                {otherItems.map(([key, value], index) => renderListItem(key, value, index))}
+              </ul>
+            </motion.div>
+          )}
+
+          {noteItems.filter(([key]) => !key.toLowerCase().includes('timing') && !key.toLowerCase().includes('course') && !key.toLowerCase().includes('tuition') && !key.toLowerCase().includes('other') && !key.toLowerCase().includes('additional')).length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: 0.4 }}
+            >
+              {noteItems.filter(([key]) => !key.toLowerCase().includes('timing') && !key.toLowerCase().includes('course') && !key.toLowerCase().includes('tuition') && !key.toLowerCase().includes('other') && !key.toLowerCase().includes('additional')).map(([key, value]) => (
+                <p key={key} className="text-sm text-gray-400 leading-relaxed">{renderValue(value)}</p>
+              ))}
+            </motion.div>
           )}
         </div>
       );
@@ -118,48 +180,35 @@ export function FeesSection({ detail }: FeesSectionProps) {
 
     if (Array.isArray(fees)) {
       return (
-        <div className="space-y-4">
+        <ul className="space-y-3 ml-6 list-disc marker:text-green-600">
           {fees.map((feeItem: any, index: number) => (
-            <motion.div
+            <motion.li
               key={index}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: index * 0.1 }}
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.3, delay: index * 0.05 }}
+              className="text-gray-900"
             >
-              <Card className="p-6 hover:shadow-md transition-shadow border-l-4 border-l-green-500">
-                {typeof feeItem === 'string' ? (
-                  <p className="text-gray-900 font-medium">{feeItem}</p>
-                ) : (
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    {Object.entries(feeItem).map(([key, value]) => (
-                      <div key={key} className="flex items-start gap-3">
-                        <CheckCircle className="h-5 w-5 text-green-600 shrink-0 mt-0.5" />
-                        <div className="flex-1 min-w-0">
-                          <h5 className="text-sm font-medium text-gray-500 capitalize">
-                            {key.replace(/_/g, ' ')}
-                          </h5>
-                          <p className="text-base font-semibold text-gray-900 break-words">
-                            {renderValue(value)}
-                          </p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </Card>
-            </motion.div>
+              {typeof feeItem === 'string' ? (
+                feeItem
+              ) : (
+                <div className="space-y-2">
+                  {Object.entries(feeItem).map(([key, value]) => (
+                    <div key={key}>
+                      <span className="font-medium capitalize">{key.replace(/_/g, ' ')}:</span>{' '}
+                      <span className="text-gray-700">{renderValue(value)}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </motion.li>
           ))}
-        </div>
+        </ul>
       );
     }
 
     return (
-      <Card className="p-8 bg-gradient-to-br from-green-50 to-emerald-50 border-green-200">
-        <div className="text-center">
-          <DollarSign className="h-12 w-12 text-green-600 mx-auto mb-4" />
-          <p className="text-2xl font-bold text-green-700">{renderValue(fees)}</p>
-        </div>
-      </Card>
+      <p className="text-gray-900 text-lg font-semibold">{renderValue(fees)}</p>
     );
   };
 
@@ -168,24 +217,18 @@ export function FeesSection({ detail }: FeesSectionProps) {
       <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-6 border border-green-200">
         <div className="flex items-center gap-3 mb-2">
           <DollarSign className="h-6 w-6 text-green-700" />
-          <h3 className="text-2xl font-bold text-gray-900">Course Fees</h3>
+          <h3 className="text-2xl font-bold text-gray-900">Fees & Pricing</h3>
         </div>
         <p className="text-gray-600">Detailed pricing information and payment structure for this course.</p>
       </div>
 
       {renderFeesStructure()}
 
-      <Card className="p-6 bg-blue-50 border-blue-200">
-        <div className="flex items-start gap-3">
-          <Info className="h-5 w-5 text-blue-600 shrink-0 mt-0.5" />
-          <div>
-            <h4 className="font-semibold text-gray-900 mb-1">Note</h4>
-            <p className="text-sm text-gray-700">
-              Fees are subject to change. Please contact the branch directly to confirm current pricing and available payment plans.
-            </p>
-          </div>
-        </div>
-      </Card>
+      <div className="bg-blue-50 rounded-xl p-6 border border-blue-200">
+        <p className="text-sm text-gray-500 leading-relaxed">
+          Fees are subject to change. Please contact the branch directly to confirm current pricing and available payment plans.
+        </p>
+      </div>
     </div>
   );
 }

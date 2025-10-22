@@ -1,8 +1,7 @@
 'use client';
 
 import { Detail } from '@/lib/types';
-import { Card } from '@/components/ui/card';
-import { FileText, CheckCircle2, AlertCircle } from 'lucide-react';
+import { FileText } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 interface DocumentsSectionProps {
@@ -25,33 +24,32 @@ export function DocumentsSection({ detail }: DocumentsSectionProps) {
   const renderDocuments = () => {
     if (Array.isArray(documents)) {
       return (
-        <div className="grid gap-4 sm:grid-cols-2">
+        <ul className="space-y-3 ml-6 list-disc marker:text-gold-600">
           {documents.map((doc: any, index: number) => (
-            <motion.div
+            <motion.li
               key={index}
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.3, delay: index * 0.05 }}
+              className="text-gray-900"
             >
-              <Card className="p-5 hover:shadow-md transition-shadow border-l-4 border-l-gold-500">
-                <div className="flex items-start gap-3">
-                  <CheckCircle2 className="h-5 w-5 text-gold-600 shrink-0 mt-0.5" />
-                  <div>
-                    <p className="font-medium text-gray-900">
-                      {typeof doc === 'string' ? doc : doc.name || doc.title || 'Required Document'}
-                    </p>
-                    {typeof doc === 'object' && doc.description && (
-                      <p className="text-sm text-gray-600 mt-1">{doc.description}</p>
-                    )}
-                    {typeof doc === 'object' && doc.notes && (
-                      <p className="text-xs text-gray-500 mt-1 italic">{doc.notes}</p>
-                    )}
-                  </div>
-                </div>
-              </Card>
-            </motion.div>
+              <div>
+                <h4 className="font-bold text-gray-900 inline">
+                  {typeof doc === 'string' ? doc : doc.name || doc.title || 'Required Document'}
+                </h4>
+                {typeof doc === 'object' && doc.type && (
+                  <p className="text-sm font-semibold text-gray-600 mt-1">{doc.type}</p>
+                )}
+                {typeof doc === 'object' && doc.description && (
+                  <p className="text-sm text-gray-700 mt-1">{doc.description}</p>
+                )}
+                {typeof doc === 'object' && doc.notes && (
+                  <p className="text-sm text-gray-400 mt-1">{doc.notes}</p>
+                )}
+              </div>
+            </motion.li>
           ))}
-        </div>
+        </ul>
       );
     }
 
@@ -69,27 +67,32 @@ export function DocumentsSection({ detail }: DocumentsSectionProps) {
               <h4 className="text-lg font-semibold text-gray-900 capitalize border-b border-gray-200 pb-2">
                 {category.replace(/_/g, ' ')}
               </h4>
-              <div className="grid gap-4 sm:grid-cols-2">
+              <ul className="space-y-3 ml-6 list-disc marker:text-gold-600">
                 {Array.isArray(items) ? (
                   items.map((item: any, itemIndex: number) => (
-                    <Card key={itemIndex} className="p-5 hover:shadow-md transition-shadow border-l-4 border-l-gold-500">
-                      <div className="flex items-start gap-3">
-                        <CheckCircle2 className="h-5 w-5 text-gold-600 shrink-0 mt-0.5" />
-                        <p className="font-medium text-gray-900">
+                    <li key={itemIndex} className="text-gray-900">
+                      <div>
+                        <h5 className="font-bold text-gray-900 inline">
                           {typeof item === 'string' ? item : item.name || item.title || 'Required Document'}
-                        </p>
+                        </h5>
+                        {typeof item === 'object' && item.type && (
+                          <p className="text-sm font-semibold text-gray-600 mt-1">{item.type}</p>
+                        )}
+                        {typeof item === 'object' && item.description && (
+                          <p className="text-sm text-gray-700 mt-1">{item.description}</p>
+                        )}
+                        {typeof item === 'object' && item.notes && (
+                          <p className="text-sm text-gray-400 mt-1">{item.notes}</p>
+                        )}
                       </div>
-                    </Card>
+                    </li>
                   ))
                 ) : (
-                  <Card className="p-5 hover:shadow-md transition-shadow border-l-4 border-l-gold-500">
-                    <div className="flex items-start gap-3">
-                      <CheckCircle2 className="h-5 w-5 text-gold-600 shrink-0 mt-0.5" />
-                      <p className="font-medium text-gray-900">{String(items)}</p>
-                    </div>
-                  </Card>
+                  <li className="text-gray-900">
+                    <span className="font-bold">{String(items)}</span>
+                  </li>
                 )}
-              </div>
+              </ul>
             </motion.div>
           ))}
         </div>
@@ -97,18 +100,13 @@ export function DocumentsSection({ detail }: DocumentsSectionProps) {
     }
 
     return (
-      <Card className="p-6 bg-gray-50">
-        <div className="flex items-start gap-3">
-          <AlertCircle className="h-5 w-5 text-gray-500 shrink-0 mt-0.5" />
-          <p className="text-gray-700">{String(documents)}</p>
-        </div>
-      </Card>
+      <p className="text-gray-700 ml-6">{String(documents)}</p>
     );
   };
 
   return (
     <div className="space-y-6">
-      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200">
+      <div className="bg-gradient-to-r from-blue-50 to-sky-50 rounded-xl p-6 border border-blue-200">
         <div className="flex items-center gap-3 mb-2">
           <FileText className="h-6 w-6 text-blue-700" />
           <h3 className="text-2xl font-bold text-gray-900">Required Documents</h3>

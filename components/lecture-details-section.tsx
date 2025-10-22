@@ -2,8 +2,7 @@
 
 import React from 'react';
 import { Detail } from '@/lib/types';
-import { Card } from '@/components/ui/card';
-import { Calendar, Clock, User, MapPin, BookOpen } from 'lucide-react';
+import { Calendar } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 interface LectureDetailsSectionProps {
@@ -23,23 +22,6 @@ export function LectureDetailsSection({ detail }: LectureDetailsSectionProps) {
     );
   }
 
-  const getIconForKey = (key: string) => {
-    const lowerKey = key.toLowerCase();
-    if (lowerKey.includes('schedule') || lowerKey.includes('time') || lowerKey.includes('day')) {
-      return Calendar;
-    }
-    if (lowerKey.includes('duration') || lowerKey.includes('hour')) {
-      return Clock;
-    }
-    if (lowerKey.includes('instructor') || lowerKey.includes('teacher')) {
-      return User;
-    }
-    if (lowerKey.includes('location') || lowerKey.includes('room') || lowerKey.includes('venue')) {
-      return MapPin;
-    }
-    return BookOpen;
-  };
-
   const renderValue = (value: any): string => {
     if (Array.isArray(value)) {
       return value.join(', ');
@@ -50,81 +32,139 @@ export function LectureDetailsSection({ detail }: LectureDetailsSectionProps) {
     return String(value);
   };
 
-  const renderLectureCard = (key: string, value: any, index: number) => {
-    const IconComponent = getIconForKey(key);
+  const renderDetailItem = (key: string, value: any, index: number) => {
+    const lowerKey = key.toLowerCase();
+    const isTitle = lowerKey.includes('title') || lowerKey.includes('name');
+    const isType = lowerKey.includes('type') || lowerKey.includes('format');
+    const isNote = lowerKey.includes('note') || lowerKey.includes('remark') || lowerKey.includes('info');
+
+    if (isTitle) {
+      return (
+        <motion.div
+          key={key}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: index * 0.05 }}
+          className="mb-6"
+        >
+          <h3 className="text-2xl font-bold text-gray-900">{renderValue(value)}</h3>
+        </motion.div>
+      );
+    }
+
+    if (isType) {
+      return (
+        <motion.div
+          key={key}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: index * 0.05 }}
+          className="mb-4"
+        >
+          <h4 className="text-lg font-semibold text-gray-700">{renderValue(value)}</h4>
+        </motion.div>
+      );
+    }
+
+    if (isNote) {
+      return (
+        <motion.div
+          key={key}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: index * 0.05 }}
+          className="mt-6"
+        >
+          <p className="text-sm text-gray-500 leading-relaxed">{renderValue(value)}</p>
+        </motion.div>
+      );
+    }
 
     return (
-      <motion.div
+      <motion.li
         key={key}
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0, x: -10 }}
+        animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.3, delay: index * 0.05 }}
+        className="text-gray-900"
       >
-        <Card className="p-6 hover:shadow-md transition-shadow">
-          <div className="flex items-start gap-4">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-blue-100">
-              <IconComponent className="h-5 w-5 text-blue-700" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <h4 className="text-sm font-medium text-gray-500 mb-1 capitalize">
-                {key.replace(/_/g, ' ')}
-              </h4>
-              <p className="text-base font-semibold text-gray-900 break-words whitespace-pre-wrap">
-                {renderValue(value)}
-              </p>
-            </div>
-          </div>
-        </Card>
-      </motion.div>
+        <span className="font-medium capitalize">{key.replace(/_/g, ' ')}:</span>{' '}
+        <span className="text-gray-700">{renderValue(value)}</span>
+      </motion.li>
     );
   };
 
   const renderLectureDetails = () => {
     if (typeof lectureDetails === 'object' && !Array.isArray(lectureDetails)) {
+      const entries = Object.entries(lectureDetails);
+      const titleItems = entries.filter(([key]) => key.toLowerCase().includes('title') || key.toLowerCase().includes('name'));
+      const typeItems = entries.filter(([key]) => key.toLowerCase().includes('type') || key.toLowerCase().includes('format'));
+      const noteItems = entries.filter(([key]) => key.toLowerCase().includes('note') || key.toLowerCase().includes('remark') || key.toLowerCase().includes('info'));
+      const detailItems = entries.filter(([key]) => {
+        const lowerKey = key.toLowerCase();
+        return !lowerKey.includes('title') && !lowerKey.includes('name') &&
+               !lowerKey.includes('type') && !lowerKey.includes('format') &&
+               !lowerKey.includes('note') && !lowerKey.includes('remark') && !lowerKey.includes('info');
+      });
+
       return (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-2">
-          {Object.entries(lectureDetails).map(([key, value], index) =>
-            renderLectureCard(key, value, index)
+        <div className="space-y-4">
+          {titleItems.map(([key, value], index) => renderDetailItem(key, value, index))}
+          {typeItems.map(([key, value], index) => renderDetailItem(key, value, index + titleItems.length))}
+
+          {detailItems.length > 0 && (
+            <ul className="space-y-3 ml-6 list-disc marker:text-blue-600">
+              {detailItems.map(([key, value], index) => renderDetailItem(key, value, index + titleItems.length + typeItems.length))}
+            </ul>
           )}
+
+          {noteItems.map(([key, value], index) => renderDetailItem(key, value, index + titleItems.length + typeItems.length + detailItems.length))}
         </div>
       );
     }
 
     if (Array.isArray(lectureDetails)) {
       return (
-        <div className="space-y-4">
-          {lectureDetails.map((lecture: any, index: number) => (
+        <div className="space-y-6">
+          {lectureDetails.map((lecture: any, lectureIndex: number) => (
             <motion.div
-              key={index}
+              key={lectureIndex}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: index * 0.1 }}
+              transition={{ duration: 0.3, delay: lectureIndex * 0.1 }}
+              className="space-y-4"
             >
-              <Card className="p-6 hover:shadow-md transition-shadow">
-                {typeof lecture === 'string' ? (
-                  <p className="text-gray-900">{lecture}</p>
-                ) : (
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    {Object.entries(lecture).map(([key, value]) => (
-                      <div key={key} className="flex items-start gap-3">
-                        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-100">
-                          {React.createElement(getIconForKey(key), {
-                            className: 'h-4 w-4 text-blue-700',
-                          })}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <h5 className="text-xs font-medium text-gray-500 capitalize">
-                            {key.replace(/_/g, ' ')}
-                          </h5>
-                          <p className="text-sm font-semibold text-gray-900 break-words">
-                            {renderValue(value)}
-                          </p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </Card>
+              {typeof lecture === 'string' ? (
+                <p className="text-gray-900">{lecture}</p>
+              ) : (
+                (() => {
+                  const entries = Object.entries(lecture);
+                  const titleItems = entries.filter(([key]) => key.toLowerCase().includes('title') || key.toLowerCase().includes('name'));
+                  const typeItems = entries.filter(([key]) => key.toLowerCase().includes('type') || key.toLowerCase().includes('format'));
+                  const noteItems = entries.filter(([key]) => key.toLowerCase().includes('note') || key.toLowerCase().includes('remark') || key.toLowerCase().includes('info'));
+                  const detailItems = entries.filter(([key]) => {
+                    const lowerKey = key.toLowerCase();
+                    return !lowerKey.includes('title') && !lowerKey.includes('name') &&
+                           !lowerKey.includes('type') && !lowerKey.includes('format') &&
+                           !lowerKey.includes('note') && !lowerKey.includes('remark') && !lowerKey.includes('info');
+                  });
+
+                  return (
+                    <div className="space-y-4">
+                      {titleItems.map(([key, value], index) => renderDetailItem(key, value, index))}
+                      {typeItems.map(([key, value], index) => renderDetailItem(key, value, index + titleItems.length))}
+
+                      {detailItems.length > 0 && (
+                        <ul className="space-y-3 ml-6 list-disc marker:text-blue-600">
+                          {detailItems.map(([key, value], index) => renderDetailItem(key, value, index + titleItems.length + typeItems.length))}
+                        </ul>
+                      )}
+
+                      {noteItems.map(([key, value], index) => renderDetailItem(key, value, index + titleItems.length + typeItems.length + detailItems.length))}
+                    </div>
+                  );
+                })()
+              )}
             </motion.div>
           ))}
         </div>
@@ -132,15 +172,13 @@ export function LectureDetailsSection({ detail }: LectureDetailsSectionProps) {
     }
 
     return (
-      <Card className="p-6 bg-gray-50">
-        <p className="text-gray-700">{String(lectureDetails)}</p>
-      </Card>
+      <p className="text-gray-700">{String(lectureDetails)}</p>
     );
   };
 
   return (
     <div className="space-y-6">
-      <div className="bg-gradient-to-r from-blue-50 to-cyan-50 rounded-xl p-6 border border-blue-200">
+      <div className="bg-gradient-to-r from-blue-50 to-sky-50 rounded-xl p-6 border border-blue-200">
         <div className="flex items-center gap-3 mb-2">
           <Calendar className="h-6 w-6 text-blue-700" />
           <h3 className="text-2xl font-bold text-gray-900">Lecture Details</h3>
