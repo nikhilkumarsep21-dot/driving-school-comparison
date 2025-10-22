@@ -21,39 +21,99 @@ export function DocumentsSection({ detail }: DocumentsSectionProps) {
     );
   }
 
+  const renderValue = (value: any): string => {
+    if (Array.isArray(value)) {
+      return value.join(', ');
+    }
+    if (typeof value === 'object' && value !== null) {
+      return Object.entries(value)
+        .map(([k, v]) => `${k}: ${String(v)}`)
+        .join(', ');
+    }
+    return String(value);
+  };
+
   const renderDocuments = () => {
     if (Array.isArray(documents)) {
       return (
-        <ul className="space-y-3 ml-6 list-disc marker:text-gold-600">
-          {documents.map((doc: any, index: number) => (
-            <motion.li
-              key={index}
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.3, delay: index * 0.05 }}
-              className="text-gray-900"
-            >
-              <div>
-                <h4 className="font-bold text-gray-900 inline">
-                  {typeof doc === 'string' ? doc : doc.name || doc.title || 'Required Document'}
-                </h4>
-                {typeof doc === 'object' && doc.type && (
-                  <p className="text-sm font-semibold text-gray-600 mt-1">{doc.type}</p>
-                )}
-                {typeof doc === 'object' && doc.description && (
-                  <p className="text-sm text-gray-700 mt-1">{doc.description}</p>
-                )}
-                {typeof doc === 'object' && doc.notes && (
-                  <p className="text-sm text-gray-400 mt-1">{doc.notes}</p>
-                )}
-              </div>
-            </motion.li>
-          ))}
-        </ul>
+        <div className="space-y-6">
+          {documents.map((doc: any, index: number) => {
+            if (typeof doc === 'string') {
+              return (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.3, delay: index * 0.05 }}
+                  className="flex items-start gap-3"
+                >
+                  <FileText className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                  <p className="text-gray-900">{doc}</p>
+                </motion.div>
+              );
+            }
+
+            const docName = doc.name || doc.title || doc.document || 'Required Document';
+            const docType = doc.type || doc.category;
+            const docDescription = doc.description || doc.details;
+            const docNotes = doc.notes || doc.additional_info || doc.remarks;
+
+            return (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: index * 0.1 }}
+                className="bg-white rounded-lg border border-gray-200 p-5 space-y-3 hover:shadow-md transition-shadow"
+              >
+                <div className="flex items-start gap-3">
+                  <FileText className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                  <div className="flex-1 space-y-2">
+                    <h4 className="text-lg font-bold text-gray-900">{docName}</h4>
+
+                    {docType && (
+                      <div className="inline-block px-3 py-1 bg-blue-100 text-blue-800 text-sm font-medium rounded-full">
+                        {docType}
+                      </div>
+                    )}
+
+                    {docDescription && (
+                      <p className="text-gray-700 leading-relaxed">{docDescription}</p>
+                    )}
+
+                    {typeof doc === 'object' && Object.keys(doc).length > 0 && (
+                      <div className="space-y-2 mt-3">
+                        {Object.entries(doc)
+                          .filter(([key]) =>
+                            !['name', 'title', 'document', 'type', 'category', 'description', 'details', 'notes', 'additional_info', 'remarks'].includes(key)
+                          )
+                          .map(([key, value]) => (
+                            <div key={key} className="flex gap-2">
+                              <span className="text-sm font-medium text-gray-600 capitalize">
+                                {key.replace(/_/g, ' ')}:
+                              </span>
+                              <span className="text-sm text-gray-700">{renderValue(value)}</span>
+                            </div>
+                          ))
+                        }
+                      </div>
+                    )}
+
+                    {docNotes && (
+                      <div className="mt-3 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+                        <p className="text-sm text-amber-900 leading-relaxed">{docNotes}</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </motion.div>
+            );
+          })}
+        </div>
       );
     }
 
-    if (typeof documents === 'object') {
+    if (typeof documents === 'object' && documents !== null) {
       return (
         <div className="space-y-6">
           {Object.entries(documents).map(([category, items], catIndex) => (
@@ -62,37 +122,90 @@ export function DocumentsSection({ detail }: DocumentsSectionProps) {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: catIndex * 0.1 }}
-              className="space-y-3"
+              className="space-y-4"
             >
-              <h4 className="text-lg font-semibold text-gray-900 capitalize border-b border-gray-200 pb-2">
+              <h4 className="text-xl font-bold text-gray-900 capitalize border-b-2 border-blue-200 pb-2">
                 {category.replace(/_/g, ' ')}
               </h4>
-              <ul className="space-y-3 ml-6 list-disc marker:text-gold-600">
-                {Array.isArray(items) ? (
-                  items.map((item: any, itemIndex: number) => (
-                    <li key={itemIndex} className="text-gray-900">
-                      <div>
-                        <h5 className="font-bold text-gray-900 inline">
-                          {typeof item === 'string' ? item : item.name || item.title || 'Required Document'}
-                        </h5>
-                        {typeof item === 'object' && item.type && (
-                          <p className="text-sm font-semibold text-gray-600 mt-1">{item.type}</p>
-                        )}
-                        {typeof item === 'object' && item.description && (
-                          <p className="text-sm text-gray-700 mt-1">{item.description}</p>
-                        )}
-                        {typeof item === 'object' && item.notes && (
-                          <p className="text-sm text-gray-400 mt-1">{item.notes}</p>
-                        )}
+
+              {Array.isArray(items) ? (
+                <div className="space-y-4">
+                  {items.map((item: any, itemIndex: number) => {
+                    if (typeof item === 'string') {
+                      return (
+                        <div key={itemIndex} className="flex items-start gap-3 ml-4">
+                          <FileText className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                          <p className="text-gray-900">{item}</p>
+                        </div>
+                      );
+                    }
+
+                    const itemName = item.name || item.title || item.document || 'Required Document';
+                    const itemType = item.type || item.category;
+                    const itemDescription = item.description || item.details;
+                    const itemNotes = item.notes || item.additional_info || item.remarks;
+
+                    return (
+                      <div key={itemIndex} className="bg-white rounded-lg border border-gray-200 p-4 space-y-2">
+                        <div className="flex items-start gap-3">
+                          <FileText className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                          <div className="flex-1 space-y-2">
+                            <h5 className="font-bold text-gray-900">{itemName}</h5>
+
+                            {itemType && (
+                              <div className="inline-block px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-full">
+                                {itemType}
+                              </div>
+                            )}
+
+                            {itemDescription && (
+                              <p className="text-sm text-gray-700 leading-relaxed">{itemDescription}</p>
+                            )}
+
+                            {typeof item === 'object' && Object.keys(item).length > 0 && (
+                              <div className="space-y-1 mt-2">
+                                {Object.entries(item)
+                                  .filter(([key]) =>
+                                    !['name', 'title', 'document', 'type', 'category', 'description', 'details', 'notes', 'additional_info', 'remarks'].includes(key)
+                                  )
+                                  .map(([key, value]) => (
+                                    <div key={key} className="flex gap-2">
+                                      <span className="text-xs font-medium text-gray-600 capitalize">
+                                        {key.replace(/_/g, ' ')}:
+                                      </span>
+                                      <span className="text-xs text-gray-700">{renderValue(value)}</span>
+                                    </div>
+                                  ))
+                                }
+                              </div>
+                            )}
+
+                            {itemNotes && (
+                              <div className="mt-2 p-2 bg-amber-50 border border-amber-200 rounded">
+                                <p className="text-xs text-amber-900 leading-relaxed">{itemNotes}</p>
+                              </div>
+                            )}
+                          </div>
+                        </div>
                       </div>
-                    </li>
-                  ))
-                ) : (
-                  <li className="text-gray-900">
-                    <span className="font-bold">{String(items)}</span>
-                  </li>
-                )}
-              </ul>
+                    );
+                  })}
+                </div>
+              ) : typeof items === 'object' && items !== null ? (
+                <div className="ml-4 space-y-2">
+                  {Object.entries(items).map(([key, value]) => (
+                    <div key={key} className="flex gap-2">
+                      <span className="font-medium text-gray-900 capitalize">{key.replace(/_/g, ' ')}:</span>
+                      <span className="text-gray-700">{renderValue(value)}</span>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="flex items-start gap-3 ml-4">
+                  <FileText className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                  <p className="text-gray-900">{String(items)}</p>
+                </div>
+              )}
             </motion.div>
           ))}
         </div>
@@ -100,7 +213,7 @@ export function DocumentsSection({ detail }: DocumentsSectionProps) {
     }
 
     return (
-      <p className="text-gray-700 ml-6">{String(documents)}</p>
+      <p className="text-gray-700">{String(documents)}</p>
     );
   };
 
