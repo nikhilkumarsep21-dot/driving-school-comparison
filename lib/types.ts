@@ -42,6 +42,36 @@ export interface BranchWithSchool extends Branch {
   school: School;
 }
 
+export interface CourseFee {
+  category: string;
+  min_age: number;
+  internal_training?: string;
+  road_training?: string;
+  total_hours?: number;
+  regular_course_fees?: {
+    hourly?: number;
+    total: number | number[];
+  };
+  sunday_night_shift_fees?: {
+    hourly?: number;
+    total: number | number[];
+  };
+  notes?: string;
+}
+
+export interface OtherFee {
+  type: string;
+  RTA: number | null;
+  DDC: number | null;
+}
+
+export interface Fees {
+  timings?: Record<string, string>;
+  course_fees?: CourseFee[];
+  other_fees?: OtherFee[];
+  notes?: string;
+}
+
 export interface Detail {
   id: string;
   school_id: number;
@@ -49,7 +79,7 @@ export interface Detail {
   documents_required?: any;
   course_details?: any;
   lecture_details?: any;
-  fees?: any;
+  fees?: Fees;
   created_at?: string;
   updated_at?: string;
 }
