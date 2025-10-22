@@ -29,8 +29,13 @@ import { LectureDetailsComparison } from "@/components/comparison/lecture-detail
 import { FeesComparison } from "@/components/comparison/fees-comparison";
 
 export default function ComparePage() {
-  const { schools, removeSchool, detailedBranches, loadBranchDetails, getBranchDetails } =
-    useComparisonStore();
+  const {
+    schools,
+    removeSchool,
+    detailedBranches,
+    loadBranchDetails,
+    getBranchDetails,
+  } = useComparisonStore();
   const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(
     null
   );
@@ -136,13 +141,14 @@ export default function ComparePage() {
 
   return (
     <div className="min-h-screen bg-white">
-      <section className="py-12 sm:py-16 bg-sand-50">
-        <Container>
-          <div className="mx-auto max-w-3xl text-center">
-            <h1 className="mb-4 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
+      <section className="relative overflow-hidden bg-gradient-to-br from-gold-600 to-gold-700 py-12 sm:py-16">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_white_1px,_transparent_1px)] bg-[length:24px_24px] opacity-20" />
+        <Container className="relative">
+          <div className="mx-auto max-w-3xl text-center pt-12">
+            <h1 className="mb-4 text-4xl font-bold tracking-tight text-white sm:text-5xl">
               Compare Branch Locations
             </h1>
-            <p className="text-lg text-gray-600">
+            <p className="text-lg text-gold-100">
               Side-by-side comparison of {branches.length}{" "}
               {branches.length === 1 ? "branch" : "branches"}
             </p>
@@ -163,7 +169,7 @@ export default function ComparePage() {
             )}
 
             <div className="overflow-x-auto -mx-4 px-4">
-              <table className="w-full border-collapse min-w-[800px] border-l border-gray-200">
+              <table className="w-full border-collapse min-w-[800px] border-l border-t border-gray-200">
                 <thead>
                   <tr>
                     <th className="sticky left-0 z-20 bg-white border-b border-r border-gray-200 p-6 text-left">
@@ -211,11 +217,16 @@ export default function ComparePage() {
                               {branch.school?.name}
                             </p>
                             {branch.school && (
-                              <div className="flex items-center justify-center gap-2">
-                                <StarRating
-                                  rating={branch.school.rating}
-                                  size="sm"
-                                />
+                              <div className="flex items-center justify-between gap-2 w-full px-1">
+                                <div className="flex items-center gap-1">
+                                  <StarRating
+                                    rating={branch.school.rating}
+                                    size="sm"
+                                  />
+                                  <span className="font-semibold text-gray-900 text-xs">
+                                    {branch.school.rating}
+                                  </span>
+                                </div>
                                 <span className="text-sm text-gray-600">
                                   {branch.school.rating} (
                                   {branch.school.review_count})
