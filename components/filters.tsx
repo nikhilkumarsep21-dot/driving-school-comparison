@@ -13,7 +13,7 @@ import {
 import { Checkbox } from './ui/checkbox';
 import { Label } from './ui/label';
 import { Slider } from './ui/slider';
-import { CATEGORY_TYPES, SORT_OPTIONS } from '@/lib/constants';
+import { CATEGORY_TYPES, SORT_OPTIONS, DUBAI_CITIES } from '@/lib/constants';
 import { FilterOptions } from '@/lib/types';
 
 interface FiltersProps {
@@ -195,8 +195,22 @@ export function Filters({ filters, onFiltersChange }: FiltersProps) {
           <div className="border-t border-gray-100 pt-6">
             <div className="space-y-3">
               <Label className="text-sm font-semibold text-gray-700">Location (City)</Label>
-              <div className="text-sm text-gray-600">
-                <p>Location filtering available after branches are loaded</p>
+              <div className="space-y-2.5 max-h-60 overflow-y-auto">
+                {DUBAI_CITIES.map((city) => (
+                  <div key={city} className="flex items-center space-x-2.5">
+                    <Checkbox
+                      id={`city-${city}`}
+                      checked={filters.locations?.includes(city)}
+                      onCheckedChange={() => handleLocationToggle(city)}
+                    />
+                    <Label
+                      htmlFor={`city-${city}`}
+                      className="cursor-pointer text-sm font-normal text-gray-700"
+                    >
+                      {city}
+                    </Label>
+                  </div>
+                ))}
               </div>
             </div>
           </div>

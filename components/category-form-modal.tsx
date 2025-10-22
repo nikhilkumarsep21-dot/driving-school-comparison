@@ -26,23 +26,7 @@ import {
   StepperTitle,
   StepperSeparator,
 } from "@/components/ui/stepper";
-import { CATEGORY_TYPES } from "@/lib/constants";
-
-const DUBAI_AREAS = [
-  'Dubai Marina',
-  'Downtown Dubai',
-  'Jumeirah',
-  'Deira',
-  'Al Barsha',
-  'Al Qusais',
-  'Al Garhoud',
-  'Al Quoz',
-  'Motor City',
-  'Dubai Silicon Oasis',
-  'Business Bay',
-  'Nad Al Hamar',
-  'Al Aweer',
-];
+import { CATEGORY_TYPES, DUBAI_CITIES } from "@/lib/constants";
 import {
   getUserDetailsFromCookie,
   saveUserDetailsToCookie,
@@ -212,9 +196,9 @@ export function CategoryFormModal({
                         <SelectValue placeholder="Choose your area" />
                       </SelectTrigger>
                       <SelectContent>
-                        {DUBAI_AREAS.map((area) => (
-                          <SelectItem key={area} value={area}>
-                            {area}
+                        {DUBAI_CITIES.map((city) => (
+                          <SelectItem key={city} value={city}>
+                            {city}
                           </SelectItem>
                         ))}
                       </SelectContent>
