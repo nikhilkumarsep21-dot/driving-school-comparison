@@ -9,33 +9,61 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
+    const branchId = parseInt(id, 10);
 
-    const { data: school, error } = await supabase
-      .from('schools')
+    if (isNaN(branchId)) {
+      return NextResponse.json(
+        { error: 'Invalid branch ID' },
+        { status: 400 }
+      );
+    }
+
+    const { data: branch, error } = await supabase
+      .from('branches')
       .select(`
         *,
-        license_categories (*)
+        school:schools(*)
       `)
-      .eq('slug', id)
+      .eq('id', branchId)
       .maybeSingle();
 
     if (error) {
+      console.error('Error fetching branch:', error);
       return NextResponse.json(
-        { error: 'Failed to fetch school' },
+        { error: 'Failed to fetch branch' },
         { status: 500 }
       );
     }
 
-    if (!school) {
+    if (!branch) {
       return NextResponse.json(
-        { error: 'School not found' },
+        { error: 'Branch not found' },
         { status: 404 }
       );
     }
 
-    return NextResponse.json({ school });
+    const { data: details, error: detailsError } = await supabase
+      .from('details')
+      .select(`
+        *,
+        category:categories(*)
+      `)
+      .eq('school_id', branch.school_id);
+
+    if (detailsError) {
+      console.error('Error fetching details:', detailsError);
+    }
+
+    return NextResponse.json({
+      school: {
+        ...branch,
+        details: details || [],
+        categories: details?.map((d: any) => d.category).filter(Boolean) || []
+      }
+    });
 
   } catch (error) {
+    console.error('Internal server error:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

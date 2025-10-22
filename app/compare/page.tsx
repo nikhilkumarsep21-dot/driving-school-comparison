@@ -122,20 +122,20 @@ export default function ComparePage() {
                         <motion.div
                           initial={{ opacity: 0, y: 20 }}
                           animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: schoolIndex * 0.1 }}
+                          transition={{ delay: branchIndex * 0.1 }}
                           className="relative"
                         >
                           <button
-                            onClick={() => removeSchool(school.id)}
+                            onClick={() => removeSchool(branch.id)}
                             className="absolute right-0 top-0 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-gray-600 transition-all hover:bg-red-500 hover:text-white hover:scale-110"
                           >
                             <X className="h-4 w-4" />
                           </button>
 
-                          <div className="relative aspect-[4/3] overflow-hidden rounded-lg mb-4">
+                          <div className="relative aspect-[4/3] overflow-hidden rounded-lg mb-4 bg-gradient-to-br from-gold-100 to-sand-100">
                             <Image
-                              src={school.image_url}
-                              alt={school.name}
+                              src={branch.school?.logo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(branch.school?.name || 'School')}&background=f59e0b&color=fff&size=400`}
+                              alt={branch.name}
                               fill
                               className="object-cover"
                             />
@@ -166,8 +166,8 @@ export default function ComparePage() {
                 <tbody>
                   <ComparisonRowData
                     label="Location"
-                    schools={schools}
-                    renderCell={(school) => (
+                    schools={branches}
+                    renderCell={(branch) => (
                       <div className="text-center">
                         <p className="font-semibold text-gray-900">
                           {school.location_area}
@@ -266,9 +266,9 @@ export default function ComparePage() {
                   ))}
 
                   <ComparisonRowData
-                    label="Contact Info"
-                    schools={schools}
-                    renderCell={(school) => (
+                    label="Directions"
+                    schools={branches}
+                    renderCell={(branch) => (
                       <div className="space-y-2">
                         <a
                           href={`tel:${school.phone}`}
@@ -290,7 +290,7 @@ export default function ComparePage() {
                         </a>
                         {school.website && (
                           <a
-                            href={school.website}
+                            href={branch.directions_url}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="flex items-center justify-center gap-2 text-gray-900 hover:text-gold-600 transition-colors"

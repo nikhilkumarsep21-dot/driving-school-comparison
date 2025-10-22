@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { School } from "@/lib/types";
+import { BranchWithSchool } from "@/lib/types";
 import { StarRating } from "./ui/star-rating";
 import { LicenseBadge } from "./ui/license-badge";
 import { PriceDisplay } from "./ui/price-display";
@@ -14,43 +14,38 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 
 interface SchoolCardProps {
-  school: School;
+  school: BranchWithSchool;
   index?: number;
 }
 
-export function SchoolCard({ school, index = 0 }: SchoolCardProps) {
+export function SchoolCard({ school: branch, index = 0 }: SchoolCardProps) {
   const { addSchool, removeSchool, isInComparison, canAddMore } =
     useComparisonStore();
-  const inComparison = isInComparison(school.id);
+  const inComparison = isInComparison(branch.id);
   const [imageError, setImageError] = React.useState(false);
 
-  const minPrice =
-    school.license_categories && school.license_categories.length > 0
-      ? Math.min(...school.license_categories.map((cat) => cat.price))
-      : 0;
-
-  const uniqueTypes = school.license_categories
-    ? Array.from(new Set(school.license_categories.map((cat) => cat.type)))
-    : [];
+  const school = branch.school;
 
   const handleCompareClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
 
     if (inComparison) {
-      removeSchool(school.id);
-      toast.info(`${school.name} removed from comparison`);
+      removeSchool(branch.id);
+      toast.info(`${branch.name} removed from comparison`);
     } else {
-      const success = addSchool(school);
+      const success = addSchool(branch);
       if (!success) {
         if (!canAddMore()) {
-          toast.error("You can only compare up to 3 schools");
+          toast.error("You can only compare up to 3 branches");
         }
       } else {
-        toast.success(`${school.name} added to comparison`);
+        toast.success(`${branch.name} added to comparison`);
       }
     }
   };
+
+  const imageUrl = school?.logo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(school?.name || 'School')}&background=f59e0b&color=fff&size=400`;
 
   return (
     <motion.div
@@ -65,12 +60,12 @@ export function SchoolCard({ school, index = 0 }: SchoolCardProps) {
       ].join(" ")}
     >
       <div className="w-full">
-        <Link href={`/school/${school.slug}`}>
+        <Link href={`/school/${branch.id}`}>
           <div className="relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-gold-100 to-sand-100 w-full">
             {!imageError ? (
               <Image
-                src={school.image_url}
-                alt={`${school.name} - Driving School in ${school.location_area}`}
+                src={imageUrl}
+                alt={`${branch.name} - ${school?.name || ''}`}
                 fill
                 className="object-cover transition-transform duration-500 group-hover:scale-105"
                 onError={() => setImageError(true)}
@@ -112,40 +107,38 @@ export function SchoolCard({ school, index = 0 }: SchoolCardProps) {
 
       <div className="space-y-4 p-5">
         <div className="space-y-2">
-          <Link href={`/school/${school.slug}`}>
+          <Link href={`/school/${branch.id}`}>
             <h3 className="text-lg font-bold text-gray-900 transition-colors hover:text-gold-600">
-              {school.name}
+              {branch.name}
             </h3>
+            {school && (
+              <p className="text-sm text-gray-600">{school.name}</p>
+            )}
           </Link>
 
-          <div className="flex items-center gap-4">
-            <StarRating rating={school.rating} size="sm" />
-            <span className="flex items-center gap-1 text-xs text-gray-500">
-              <Users className="h-3 w-3" />
-              {school.review_count} reviews
-            </span>
-          </div>
+          {school && (
+            <div className="flex items-center gap-4">
+              <StarRating rating={school.rating} size="sm" />
+              <span className="flex items-center gap-1 text-xs text-gray-500">
+                <Users className="h-3 w-3" />
+                {school.review_count} reviews
+              </span>
+            </div>
+          )}
 
           <div className="flex items-center gap-1.5 text-sm text-gray-600">
             <MapPin className="h-4 w-4 text-gold-500" />
-            {school.location_area}
+            {branch.city || 'Dubai'}
           </div>
         </div>
 
-        <div className="flex flex-wrap gap-1.5">
-          {uniqueTypes.slice(0, 3).map((type) => (
-            <LicenseBadge key={type} type={type} />
-          ))}
-          {uniqueTypes.length > 3 && (
-            <span className="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-600">
-              +{uniqueTypes.length - 3} more
-            </span>
-          )}
-        </div>
-
         <div className="flex items-center justify-between border-t border-gray-100 pt-4">
-          {minPrice > 0 && <PriceDisplay price={minPrice} size="sm" />}
-          <Link href={`/school/${school.slug}`}>
+          <div className="text-sm text-gray-600">
+            <span className="font-semibold text-gray-900">Contact:</span>
+            <br />
+            {branch.contact || school?.contact || 'N/A'}
+          </div>
+          <Link href={`/school/${branch.id}`}>
             <Button
               variant="outline"
               size="sm"

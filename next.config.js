@@ -4,15 +4,43 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   images: {
-    domains: [
-      'images.pexels.com',
-      'd3jvxfsgjxj1vz.cloudfront.net',
-      'www.gmdc.ae',
-      'blog.sothebysrealty.ae',
-      'encrypted-tbn0.gstatic.com',
-      'd2hucwwplm5rxi.cloudfront.net',
-      'www.thenationalnews.com',
-      'i.ytimg.com',
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'images.pexels.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'd3jvxfsgjxj1vz.cloudfront.net',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.gmdc.ae',
+      },
+      {
+        protocol: 'https',
+        hostname: 'blog.sothebysrealty.ae',
+      },
+      {
+        protocol: 'https',
+        hostname: 'encrypted-tbn0.gstatic.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'd2hucwwplm5rxi.cloudfront.net',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.thenationalnews.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'i.ytimg.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'ui-avatars.com',
+      },
     ],
   },
     webpack: (config) => {

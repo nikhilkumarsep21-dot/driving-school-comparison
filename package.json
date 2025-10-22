@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
-    "clean": "rm -rf .next node_modules package-lock.json yarn.lock pnpm-lock.yaml && npm cache clean --force"
+    "clean": "rm -rf .next node_modules package-lock.json yarn.lock pnpm-lock.yaml && npm cache clean --force",
+    "import:school4": "tsx scripts/import-school-4-details.ts",
+    "test:school4": "tsx scripts/test-school-4-details.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
@@ -54,7 +56,6 @@
     "eslint": "8.49.0",
     "eslint-config-next": "13.5.1",
     "framer-motion": "^12.23.24",
-    "input-otp": "^1.2.4",
     "lucide-react": "^0.446.0",
     "next": "13.5.1",
     "next-themes": "^0.3.0",

@@ -3,62 +3,49 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { LicenseType } from "@/lib/types";
-import { LICENSE_TYPES } from "@/lib/constants";
+import { CATEGORY_TYPES } from "@/lib/constants";
 import { CategoryFormModal } from "@/components/category-form-modal";
 
 const CATEGORY_CONFIG = [
   {
-    type: "motorcycle" as LicenseType,
+    id: 1,
     icon: "/icons/motorcycle_icon_128px.png",
     description: "Get your motorcycle license",
   },
   {
-    type: "light_motor_vehicle" as LicenseType,
+    id: 2,
     icon: "/icons/hatchback_car_icon_128px.png",
     description: "Manual and automatic car training",
   },
   {
-    type: "heavy_truck" as LicenseType,
+    id: 3,
     icon: "/icons/semi_truck_icon_128px.png",
     description: "Professional truck driving license",
   },
   {
-    type: "light_bus" as LicenseType,
+    id: 4,
     icon: "/icons/minibus_icon_128px.png",
-    description: (
-      <>
-        Light bus
-        <br />
-        license training
-      </>
-    ),
+    description: "Light bus license training",
   },
   {
-    type: "heavy_bus" as LicenseType,
+    id: 5,
     icon: "/icons/green_bus_icon_128px.png",
-    description: (
-      <>
-        Heavy bus
-        <br />
-        license training
-      </>
-    ),
+    description: "Heavy bus license training",
   },
   {
-    type: "light_forklift" as LicenseType,
+    id: 6,
     icon: "/icons/forklift_icon_128px.png",
     description: "Light forklift operator license",
   },
   {
-    type: "heavy_forklift" as LicenseType,
+    id: 7,
     icon: "/icons/forklift_heavy_icon_128px.png",
     description: "Heavy forklift operator license",
   },
 ];
 
 export function CategorySelection() {
-  const [selectedCategory, setSelectedCategory] = useState<LicenseType | null>(
+  const [selectedCategory, setSelectedCategory] = useState<number | null>(
     null
   );
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -68,8 +55,8 @@ export function CategorySelection() {
     ? CATEGORY_CONFIG
     : CATEGORY_CONFIG.slice(0, 5);
 
-  const handleCategoryClick = (category: LicenseType) => {
-    setSelectedCategory(category);
+  const handleCategoryClick = (categoryId: number) => {
+    setSelectedCategory(categoryId);
     setIsModalOpen(true);
   };
 
@@ -82,12 +69,12 @@ export function CategorySelection() {
     <>
       <div className="grid gap-8 grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
         {visibleCategories.map((category, index) => {
-          const licenseInfo = LICENSE_TYPES[category.type];
+          const licenseInfo = CATEGORY_TYPES[category.id];
 
           return (
             <motion.button
-              key={category.type}
-              onClick={() => handleCategoryClick(category.type)}
+              key={category.id}
+              onClick={() => handleCategoryClick(category.id)}
               className={[
                 "group relative overflow-hidden",
                 "rounded-xl border bg-card text-card-foreground p-8 flex flex-col items-center text-center",

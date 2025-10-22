@@ -13,8 +13,8 @@ import {
 import { Checkbox } from './ui/checkbox';
 import { Label } from './ui/label';
 import { Slider } from './ui/slider';
-import { LICENSE_TYPES, DUBAI_AREAS, SORT_OPTIONS } from '@/lib/constants';
-import { FilterOptions, LicenseType } from '@/lib/types';
+import { CATEGORY_TYPES, SORT_OPTIONS } from '@/lib/constants';
+import { FilterOptions } from '@/lib/types';
 
 interface FiltersProps {
   filters: FilterOptions;
@@ -26,11 +26,11 @@ export function Filters({ filters, onFiltersChange }: FiltersProps) {
     onFiltersChange({ ...filters, search: value });
   };
 
-  const handleCategoryToggle = (category: LicenseType) => {
+  const handleCategoryToggle = (categoryId: number) => {
     const current = filters.categories || [];
-    const updated = current.includes(category)
-      ? current.filter(c => c !== category)
-      : [...current, category];
+    const updated = current.includes(categoryId)
+      ? current.filter(c => c !== categoryId)
+      : [...current, categoryId];
     onFiltersChange({ ...filters, categories: updated });
   };
 
@@ -93,15 +93,15 @@ export function Filters({ filters, onFiltersChange }: FiltersProps) {
             </span>
           </div>
           <div className="flex flex-wrap gap-2">
-            {filters.categories?.map((category) => (
+            {filters.categories?.map((categoryId) => (
               <Button
-                key={category}
+                key={categoryId}
                 variant="secondary"
                 size="sm"
-                onClick={() => handleCategoryToggle(category)}
+                onClick={() => handleCategoryToggle(categoryId)}
                 className="h-7 text-xs"
               >
-                {LICENSE_TYPES[category].label}
+                {CATEGORY_TYPES[categoryId]?.label || `Category ${categoryId}`}
                 <X className="ml-1 h-3 w-3" />
               </Button>
             ))}
@@ -170,44 +170,33 @@ export function Filters({ filters, onFiltersChange }: FiltersProps) {
             <div className="space-y-3">
               <Label className="text-sm font-semibold text-gray-700">License Type</Label>
               <div className="space-y-2.5">
-                {(Object.keys(LICENSE_TYPES) as LicenseType[]).map((type) => (
-                  <div key={type} className="flex items-center space-x-2.5">
-                    <Checkbox
-                      id={`sidebar-${type}`}
-                      checked={filters.categories?.includes(type)}
-                      onCheckedChange={() => handleCategoryToggle(type)}
-                    />
-                    <Label
-                      htmlFor={`sidebar-${type}`}
-                      className="cursor-pointer text-sm font-normal text-gray-700"
-                    >
-                      {LICENSE_TYPES[type].label}
-                    </Label>
-                  </div>
-                ))}
+                {Object.keys(CATEGORY_TYPES).map((categoryId) => {
+                  const id = parseInt(categoryId, 10);
+                  return (
+                    <div key={id} className="flex items-center space-x-2.5">
+                      <Checkbox
+                        id={`sidebar-${id}`}
+                        checked={filters.categories?.includes(id)}
+                        onCheckedChange={() => handleCategoryToggle(id)}
+                      />
+                      <Label
+                        htmlFor={`sidebar-${id}`}
+                        className="cursor-pointer text-sm font-normal text-gray-700"
+                      >
+                        {CATEGORY_TYPES[id].label}
+                      </Label>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </div>
 
           <div className="border-t border-gray-100 pt-6">
             <div className="space-y-3">
-              <Label className="text-sm font-semibold text-gray-700">Location</Label>
-              <div className="max-h-64 space-y-2.5 overflow-y-auto pr-2">
-                {DUBAI_AREAS.map((area) => (
-                  <div key={area} className="flex items-center space-x-2.5">
-                    <Checkbox
-                      id={`sidebar-${area}`}
-                      checked={filters.locations?.includes(area)}
-                      onCheckedChange={() => handleLocationToggle(area)}
-                    />
-                    <Label
-                      htmlFor={`sidebar-${area}`}
-                      className="cursor-pointer text-sm font-normal text-gray-700"
-                    >
-                      {area}
-                    </Label>
-                  </div>
-                ))}
+              <Label className="text-sm font-semibold text-gray-700">Location (City)</Label>
+              <div className="text-sm text-gray-600">
+                <p>Location filtering available after branches are loaded</p>
               </div>
             </div>
           </div>

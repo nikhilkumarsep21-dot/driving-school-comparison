@@ -26,46 +26,55 @@ import {
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 
+interface BranchData extends BranchWithSchool {
+  details?: Detail[];
+  categories?: Category[];
+}
+
 export default function SchoolDetailPage() {
   const params = useParams();
   const slug = params.slug as string;
-  const [school, setSchool] = useState<School | null>(null);
+  const [branch, setBranch] = useState<BranchData | null>(null);
   const [loading, setLoading] = useState(true);
   const { addSchool, removeSchool, isInComparison, canAddMore } =
     useComparisonStore();
 
   useEffect(() => {
-    const fetchSchool = async () => {
+    const fetchBranch = async () => {
       try {
         const response = await fetch(`/api/schools/${slug}`);
         const data = await response.json();
-        setSchool(data.school);
+        setBranch(data.school);
+
+        if (data.school?.categories && data.school.categories.length > 0) {
+          setSelectedCategoryId(data.school.categories[0].id);
+        }
       } catch (error) {
-        console.error("Failed to fetch school:", error);
+  console.error("Failed to fetch school:", error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchSchool();
+    fetchBranch();
   }, [slug]);
 
   const handleCompareToggle = () => {
-    if (!school) return;
+    if (!branch) return;
 
-    const inComparison = isInComparison(school.id);
+    const inComparison = isInComparison(branch.id);
 
     if (inComparison) {
-      removeSchool(school.id);
-      toast.info(`${school.name} removed from comparison`);
+      removeSchool(branch.id);
+      toast.info(`${branch.name} removed from comparison`);
     } else {
-      const success = addSchool(school);
+      const success = addSchool(branch);
       if (!success) {
         if (!canAddMore()) {
           toast.error("You can only compare up to 3 schools");
         }
       } else {
-        toast.success(`${school.name} added to comparison`);
+        toast.success(`${branch.name} added to comparison`);
       }
     }
   };
@@ -88,7 +97,7 @@ export default function SchoolDetailPage() {
     );
   }
 
-  if (!school) {
+  if (!branch) {
     return (
       <Container>
         <div className="flex min-h-[60vh] flex-col items-center justify-center py-16 text-center">
@@ -96,7 +105,7 @@ export default function SchoolDetailPage() {
             School Not Found
           </h1>
           <p className="mb-8 text-gray-600">
-            The driving school you're looking for doesn't exist.
+            The driving school branch you're looking for doesn't exist.
           </p>
           <Link href="/">
             <Button className="bg-gold-500 hover:bg-gold-600">
@@ -109,7 +118,22 @@ export default function SchoolDetailPage() {
     );
   }
 
-  const inComparison = isInComparison(school.id);
+  const school = branch.school;
+  const inComparison = isInComparison(branch.id);
+
+  const selectedDetail = branch.details?.find(
+    (detail) => detail.category_id === selectedCategoryId
+  );
+  const selectedCategory = branch.categories?.find(
+    (cat) => cat.id === selectedCategoryId
+  );
+
+  const availableSections = {
+    details: !!selectedDetail?.course_details,
+    documents: !!selectedDetail?.documents_required,
+    lectures: !!selectedDetail?.lecture_details,
+    fees: !!selectedDetail?.fees,
+  };
 
   return (
     <div className="pb-20 bg-white">
@@ -123,8 +147,8 @@ export default function SchoolDetailPage() {
             <div className="relative mb-8 overflow-hidden rounded-xl border bg-card text-card-foreground transition-all duration-300">
               <div className="relative aspect-[21/9]">
                 <Image
-                  src={school.image_url}
-                  alt={school.name}
+                  src={school?.logo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(school?.name || 'School')}&background=f59e0b&color=fff&size=800`}
+                  alt={school?.name || 'School'}
                   fill
                   className="object-cover"
                   priority
@@ -150,11 +174,11 @@ export default function SchoolDetailPage() {
                     </span>
                     {school.established_year && (
                       <span className="flex items-center gap-1 text-sm opacity-90">
-                        <Calendar className="h-4 w-4" />
-                        Est. {school.established_year}
+                        <MapPin className="h-4 w-4" />
+                        {branch.city || 'Dubai'}
                       </span>
-                    )}
-                  </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -229,10 +253,14 @@ export default function SchoolDetailPage() {
                               </div>
                             )}
                         </div>
-                      </motion.div>
-                    ))}
+                      </div>
+                    )}
                   </div>
-                </div>
+                ) : (
+                  <div className="mb-8 rounded-2xl bg-gray-50 p-8 text-center">
+                    <p className="text-gray-600">Course details will be available soon. Please contact the branch directly for pricing and schedule information.</p>
+                  </div>
+                )}
               </div>
 
               <div className="space-y-6">
@@ -272,7 +300,7 @@ export default function SchoolDetailPage() {
                         </div>
                       </a>
 
-                      {school.website && (
+                      {school?.website && (
                         <a
                           href={school.website}
                           target="_blank"
@@ -287,6 +315,23 @@ export default function SchoolDetailPage() {
                             <div className="font-medium text-gray-900">
                               Visit Website
                             </div>
+                          </div>
+                        </a>
+                      )}
+
+                      {branch.directions_url && (
+                        <a
+                          href={branch.directions_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-3 text-gray-600 transition-colors hover:text-gold-600"
+                        >
+                          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gold-50">
+                            <ExternalLink className="h-5 w-5 text-gold-600" />
+                          </div>
+                          <div>
+                            <div className="text-xs text-gray-500">Directions</div>
+                            <div className="font-medium text-gray-900">Get Directions</div>
                           </div>
                         </a>
                       )}
@@ -315,7 +360,7 @@ export default function SchoolDetailPage() {
                             {school.operating_hours}
                           </div>
                         </div>
-                      </div>
+                      )}
                     </div>
                   </div>
 
@@ -342,7 +387,7 @@ export default function SchoolDetailPage() {
                           height="100%"
                           frameBorder="0"
                           style={{ border: 0 }}
-                          src={`https://www.google.com/maps?q=${school.coordinates.lat},${school.coordinates.lng}&output=embed`}
+                          src={`https://www.google.com/maps?q=${branch.coordinates.lat},${branch.coordinates.lng}&output=embed`}
                           allowFullScreen
                         />
                       </div>
