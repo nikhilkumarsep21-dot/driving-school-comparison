@@ -53,7 +53,7 @@ export function DocumentsSection({ detail }: DocumentsSectionProps) {
               );
             }
 
-            const docName = doc.name || doc.title || doc.document || 'Required Document';
+            const docName = doc.name || doc.title || doc.document;
             const docType = doc.type || doc.category;
             const docDescription = doc.description || doc.details;
             const docNotes = doc.notes || doc.additional_info || doc.remarks;
@@ -69,7 +69,9 @@ export function DocumentsSection({ detail }: DocumentsSectionProps) {
                 <div className="flex items-start gap-3">
                   <FileText className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
                   <div className="flex-1 space-y-2">
-                    <h4 className="text-lg font-bold text-gray-900">{docName}</h4>
+                    {docName && (
+                      <h4 className="text-lg font-bold text-gray-900">{docName}</h4>
+                    )}
 
                     {docType && (
                       <div className="inline-block px-3 py-1 bg-blue-100 text-blue-800 text-sm font-medium rounded-full">
@@ -140,7 +142,7 @@ export function DocumentsSection({ detail }: DocumentsSectionProps) {
                       );
                     }
 
-                    const itemName = item.name || item.title || item.document || 'Required Document';
+                    const itemName = item.name || item.title || item.document;
                     const itemType = item.type || item.category;
                     const itemDescription = item.description || item.details;
                     const itemNotes = item.notes || item.additional_info || item.remarks;
@@ -150,7 +152,9 @@ export function DocumentsSection({ detail }: DocumentsSectionProps) {
                         <div className="flex items-start gap-3">
                           <FileText className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
                           <div className="flex-1 space-y-2">
-                            <h5 className="font-bold text-gray-900">{itemName}</h5>
+                            {itemName && (
+                              <h5 className="font-bold text-gray-900">{itemName}</h5>
+                            )}
 
                             {itemType && (
                               <div className="inline-block px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-full">

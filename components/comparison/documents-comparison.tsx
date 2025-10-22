@@ -47,7 +47,7 @@ export function DocumentsComparison({
             }
 
             const docName =
-              doc.name || doc.title || doc.document || 'Required Document';
+              doc.name || doc.title || doc.document;
             return (
               <div
                 key={index}
@@ -56,7 +56,9 @@ export function DocumentsComparison({
                 <div className="flex items-start gap-2">
                   <FileText className="h-3 w-3 text-blue-600 mt-0.5 flex-shrink-0" />
                   <div className="flex-1">
-                    <p className="font-semibold text-gray-900 text-xs">{docName}</p>
+                    {docName && (
+                      <p className="font-semibold text-gray-900 text-xs">{docName}</p>
+                    )}
                     {doc.type && (
                       <span className="inline-block mt-1 px-2 py-0.5 bg-blue-100 text-blue-800 text-xs rounded-full">
                         {doc.type}
