@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Detail } from '@/lib/types';
-import { Calendar } from 'lucide-react';
+import { Calendar, CheckCircle2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 interface LectureDetailsSectionProps {
@@ -58,11 +58,13 @@ export function LectureDetailsSection({ detail }: LectureDetailsSectionProps) {
             const titleItems = entries.filter(([key]) => key.toLowerCase().includes('title') || key.toLowerCase().includes('name'));
             const typeItems = entries.filter(([key]) => key.toLowerCase().includes('type') || key.toLowerCase().includes('format'));
             const noteItems = entries.filter(([key]) => key.toLowerCase().includes('note') || key.toLowerCase().includes('remark') || key.toLowerCase().includes('info'));
+            const detailsArray = entries.find(([key]) => key.toLowerCase() === 'details')?.[1];
             const detailItems = entries.filter(([key]) => {
               const lowerKey = key.toLowerCase();
               return !lowerKey.includes('title') && !lowerKey.includes('name') &&
                      !lowerKey.includes('type') && !lowerKey.includes('format') &&
-                     !lowerKey.includes('note') && !lowerKey.includes('remark') && !lowerKey.includes('info');
+                     !lowerKey.includes('note') && !lowerKey.includes('remark') && !lowerKey.includes('info') &&
+                     lowerKey !== 'details';
             });
 
             return (
@@ -86,6 +88,23 @@ export function LectureDetailsSection({ detail }: LectureDetailsSectionProps) {
                     </div>
                   </div>
                 ))}
+
+                {Array.isArray(detailsArray) && detailsArray.length > 0 && (
+                  <ul className="space-y-3">
+                    {detailsArray.map((item: string, index: number) => (
+                      <motion.li
+                        key={index}
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.3, delay: index * 0.05 }}
+                        className="flex items-start gap-3"
+                      >
+                        <CheckCircle2 className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                        <span className="text-gray-700 leading-relaxed">{item}</span>
+                      </motion.li>
+                    ))}
+                  </ul>
+                )}
 
                 {detailItems.length > 0 && (
                   <div className="space-y-3">
@@ -123,11 +142,13 @@ export function LectureDetailsSection({ detail }: LectureDetailsSectionProps) {
       const titleItems = entries.filter(([key]) => key.toLowerCase().includes('title') || key.toLowerCase().includes('name'));
       const typeItems = entries.filter(([key]) => key.toLowerCase().includes('type') || key.toLowerCase().includes('format'));
       const noteItems = entries.filter(([key]) => key.toLowerCase().includes('note') || key.toLowerCase().includes('remark') || key.toLowerCase().includes('info'));
+      const detailsArray = entries.find(([key]) => key.toLowerCase() === 'details')?.[1];
       const detailItems = entries.filter(([key]) => {
         const lowerKey = key.toLowerCase();
         return !lowerKey.includes('title') && !lowerKey.includes('name') &&
                !lowerKey.includes('type') && !lowerKey.includes('format') &&
-               !lowerKey.includes('note') && !lowerKey.includes('remark') && !lowerKey.includes('info');
+               !lowerKey.includes('note') && !lowerKey.includes('remark') && !lowerKey.includes('info') &&
+               lowerKey !== 'details';
       });
 
       return (
@@ -145,6 +166,23 @@ export function LectureDetailsSection({ detail }: LectureDetailsSectionProps) {
               </div>
             </div>
           ))}
+
+          {Array.isArray(detailsArray) && detailsArray.length > 0 && (
+            <ul className="space-y-3">
+              {detailsArray.map((item: string, index: number) => (
+                <motion.li
+                  key={index}
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.3, delay: index * 0.05 }}
+                  className="flex items-start gap-3"
+                >
+                  <CheckCircle2 className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                  <span className="text-gray-700 leading-relaxed">{item}</span>
+                </motion.li>
+              ))}
+            </ul>
+          )}
 
           {detailItems.length > 0 && (
             <div className="space-y-3">

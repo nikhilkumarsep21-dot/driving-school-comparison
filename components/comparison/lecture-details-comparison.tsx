@@ -2,7 +2,7 @@
 
 import { BranchWithDetails, Detail } from '@/lib/types';
 import { ComparisonRow, ComparisonEmptyCell } from './comparison-row';
-import { Calendar } from 'lucide-react';
+import { Calendar, CheckCircle2 } from 'lucide-react';
 
 interface LectureDetailsComparisonProps {
   branches: BranchWithDetails[];
@@ -46,6 +46,8 @@ export function LectureDetailsComparison({
               );
             }
 
+            const detailsArray = lecture.details;
+
             return (
               <div
                 key={index}
@@ -59,11 +61,21 @@ export function LectureDetailsComparison({
                     {lecture.type}
                   </span>
                 )}
+                {Array.isArray(detailsArray) && detailsArray.length > 0 && (
+                  <ul className="space-y-2">
+                    {detailsArray.map((item: string, itemIndex: number) => (
+                      <li key={itemIndex} className="flex items-start gap-2 text-xs">
+                        <CheckCircle2 className="h-3 w-3 text-blue-600 mt-0.5 flex-shrink-0" />
+                        <span className="text-gray-900 leading-relaxed">{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
                 <div className="space-y-1">
                   {Object.entries(lecture)
                     .filter(
                       ([key]) =>
-                        !['title', 'type', 'notes', 'name'].includes(key)
+                        !['title', 'type', 'notes', 'name', 'details'].includes(key)
                     )
                     .map(([key, value]) => (
                       <div key={key} className="text-xs">
@@ -87,16 +99,30 @@ export function LectureDetailsComparison({
     }
 
     if (typeof lectureDetails === 'object' && lectureDetails !== null) {
+      const detailsArray = (lectureDetails as any).details;
+
       return (
         <div className="space-y-2">
-          {Object.entries(lectureDetails).map(([key, value]) => (
-            <div key={key} className="text-xs">
-              <span className="font-medium text-gray-600 capitalize">
-                {key.replace(/_/g, ' ')}:
-              </span>{' '}
-              <span className="text-gray-900">{String(value)}</span>
-            </div>
-          ))}
+          {Array.isArray(detailsArray) && detailsArray.length > 0 && (
+            <ul className="space-y-2">
+              {detailsArray.map((item: string, itemIndex: number) => (
+                <li key={itemIndex} className="flex items-start gap-2 text-xs">
+                  <CheckCircle2 className="h-3 w-3 text-blue-600 mt-0.5 flex-shrink-0" />
+                  <span className="text-gray-900 leading-relaxed">{item}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+          {Object.entries(lectureDetails)
+            .filter(([key]) => key !== 'details')
+            .map(([key, value]) => (
+              <div key={key} className="text-xs">
+                <span className="font-medium text-gray-600 capitalize">
+                  {key.replace(/_/g, ' ')}:
+                </span>{' '}
+                <span className="text-gray-900">{String(value)}</span>
+              </div>
+            ))}
         </div>
       );
     }
