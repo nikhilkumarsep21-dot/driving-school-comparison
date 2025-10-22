@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
-    "clean": "rm -rf .next node_modules package-lock.json yarn.lock pnpm-lock.yaml && npm cache clean --force"
+    "clean": "rm -rf .next node_modules package-lock.json yarn.lock pnpm-lock.yaml && npm cache clean --force",
+    "import:school4": "tsx scripts/import-school-4-details.ts",
+    "test:school4": "tsx scripts/test-school-4-details.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
