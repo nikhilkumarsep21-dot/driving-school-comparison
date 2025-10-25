@@ -3,10 +3,10 @@
 import { useEffect, useState } from 'react';
 import { SchoolCard } from './school-card';
 import { LoadingCard } from './ui/loading-card';
-import { BranchWithSchool } from '@/lib/types';
+import { SchoolWithLocations } from '@/lib/types';
 
 export function FeaturedSchools() {
-  const [schools, setSchools] = useState<BranchWithSchool[]>([]);
+  const [schools, setSchools] = useState<SchoolWithLocations[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

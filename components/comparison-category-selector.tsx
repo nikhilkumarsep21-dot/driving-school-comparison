@@ -1,14 +1,14 @@
 'use client';
 
-import { Category } from '@/lib/types';
+import { LicenseType } from '@/lib/types';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
 interface ComparisonCategorySelectorProps {
-  categories: Category[];
-  selectedCategoryId: number | null;
-  onSelectCategory: (categoryId: number | null) => void;
-  branchAvailability?: Record<number, boolean>;
+  categories: LicenseType[];
+  selectedCategoryId: string | null;
+  onSelectCategory: (categoryId: string | null) => void;
+  branchAvailability?: Record<string, boolean>;
 }
 
 export function ComparisonCategorySelector({

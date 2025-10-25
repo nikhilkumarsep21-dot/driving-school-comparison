@@ -13,7 +13,7 @@ import {
 import { Checkbox } from './ui/checkbox';
 import { Label } from './ui/label';
 import { Slider } from './ui/slider';
-import { CATEGORY_TYPES, SORT_OPTIONS, DUBAI_CITIES } from '@/lib/constants';
+import { LICENSE_TYPES, SORT_OPTIONS, DUBAI_CITIES } from '@/lib/constants';
 import { FilterOptions } from '@/lib/types';
 
 interface FiltersProps {
@@ -26,12 +26,12 @@ export function Filters({ filters, onFiltersChange }: FiltersProps) {
     onFiltersChange({ ...filters, search: value });
   };
 
-  const handleCategoryToggle = (categoryId: number) => {
-    const current = filters.categories || [];
-    const updated = current.includes(categoryId)
-      ? current.filter(c => c !== categoryId)
-      : [...current, categoryId];
-    onFiltersChange({ ...filters, categories: updated });
+  const handleLicenseTypeToggle = (licenseType: string) => {
+    const current = filters.licenseTypes || [];
+    const updated = current.includes(licenseType)
+      ? current.filter(t => t !== licenseType)
+      : [...current, licenseType];
+    onFiltersChange({ ...filters, licenseTypes: updated });
   };
 
   const handleLocationToggle = (location: string) => {
@@ -64,7 +64,7 @@ export function Filters({ filters, onFiltersChange }: FiltersProps) {
   const clearFilters = () => {
     onFiltersChange({
       search: '',
-      categories: [],
+      licenseTypes: [],
       locations: [],
       minPrice: 0,
       maxPrice: 15000,
@@ -75,7 +75,7 @@ export function Filters({ filters, onFiltersChange }: FiltersProps) {
 
   const activeFilterCount = [
     filters.search,
-    (filters.categories?.length || 0) > 0,
+    (filters.licenseTypes?.length || 0) > 0,
     (filters.locations?.length || 0) > 0,
     filters.minPrice && filters.minPrice > 0,
     filters.maxPrice && filters.maxPrice < 15000,
@@ -93,15 +93,15 @@ export function Filters({ filters, onFiltersChange }: FiltersProps) {
             </span>
           </div>
           <div className="flex flex-wrap gap-2">
-            {filters.categories?.map((categoryId) => (
+            {filters.licenseTypes?.map((licenseType) => (
               <Button
-                key={categoryId}
+                key={licenseType}
                 variant="secondary"
                 size="sm"
-                onClick={() => handleCategoryToggle(categoryId)}
+                onClick={() => handleLicenseTypeToggle(licenseType)}
                 className="h-7 text-xs"
               >
-                {CATEGORY_TYPES[categoryId]?.label || `Category ${categoryId}`}
+                {LICENSE_TYPES[licenseType]?.label || licenseType}
                 <X className="ml-1 h-3 w-3" />
               </Button>
             ))}
@@ -170,24 +170,21 @@ export function Filters({ filters, onFiltersChange }: FiltersProps) {
             <div className="space-y-3">
               <Label className="text-sm font-semibold text-gray-700">License Type</Label>
               <div className="space-y-2.5">
-                {Object.keys(CATEGORY_TYPES).map((categoryId) => {
-                  const id = parseInt(categoryId, 10);
-                  return (
-                    <div key={id} className="flex items-center space-x-2.5">
-                      <Checkbox
-                        id={`sidebar-${id}`}
-                        checked={filters.categories?.includes(id)}
-                        onCheckedChange={() => handleCategoryToggle(id)}
-                      />
-                      <Label
-                        htmlFor={`sidebar-${id}`}
-                        className="cursor-pointer text-sm font-normal text-gray-700"
-                      >
-                        {CATEGORY_TYPES[id].label}
-                      </Label>
-                    </div>
-                  );
-                })}
+                {Object.keys(LICENSE_TYPES).map((licenseType) => (
+                  <div key={licenseType} className="flex items-center space-x-2.5">
+                    <Checkbox
+                      id={`sidebar-${licenseType}`}
+                      checked={filters.licenseTypes?.includes(licenseType)}
+                      onCheckedChange={() => handleLicenseTypeToggle(licenseType)}
+                    />
+                    <Label
+                      htmlFor={`sidebar-${licenseType}`}
+                      className="cursor-pointer text-sm font-normal text-gray-700"
+                    >
+                      {LICENSE_TYPES[licenseType].label}
+                    </Label>
+                  </div>
+                ))}
               </div>
             </div>
           </div>

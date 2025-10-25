@@ -1,26 +1,26 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { BranchWithSchool, BranchWithDetails } from '@/lib/types';
+import { SchoolWithLocations, SchoolWithCourses } from '@/lib/types';
 
 interface ComparisonState {
-  schools: BranchWithSchool[];
-  detailedBranches: BranchWithDetails[];
-  addSchool: (school: BranchWithSchool) => boolean;
-  removeSchool: (schoolId: number) => void;
+  schools: SchoolWithLocations[];
+  detailedSchools: SchoolWithCourses[];
+  addSchool: (school: SchoolWithLocations) => boolean;
+  removeSchool: (schoolId: string) => void;
   clearAll: () => void;
-  isInComparison: (schoolId: number) => boolean;
+  isInComparison: (schoolId: string) => boolean;
   canAddMore: () => boolean;
-  loadBranchDetails: (branchId: number) => Promise<void>;
-  getBranchDetails: (branchId: number) => BranchWithDetails | undefined;
+  loadSchoolDetails: (schoolId: string) => Promise<void>;
+  getSchoolDetails: (schoolId: string) => SchoolWithCourses | undefined;
 }
 
 export const useComparisonStore = create<ComparisonState>()(
   persist(
     (set, get) => ({
       schools: [],
-      detailedBranches: [],
+      detailedSchools: [],
 
-      addSchool: (school: BranchWithSchool) => {
+      addSchool: (school: SchoolWithLocations) => {
         const state = get();
 
         if (state.schools.length >= 3) {
@@ -32,22 +32,22 @@ export const useComparisonStore = create<ComparisonState>()(
         }
 
         set({ schools: [...state.schools, school] });
-        get().loadBranchDetails(school.id);
+        get().loadSchoolDetails(school.id);
         return true;
       },
 
-      removeSchool: (schoolId: number) => {
+      removeSchool: (schoolId: string) => {
         set(state => ({
           schools: state.schools.filter(s => s.id !== schoolId),
-          detailedBranches: state.detailedBranches.filter(b => b.id !== schoolId)
+          detailedSchools: state.detailedSchools.filter(s => s.id !== schoolId)
         }));
       },
 
       clearAll: () => {
-        set({ schools: [], detailedBranches: [] });
+        set({ schools: [], detailedSchools: [] });
       },
 
-      isInComparison: (schoolId: number) => {
+      isInComparison: (schoolId: string) => {
         return get().schools.some(s => s.id === schoolId);
       },
 
@@ -55,32 +55,32 @@ export const useComparisonStore = create<ComparisonState>()(
         return get().schools.length < 3;
       },
 
-      loadBranchDetails: async (branchId: number) => {
+      loadSchoolDetails: async (schoolId: string) => {
         try {
-          const response = await fetch(`/api/schools/${branchId}`);
+          const response = await fetch(`/api/schools/${schoolId}`);
           if (!response.ok) {
-            console.error('Failed to load branch details');
+            console.error('Failed to load school details');
             return;
           }
           const data = await response.json();
-          const branchDetails: BranchWithDetails = data.school;
+          const schoolDetails: SchoolWithCourses = data.school;
 
           set(state => {
-            const existing = state.detailedBranches.find(b => b.id === branchId);
+            const existing = state.detailedSchools.find(s => s.id === schoolId);
             if (existing) {
               return state;
             }
             return {
-              detailedBranches: [...state.detailedBranches, branchDetails]
+              detailedSchools: [...state.detailedSchools, schoolDetails]
             };
           });
         } catch (error) {
-          console.error('Error loading branch details:', error);
+          console.error('Error loading school details:', error);
         }
       },
 
-      getBranchDetails: (branchId: number) => {
-        return get().detailedBranches.find(b => b.id === branchId);
+      getSchoolDetails: (schoolId: string) => {
+        return get().detailedSchools.find(s => s.id === schoolId);
       },
     }),
     {

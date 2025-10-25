@@ -15,28 +15,19 @@ import {
   X,
   GraduationCap,
   BookOpen,
-  FileText,
-  Calendar,
-  DollarSign,
 } from "lucide-react";
-import { Category, BranchWithDetails } from "@/lib/types";
+import { SchoolWithCourses, LicenseType } from "@/lib/types";
 import { motion } from "framer-motion";
-import { ComparisonCategorySelector } from "@/components/comparison-category-selector";
-import { ComparisonSection } from "@/components/comparison/comparison-section";
-import { CourseDetailsComparison } from "@/components/comparison/course-details-comparison";
-import { DocumentsComparison } from "@/components/comparison/documents-comparison";
-import { LectureDetailsComparison } from "@/components/comparison/lecture-details-comparison";
-import { FeesComparison } from "@/components/comparison/fees-comparison";
 
 export default function ComparePage() {
   const {
     schools,
     removeSchool,
-    detailedBranches,
-    loadBranchDetails,
-    getBranchDetails,
+    detailedSchools,
+    loadSchoolDetails,
+    getSchoolDetails,
   } = useComparisonStore();
-  const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(
+  const [selectedLicenseType, setSelectedLicenseType] = useState<string | null>(
     null
   );
   const [isLoading, setIsLoading] = useState(true);
@@ -45,9 +36,9 @@ export default function ComparePage() {
     const loadAllDetails = async () => {
       setIsLoading(true);
       const loadPromises = schools.map((school) => {
-        const existing = getBranchDetails(school.id);
+        const existing = getSchoolDetails(school.id);
         if (!existing) {
-          return loadBranchDetails(school.id);
+          return loadSchoolDetails(school.id);
         }
         return Promise.resolve();
       });
@@ -62,9 +53,9 @@ export default function ComparePage() {
     }
   }, [schools]);
 
-  const branches: BranchWithDetails[] = schools
-    .map((school) => getBranchDetails(school.id))
-    .filter((branch): branch is BranchWithDetails => branch !== undefined);
+  const schoolsWithDetails: SchoolWithCourses[] = schools
+    .map((school) => getSchoolDetails(school.id))
+    .filter((school): school is SchoolWithCourses => school !== undefined);
 
   if (schools.length === 0) {
     return (
@@ -84,7 +75,7 @@ export default function ComparePage() {
             transition={{ delay: 0.2 }}
             className="mb-4 text-3xl font-bold text-gray-900"
           >
-            No Branches to Compare
+            No Schools to Compare
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -92,7 +83,7 @@ export default function ComparePage() {
             transition={{ delay: 0.3 }}
             className="mb-8 max-w-md text-gray-600"
           >
-            Start by adding branches from the homepage to see a side-by-side
+            Start by adding schools from the schools page to see a side-by-side
             comparison.
           </motion.p>
           <motion.div
@@ -100,7 +91,7 @@ export default function ComparePage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
           >
-            <Link href="/">
+            <Link href="/schools">
               <Button className="bg-gold-500 hover:bg-gold-600">
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Browse Schools
@@ -112,32 +103,16 @@ export default function ComparePage() {
     );
   }
 
-  const allCategories: Category[] = [];
-  const categoryMap = new Map<number, Category>();
-
-  branches.forEach((branch) => {
-    if (branch.categories) {
-      branch.categories.forEach((cat) => {
-        if (!categoryMap.has(cat.id)) {
-          categoryMap.set(cat.id, cat);
-          allCategories.push(cat);
-        }
-      });
-    }
+  const allLicenseTypes: Map<string, LicenseType> = new Map();
+  schoolsWithDetails.forEach((school) => {
+    school.course_levels?.forEach((course) => {
+      if (course.license_type) {
+        allLicenseTypes.set(course.license_type.id, course.license_type);
+      }
+    });
   });
 
-  const filteredBranches = selectedCategoryId
-    ? branches.filter((branch) =>
-        branch.categories?.some((cat) => cat.id === selectedCategoryId)
-      )
-    : branches;
-
-  const branchAvailability: Record<number, boolean> = {};
-  allCategories.forEach((cat) => {
-    branchAvailability[cat.id] = branches.every((branch) =>
-      branch.categories?.some((c) => c.id === cat.id)
-    );
-  });
+  const licenseTypesArray = Array.from(allLicenseTypes.values());
 
   return (
     <div className="min-h-screen bg-white">
@@ -146,11 +121,11 @@ export default function ComparePage() {
         <Container className="relative">
           <div className="mx-auto max-w-3xl text-center pt-12">
             <h1 className="mb-4 text-4xl font-bold tracking-tight text-white sm:text-5xl">
-              Compare Branch Locations
+              Compare Schools
             </h1>
             <p className="text-lg text-gold-100">
-              Side-by-side comparison of {branches.length}{" "}
-              {branches.length === 1 ? "branch" : "branches"}
+              Side-by-side comparison of {schoolsWithDetails.length}{" "}
+              {schoolsWithDetails.length === 1 ? "school" : "schools"}
             </p>
           </div>
         </Container>
@@ -159,13 +134,43 @@ export default function ComparePage() {
       <div className="pb-20">
         <Container>
           <div className="py-8">
-            {allCategories.length > 0 && (
-              <ComparisonCategorySelector
-                categories={allCategories}
-                selectedCategoryId={selectedCategoryId}
-                onSelectCategory={setSelectedCategoryId}
-                branchAvailability={branchAvailability}
-              />
+            {licenseTypesArray.length > 0 && (
+              <div className="mb-8">
+                <h3 className="mb-4 text-sm font-semibold text-gray-700">
+                  Filter by License Type
+                </h3>
+                <div className="flex flex-wrap gap-2">
+                  <Button
+                    variant={selectedLicenseType === null ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setSelectedLicenseType(null)}
+                    className={
+                      selectedLicenseType === null
+                        ? "bg-gold-500 hover:bg-gold-600"
+                        : ""
+                    }
+                  >
+                    All Types
+                  </Button>
+                  {licenseTypesArray.map((licenseType) => (
+                    <Button
+                      key={licenseType.id}
+                      variant={
+                        selectedLicenseType === licenseType.id ? "default" : "outline"
+                      }
+                      size="sm"
+                      onClick={() => setSelectedLicenseType(licenseType.id)}
+                      className={
+                        selectedLicenseType === licenseType.id
+                          ? "bg-gold-500 hover:bg-gold-600"
+                          : ""
+                      }
+                    >
+                      {licenseType.name}
+                    </Button>
+                  ))}
+                </div>
+              </div>
             )}
 
             <div className="overflow-x-auto -mx-4 px-4">
@@ -177,19 +182,19 @@ export default function ComparePage() {
                         Comparison Criteria
                       </h3>
                     </th>
-                    {filteredBranches.map((branch, branchIndex) => (
+                    {schoolsWithDetails.map((school, schoolIndex) => (
                       <th
-                        key={branch.id}
+                        key={school.id}
                         className="bg-white border-b border-r border-gray-200 p-6 min-w-[320px]"
                       >
                         <motion.div
                           initial={{ opacity: 0, y: 20 }}
                           animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: branchIndex * 0.1 }}
+                          transition={{ delay: schoolIndex * 0.1 }}
                           className="relative"
                         >
                           <button
-                            onClick={() => removeSchool(branch.id)}
+                            onClick={() => removeSchool(school.id)}
                             className="absolute right-0 top-0 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-gray-600 transition-all hover:bg-red-500 hover:text-white hover:scale-110"
                           >
                             <X className="h-4 w-4" />
@@ -198,12 +203,12 @@ export default function ComparePage() {
                           <div className="relative aspect-[4/3] overflow-hidden rounded-lg mb-4 bg-gradient-to-br from-gold-100 to-sand-100">
                             <Image
                               src={
-                                branch.school?.logo_url ||
+                                school.logo_url ||
                                 `https://ui-avatars.com/api/?name=${encodeURIComponent(
-                                  branch.school?.name || "School"
+                                  school.name
                                 )}&background=f59e0b&color=fff&size=400`
                               }
-                              alt={branch.name}
+                              alt={school.name}
                               fill
                               className="object-cover"
                             />
@@ -211,29 +216,20 @@ export default function ComparePage() {
 
                           <div className="space-y-3">
                             <h3 className="text-lg font-bold text-gray-900">
-                              {branch.name}
+                              {school.name}
                             </h3>
-                            <p className="text-sm text-gray-600">
-                              {branch.school?.name}
-                            </p>
-                            {branch.school && (
-                              <div className="flex items-center justify-between gap-2 w-full px-1">
-                                <div className="flex items-center gap-1">
-                                  <StarRating
-                                    rating={branch.school.rating}
-                                    size="sm"
-                                  />
-                                  <span className="font-semibold text-gray-900 text-xs">
-                                    {branch.school.rating}
-                                  </span>
-                                </div>
-                                <span className="text-sm text-gray-600">
-                                  {branch.school.rating} (
-                                  {branch.school.review_count})
+                            <div className="flex items-center justify-between gap-2 w-full px-1">
+                              <div className="flex items-center gap-1">
+                                <StarRating rating={school.rating} size="sm" />
+                                <span className="font-semibold text-gray-900 text-xs">
+                                  {school.rating}
                                 </span>
                               </div>
-                            )}
-                            <Link href={`/school/${branch.id}`}>
+                              <span className="text-sm text-gray-600">
+                                ({school.review_count})
+                              </span>
+                            </div>
+                            <Link href={`/school/${school.id}`}>
                               <Button className="w-full bg-gold-500 hover:bg-gold-600">
                                 View Details
                               </Button>
@@ -247,117 +243,73 @@ export default function ComparePage() {
 
                 <tbody>
                   <ComparisonRowData
-                    label="Location"
-                    schools={filteredBranches}
-                    renderCell={(branch) => (
+                    label="Locations"
+                    schools={schoolsWithDetails}
+                    renderCell={(school) => (
                       <div className="text-center">
                         <p className="font-semibold text-gray-900">
-                          {branch.city || "Dubai"}
+                          {school.branch_locations?.length || 0} locations
                         </p>
-                        <p className="mt-1 text-sm text-gray-500">
-                          {branch.address}
-                        </p>
+                        <div className="mt-2 space-y-1">
+                          {school.branch_locations?.slice(0, 3).map((location: any) => (
+                            <p key={location.id} className="text-sm text-gray-500">
+                              {location.city}
+                            </p>
+                          ))}
+                          {(school.branch_locations?.length || 0) > 3 && (
+                            <p className="text-sm text-gray-500">
+                              +{(school.branch_locations?.length || 0) - 3} more
+                            </p>
+                          )}
+                        </div>
                       </div>
-                    )}
-                  />
-
-                  <ComparisonRowData
-                    label="Operating Hours"
-                    schools={filteredBranches}
-                    renderCell={(branch) => (
-                      <p className="text-center whitespace-pre-wrap font-medium text-gray-900 text-sm">
-                        {branch.normal_hours || "Contact for hours"}
-                      </p>
                     )}
                   />
 
                   <ComparisonRowData
                     label="Contact"
-                    schools={filteredBranches}
-                    renderCell={(branch) => (
+                    schools={schoolsWithDetails}
+                    renderCell={(school) => (
                       <div className="text-center">
                         <p className="font-semibold text-gray-900">
-                          {branch.contact || "N/A"}
+                          {school.phone || "N/A"}
                         </p>
-                        {branch.email && (
-                          <p className="mt-1 text-sm text-gray-500">
-                            {branch.email}
-                          </p>
+                        {school.email && (
+                          <p className="mt-1 text-sm text-gray-500">{school.email}</p>
                         )}
                       </div>
                     )}
                   />
 
                   <ComparisonRowData
-                    label="Contact Links"
-                    schools={filteredBranches}
-                    renderCell={(branch) => (
-                      <div className="space-y-2">
-                        {branch.contact && (
-                          <a
-                            href={`tel:${branch.contact}`}
-                            className="flex items-center justify-center gap-2 text-gray-900 hover:text-gold-600 transition-colors"
-                          >
-                            <Phone className="h-4 w-4" />
-                            <span className="text-sm font-medium">
-                              {branch.contact}
-                            </span>
-                          </a>
-                        )}
-                        {branch.email && (
-                          <a
-                            href={`mailto:${branch.email}`}
-                            className="flex items-center justify-center gap-2 text-gray-900 hover:text-gold-600 transition-colors"
-                          >
-                            <Mail className="h-4 w-4" />
-                            <span className="text-sm font-medium truncate">
-                              {branch.email}
-                            </span>
-                          </a>
-                        )}
-                        {branch.directions_url && (
-                          <a
-                            href={branch.directions_url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex items-center justify-center gap-2 text-gray-900 hover:text-gold-600 transition-colors"
-                          >
-                            <MapPin className="h-4 w-4" />
-                            <span className="text-sm font-medium">
-                              Get Directions
-                            </span>
-                          </a>
-                        )}
+                    label="Course Offerings"
+                    schools={schoolsWithDetails}
+                    renderCell={(school) => (
+                      <div className="text-center">
+                        <p className="font-semibold text-gray-900">
+                          {school.course_levels?.length || 0} courses
+                        </p>
+                        <div className="mt-2 space-y-1">
+                          {school.course_levels?.slice(0, 3).map((course: any) => (
+                            <p key={course.id} className="text-sm text-gray-500">
+                              {course.license_type?.name} - {course.name}
+                            </p>
+                          ))}
+                          {(school.course_levels?.length || 0) > 3 && (
+                            <p className="text-sm text-gray-500">
+                              +{(school.course_levels?.length || 0) - 3} more
+                            </p>
+                          )}
+                        </div>
                       </div>
                     )}
                   />
                 </tbody>
 
-                {selectedCategoryId && (
-                  <>
-                    <CourseDetailsComparison
-                      branches={filteredBranches}
-                      categoryId={selectedCategoryId}
-                    />
-                    <DocumentsComparison
-                      branches={filteredBranches}
-                      categoryId={selectedCategoryId}
-                    />
-                    <LectureDetailsComparison
-                      branches={filteredBranches}
-                      categoryId={selectedCategoryId}
-                    />
-                    <FeesComparison
-                      branches={filteredBranches}
-                      categoryId={selectedCategoryId}
-                    />
-                  </>
-                )}
-
                 <tfoot>
                   <tr>
                     <td
-                      colSpan={filteredBranches.length + 1}
+                      colSpan={schoolsWithDetails.length + 1}
                       className="border-t border-gray-200"
                     ></td>
                   </tr>
@@ -365,16 +317,15 @@ export default function ComparePage() {
               </table>
             </div>
 
-            {selectedCategoryId === null && allCategories.length > 0 && (
+            {selectedLicenseType === null && licenseTypesArray.length > 0 && (
               <div className="mt-8 text-center bg-blue-50 rounded-xl p-8 border border-blue-200">
                 <BookOpen className="h-12 w-12 text-blue-600 mx-auto mb-4" />
                 <h3 className="text-xl font-bold text-gray-900 mb-2">
-                  Select a Course Category
+                  Select a License Type
                 </h3>
                 <p className="text-gray-600 max-w-2xl mx-auto">
-                  Choose a specific course category above to compare detailed
-                  information including course details, required documents,
-                  lecture schedules, and fees.
+                  Choose a specific license type above to compare detailed
+                  course information, pricing, and packages across schools.
                 </p>
               </div>
             )}

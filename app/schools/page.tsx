@@ -6,16 +6,16 @@ import { Container } from "@/components/layout/container";
 import { SchoolCard } from "@/components/school-card";
 import { Filters } from "@/components/filters";
 import { LoadingCard } from "@/components/ui/loading-card";
-import { BranchWithSchool, FilterOptions } from "@/lib/types";
+import { SchoolWithLocations, FilterOptions } from "@/lib/types";
 import { GraduationCap } from "lucide-react";
 
 export default function SchoolsPage() {
   const searchParams = useSearchParams();
-  const [schools, setSchools] = useState<BranchWithSchool[]>([]);
+  const [schools, setSchools] = useState<SchoolWithLocations[]>([]);
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState<FilterOptions>({
     search: "",
-    categories: [],
+    licenseTypes: [],
     locations: [],
     minPrice: 0,
     maxPrice: 15000,
@@ -25,13 +25,13 @@ export default function SchoolsPage() {
   const [preAppliedFilters, setPreAppliedFilters] = useState(false);
 
   useEffect(() => {
-    const category = searchParams.get("category");
+    const licenseType = searchParams.get("licenseType");
     const location = searchParams.get("location");
 
-    if ((category || location) && !preAppliedFilters) {
+    if ((licenseType || location) && !preAppliedFilters) {
       setFilters((prev) => ({
         ...prev,
-        categories: category ? [parseInt(category, 10)] : prev.categories,
+        licenseTypes: licenseType ? [licenseType] : prev.licenseTypes,
         locations: location ? [location] : prev.locations,
       }));
       setPreAppliedFilters(true);
@@ -45,8 +45,8 @@ export default function SchoolsPage() {
         const params = new URLSearchParams();
 
         if (filters.search) params.set("search", filters.search);
-        if (filters.categories?.length)
-          params.set("categories", filters.categories.join(","));
+        if (filters.licenseTypes?.length)
+          params.set("licenseTypes", filters.licenseTypes.join(","));
         if (filters.locations?.length)
           params.set("locations", filters.locations.join(","));
         if (filters.minPrice)
@@ -102,7 +102,7 @@ export default function SchoolsPage() {
 
             <main className="flex-1 min-w-0">
               {preAppliedFilters &&
-                ((filters.categories?.length ?? 0) > 0 ||
+                ((filters.licenseTypes?.length ?? 0) > 0 ||
                   (filters.locations?.length ?? 0) > 0) && (
                   <div className="mb-6 rounded-xl border bg-card text-card-foreground p-4">
                     <p className="text-sm text-gold-800">

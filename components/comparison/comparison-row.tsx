@@ -1,11 +1,11 @@
 'use client';
 
-import { BranchWithDetails } from '@/lib/types';
+import { SchoolWithCourses } from '@/lib/types';
 
 interface ComparisonRowProps {
   label: string;
-  branches: BranchWithDetails[];
-  renderCell: (branch: BranchWithDetails, index: number) => React.ReactNode;
+  branches: SchoolWithCourses[];
+  renderCell: (branch: SchoolWithCourses, index: number) => React.ReactNode;
   className?: string;
 }
 

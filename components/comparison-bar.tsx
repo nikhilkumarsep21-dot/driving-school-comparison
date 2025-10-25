@@ -13,7 +13,7 @@ export function ComparisonBar() {
 
   if (schools.length === 0) return null;
 
-  const handleRemove = (schoolId: number, schoolName: string) => {
+  const handleRemove = (schoolId: string, schoolName: string) => {
     removeSchool(schoolId);
     toast.info(`${schoolName} removed from comparison`);
   };
@@ -52,7 +52,7 @@ export function ComparisonBar() {
                   >
                     <div className="relative h-12 w-12 flex-shrink-0 overflow-hidden rounded-lg bg-gradient-to-br from-gold-100 to-sand-100">
                       <Image
-                        src={school.school?.logo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(school.school?.name || 'School')}&background=f59e0b&color=fff&size=100`}
+                        src={school.logo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(school.name)}&background=f59e0b&color=fff&size=100`}
                         alt={school.name}
                         fill
                         className="object-cover"
@@ -62,7 +62,9 @@ export function ComparisonBar() {
                       <p className="truncate text-sm font-medium text-gray-900">
                         {school.name}
                       </p>
-                      <p className="text-xs text-gray-500">{school.city || 'Dubai'}</p>
+                      <p className="text-xs text-gray-500">
+                        {school.branch_locations?.[0]?.city || 'Dubai'}
+                      </p>
                     </div>
                     <button
                       onClick={() => handleRemove(school.id, school.name)}
