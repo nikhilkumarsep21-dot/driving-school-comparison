@@ -4,6 +4,7 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   images: {
+    // 👇 Option 1: Explicitly allow specific full URLs
     remotePatterns: [
       {
         protocol: "https",
@@ -24,8 +25,23 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "ui-avatars.com",
-        pathname: "/api/",
+        pathname: "/api/**", // 👈 use wildcard if paths vary
       },
+      {
+        protocol: "https",
+        hostname: "edi-uae.com", // 👈 add your logo host here too
+        pathname: "/**", // allow all paths from this domain
+      },
+    ],
+
+    // 👇 Option 2: Add simpler domain-based whitelist (recommended for general use)
+    domains: [
+      "www.edi-uae.com",
+      "www.gmdc.ae",
+      "ecodrive.ae",
+      "www.excellencedriving.com",
+      "www.dubaidrivingcenter.com",
+      "www.dubaidrivingcenter.net",
     ],
   },
   webpack: (config) => {

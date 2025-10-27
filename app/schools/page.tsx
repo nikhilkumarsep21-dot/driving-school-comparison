@@ -17,6 +17,8 @@ export default function SchoolsPage() {
     search: "",
     licenseTypes: [],
     locations: [],
+    experienceLevels: [],
+    packageTypes: [],
     minPrice: 0,
     maxPrice: 15000,
     minRating: 0,
@@ -26,13 +28,25 @@ export default function SchoolsPage() {
 
   useEffect(() => {
     const licenseType = searchParams.get("licenseType");
+    const category = searchParams.get("category");
     const location = searchParams.get("location");
+    const experience = searchParams.get("experience");
+    const shiftType = searchParams.get("shiftType");
 
-    if ((licenseType || location) && !preAppliedFilters) {
+    if (
+      (licenseType || category || location || experience || shiftType) &&
+      !preAppliedFilters
+    ) {
       setFilters((prev) => ({
         ...prev,
-        licenseTypes: licenseType ? [licenseType] : prev.licenseTypes,
+        licenseTypes: licenseType
+          ? [licenseType]
+          : category
+          ? [category]
+          : prev.licenseTypes,
         locations: location ? [location] : prev.locations,
+        experienceLevels: experience ? [experience] : prev.experienceLevels,
+        packageTypes: shiftType ? [shiftType] : prev.packageTypes,
       }));
       setPreAppliedFilters(true);
     }
@@ -49,6 +63,10 @@ export default function SchoolsPage() {
           params.set("licenseTypes", filters.licenseTypes.join(","));
         if (filters.locations?.length)
           params.set("locations", filters.locations.join(","));
+        if (filters.experienceLevels?.length)
+          params.set("experienceLevels", filters.experienceLevels.join(","));
+        if (filters.packageTypes?.length)
+          params.set("packageTypes", filters.packageTypes.join(","));
         if (filters.minPrice)
           params.set("minPrice", filters.minPrice.toString());
         if (filters.maxPrice)
@@ -103,7 +121,9 @@ export default function SchoolsPage() {
             <main className="flex-1 min-w-0">
               {preAppliedFilters &&
                 ((filters.licenseTypes?.length ?? 0) > 0 ||
-                  (filters.locations?.length ?? 0) > 0) && (
+                  (filters.locations?.length ?? 0) > 0 ||
+                  (filters.experienceLevels?.length ?? 0) > 0 ||
+                  (filters.packageTypes?.length ?? 0) > 0) && (
                   <div className="mb-6 rounded-xl border bg-card text-card-foreground p-4">
                     <p className="text-sm text-gold-800">
                       Showing results based on your selected preferences

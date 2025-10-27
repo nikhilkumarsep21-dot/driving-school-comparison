@@ -3,13 +3,21 @@
 import React from "react";
 import { SchoolWithLocations } from "@/lib/types";
 import { StarRating } from "./ui/star-rating";
-import { MapPin, Users, GitCompare, Check, GraduationCap } from "lucide-react";
+import {
+  MapPin,
+  Users,
+  GitCompare,
+  Check,
+  GraduationCap,
+  MessageSquare,
+} from "lucide-react";
 import { Button } from "./ui/button";
 import { useComparisonStore } from "@/store/comparison-store";
 import { toast } from "sonner";
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
+import { EnquiryModal } from "./enquiry-modal";
 
 interface SchoolCardProps {
   school: SchoolWithLocations;
@@ -21,6 +29,7 @@ export function SchoolCard({ school, index = 0 }: SchoolCardProps) {
     useComparisonStore();
   const inComparison = isInComparison(school.id);
   const [imageError, setImageError] = React.useState(false);
+  const [isEnquiryModalOpen, setIsEnquiryModalOpen] = React.useState(false);
 
   const handleCompareClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -39,6 +48,12 @@ export function SchoolCard({ school, index = 0 }: SchoolCardProps) {
         toast.success(`${school.name} added to comparison`);
       }
     }
+  };
+
+  const handleEnquireClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsEnquiryModalOpen(true);
   };
 
   const imageUrl =
@@ -108,10 +123,10 @@ export function SchoolCard({ school, index = 0 }: SchoolCardProps) {
         </Button>
       </div>
 
-      <div className="space-y-4 p-5 w-full">
-        <div className="space-y-2">
+      <div className="flex flex-col space-y-4 p-5 w-full flex-1">
+        <div className="space-y-2 flex-1">
           <Link href={`/school/${school.id}`}>
-            <h3 className="text-lg font-bold text-gray-900 transition-colors hover:text-gold-600">
+            <h3 className="text-lg font-bold text-gray-900 transition-colors hover:text-gold-600 line-clamp-2 min-h-[3.5rem]">
               {school.name}
             </h3>
           </Link>
@@ -129,37 +144,48 @@ export function SchoolCard({ school, index = 0 }: SchoolCardProps) {
             </span>
           </div>
 
-          {primaryLocation && (
-            <div className="flex items-center gap-1.5 text-sm text-gray-600">
-              <MapPin className="h-4 w-4 text-gold-500" />
-              {locationCount > 1 ? (
-                <span>
-                  {locationCount} locations in Dubai
-                </span>
-              ) : (
-                <span>{primaryLocation.city}</span>
-              )}
-            </div>
-          )}
+          <div className="flex items-center gap-1.5 text-sm text-gray-600 min-h-[1.5rem]">
+            {primaryLocation && (
+              <>
+                <MapPin className="h-4 w-4 text-gold-500 flex-shrink-0" />
+                {locationCount > 1 ? (
+                  <span>{locationCount} locations in Dubai</span>
+                ) : (
+                  <span>{primaryLocation.city}</span>
+                )}
+              </>
+            )}
+          </div>
         </div>
 
-        <div className="flex items-center justify-between border-t border-gray-100 pt-4">
-          <div className="text-sm text-gray-600">
-            <span className="font-semibold text-gray-900">Contact:</span>
-            <br />
-            {school.phone || primaryLocation?.contact || "N/A"}
-          </div>
+        <div className="border-t border-gray-100 pt-4 mt-auto space-y-2">
           <Link href={`/school/${school.id}`}>
             <Button
               variant="outline"
               size="sm"
-              className="border-gold-200 text-gold-700 transition-all hover:bg-gold-50 hover:border-gold-300"
+              className="w-full border-gold-200 text-gold-700 transition-all hover:bg-gold-50 hover:border-gold-300"
             >
               View Details
             </Button>
           </Link>
+          <Button
+            variant="default"
+            size="sm"
+            onClick={handleEnquireClick}
+            className="w-full bg-gold-600 hover:bg-gold-700 text-white"
+          >
+            <MessageSquare className="mr-2 h-4 w-4" />
+            Enquire Now
+          </Button>
         </div>
       </div>
+
+      <EnquiryModal
+        isOpen={isEnquiryModalOpen}
+        onClose={() => setIsEnquiryModalOpen(false)}
+        schoolId={school.id}
+        schoolName={school.name}
+      />
     </motion.div>
   );
 }
