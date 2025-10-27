@@ -9,9 +9,11 @@ The feature allows users to submit enquiries about driving schools. User informa
 ## Components Created
 
 ### 1. EnquiryModal (`/components/enquiry-modal.tsx`)
+
 A reusable modal component that collects user information and submits enquiries.
 
 **Features:**
+
 - Auto-fills user data from cookies if previously entered
 - Form validation for name, email, and phone
 - Optional message field
@@ -20,15 +22,18 @@ A reusable modal component that collects user information and submits enquiries.
 - Beautiful UI with animations using Framer Motion
 
 **Props:**
+
 - `isOpen`: boolean - Controls modal visibility
 - `onClose`: function - Callback when modal closes
 - `schoolId`: string (optional) - ID of the school being enquired about
 - `schoolName`: string (optional) - Name of the school
 
 ### 2. Database Migration
+
 **File:** `/supabase/migrations/20251027_create_user_queries.sql`
 
 **Table:** `user_queries`
+
 - `id`: UUID (primary key)
 - `name`: VARCHAR(255) - User's full name
 - `email`: VARCHAR(255) - User's email
@@ -41,11 +46,13 @@ A reusable modal component that collects user information and submits enquiries.
 - `updated_at`: TIMESTAMP - Last update time
 
 **Indexes:**
+
 - `idx_user_queries_email` - For finding queries by email
 - `idx_user_queries_created_at` - For sorting by date
 - `idx_user_queries_status` - For filtering by status
 
 **Security:**
+
 - Row Level Security (RLS) enabled
 - Public can insert (for enquiry submissions)
 - Only authenticated users can view all queries (for admin panel)
@@ -53,14 +60,17 @@ A reusable modal component that collects user information and submits enquiries.
 ## Integration Points
 
 ### 1. School Detail Page (`/app/school/[slug]/page.tsx`)
+
 - Added "Enquire Now" button next to "Add to Compare" button in the hero section
 - Opens EnquiryModal with school context pre-filled
 
 ### 2. School Card Component (`/components/school-card.tsx`)
+
 - Added "Enquire Now" button below "View Details" button
 - Each school card can trigger an enquiry for that specific school
 
 ### 3. Category Form Modal (`/components/category-form-modal.tsx`)
+
 - Added "Enquire Now" button in Step 4 (package selection)
 - Each school in the package grid can receive enquiries
 
@@ -69,6 +79,7 @@ A reusable modal component that collects user information and submits enquiries.
 **Cookie Name:** `user_details`
 
 **Data Structure:**
+
 ```typescript
 {
   name: string;
@@ -78,6 +89,7 @@ A reusable modal component that collects user information and submits enquiries.
 ```
 
 **Features:**
+
 - 90-day expiration
 - Automatically loads on modal open
 - Only saves after successful enquiry submission
@@ -107,17 +119,20 @@ A reusable modal component that collects user information and submits enquiries.
 ## Future Enhancements
 
 1. **Admin Panel:**
+
    - View all enquiries
    - Filter by status, school, date
    - Mark as contacted/resolved
    - Export to CSV
 
 2. **Email Notifications:**
+
    - Send email to school when enquiry received
    - Send confirmation email to user
    - Send follow-up reminders
 
 3. **Enhanced Tracking:**
+
    - Track enquiry source (which page/button)
    - Add UTM parameters
    - Conversion tracking
@@ -156,29 +171,33 @@ npx supabase db push
 ## Database Query Examples
 
 ### Get all enquiries for a school
+
 ```sql
-SELECT * FROM user_queries 
-WHERE school_id = 'your-school-id' 
+SELECT * FROM user_queries
+WHERE school_id = 'your-school-id'
 ORDER BY created_at DESC;
 ```
 
 ### Get pending enquiries
+
 ```sql
-SELECT * FROM user_queries 
-WHERE status = 'pending' 
+SELECT * FROM user_queries
+WHERE status = 'pending'
 ORDER BY created_at DESC;
 ```
 
 ### Get enquiries by email
+
 ```sql
-SELECT * FROM user_queries 
-WHERE email = 'user@example.com' 
+SELECT * FROM user_queries
+WHERE email = 'user@example.com'
 ORDER BY created_at DESC;
 ```
 
 ### Update enquiry status
+
 ```sql
-UPDATE user_queries 
-SET status = 'contacted', updated_at = NOW() 
+UPDATE user_queries
+SET status = 'contacted', updated_at = NOW()
 WHERE id = 'enquiry-id';
 ```

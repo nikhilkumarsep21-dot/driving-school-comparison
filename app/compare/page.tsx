@@ -41,7 +41,9 @@ export default function ComparePage() {
   const [isLoading, setIsLoading] = useState(true);
   const [imageErrors, setImageErrors] = useState<Record<string, boolean>>({});
   const [enquirySchoolId, setEnquirySchoolId] = useState<string | null>(null);
-  const [enquirySchoolName, setEnquirySchoolName] = useState<string | null>(null);
+  const [enquirySchoolName, setEnquirySchoolName] = useState<string | null>(
+    null
+  );
   const [isEnquiryModalOpen, setIsEnquiryModalOpen] = useState(false);
 
   const handleImageError = (schoolId: string) => {
@@ -280,7 +282,9 @@ export default function ComparePage() {
                               <Button
                                 variant="outline"
                                 className="w-full border-gold-200 text-gold-700 hover:bg-gold-50"
-                                onClick={() => handleEnquireClick(school.id, school.name)}
+                                onClick={() =>
+                                  handleEnquireClick(school.id, school.name)
+                                }
                               >
                                 <MessageSquare className="mr-2 h-4 w-4" />
                                 Enquire Now

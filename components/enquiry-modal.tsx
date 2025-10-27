@@ -3,12 +3,20 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Mail, Phone, User, X, Send, Loader2 } from "lucide-react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { getUserDetailsFromCookie, saveUserDetailsToCookie } from "@/lib/cookies";
+import {
+  getUserDetailsFromCookie,
+  saveUserDetailsToCookie,
+} from "@/lib/cookies";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabase";
 
@@ -132,7 +140,8 @@ export function EnquiryModal({
           </DialogTitle>
           {schoolName && (
             <p className="text-sm text-gray-600 mt-1">
-              Get in touch about <span className="font-semibold">{schoolName}</span>
+              Get in touch about{" "}
+              <span className="font-semibold">{schoolName}</span>
             </p>
           )}
         </DialogHeader>
@@ -211,7 +220,8 @@ export function EnquiryModal({
 
             <div className="space-y-2">
               <Label htmlFor="message" className="text-sm font-medium">
-                Message <span className="text-gray-400 text-xs">(Optional)</span>
+                Message{" "}
+                <span className="text-gray-400 text-xs">(Optional)</span>
               </Label>
               <Textarea
                 id="message"
@@ -256,7 +266,8 @@ export function EnquiryModal({
         </AnimatePresence>
 
         <p className="text-xs text-gray-500 text-center mt-4">
-          By submitting this form, you agree to be contacted by the driving school.
+          By submitting this form, you agree to be contacted by the driving
+          school.
         </p>
       </DialogContent>
     </Dialog>

@@ -3,7 +3,14 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, ArrowRight, Check, X, GitCompare, MessageSquare } from "lucide-react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  Check,
+  X,
+  GitCompare,
+  MessageSquare,
+} from "lucide-react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -87,7 +94,9 @@ export function CategoryFormModal({
   const [loadingShiftTypes, setLoadingShiftTypes] = useState(false);
   const [loadingPackages, setLoadingPackages] = useState(false);
   const [enquirySchoolId, setEnquirySchoolId] = useState<string | null>(null);
-  const [enquirySchoolName, setEnquirySchoolName] = useState<string | null>(null);
+  const [enquirySchoolName, setEnquirySchoolName] = useState<string | null>(
+    null
+  );
   const [isEnquiryModalOpen, setIsEnquiryModalOpen] = useState(false);
 
   useEffect(() => {

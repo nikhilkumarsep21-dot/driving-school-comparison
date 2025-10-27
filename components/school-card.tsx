@@ -3,7 +3,14 @@
 import React from "react";
 import { SchoolWithLocations } from "@/lib/types";
 import { StarRating } from "./ui/star-rating";
-import { MapPin, Users, GitCompare, Check, GraduationCap, MessageSquare } from "lucide-react";
+import {
+  MapPin,
+  Users,
+  GitCompare,
+  Check,
+  GraduationCap,
+  MessageSquare,
+} from "lucide-react";
 import { Button } from "./ui/button";
 import { useComparisonStore } from "@/store/comparison-store";
 import { toast } from "sonner";
