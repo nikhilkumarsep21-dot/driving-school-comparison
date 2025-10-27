@@ -41,6 +41,7 @@ CREATE TABLE IF NOT EXISTS course_levels (
   school_id uuid NOT NULL REFERENCES schools(id) ON DELETE CASCADE,
   license_type_id uuid NOT NULL REFERENCES license_types(id) ON DELETE CASCADE,
   name text NOT NULL,
+  experience_level text,
   duration_hours integer,
   description text,
   created_at timestamptz DEFAULT now(),

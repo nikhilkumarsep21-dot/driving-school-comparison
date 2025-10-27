@@ -93,6 +93,8 @@ export interface FilterOptions {
   search?: string;
   licenseTypes?: string[];
   locations?: string[];
+  experienceLevels?: string[];
+  packageTypes?: string[];
   minPrice?: number;
   maxPrice?: number;
   minRating?: number;

@@ -33,13 +33,13 @@ export default function Home() {
             </motion.div>
 
             <motion.h1
-              className="mb-6 text-5xl font-bold tracking-tight text-white sm:text-6xl lg:text-7xl"
+              className="mb-6 pb-2 text-5xl font-bold tracking-tight text-white sm:text-6xl lg:text-7xl"
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.2, ease: "easeOut" }}
             >
               Find Your Perfect
-              <span className="block bg-gradient-to-r from-white to-gold-100 bg-clip-text text-transparent">
+              <span className="block bg-gradient-to-r from-white to-gold-100 bg-clip-text text-transparent pb-4">
                 Driving School
               </span>
             </motion.h1>
@@ -54,34 +54,6 @@ export default function Home() {
               decision with transparent pricing, real reviews, and comprehensive
               comparisons.
             </motion.p>
-
-            <motion.div
-              className="flex flex-col gap-4 sm:flex-row sm:justify-center"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.6, ease: "easeOut" }}
-            >
-              <Link href="/schools">
-                <Button
-                  size="lg"
-                  variant="secondary"
-                  className="h-14 w-full px-10 text-base font-semibold shadow-xl hover:shadow-2xl transition-all bg-white text-gold-700 hover:bg-sand-50 sm:w-auto"
-                >
-                  Browse All Schools
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
-              </Link>
-              <Link href="/compare">
-                <Button
-                  size="lg"
-                  variant="secondary"
-                  className="h-14 w-full px-10 text-base font-semibold shadow-xl hover:shadow-2xl transition-all bg-white/10 text-white border-2 border-white/30 hover:bg-white/20 sm:w-auto"
-                >
-                  <GitCompare className="mr-2 h-5 w-5" />
-                  Compare Schools
-                </Button>
-              </Link>
-            </motion.div>
           </div>
         </Container>
       </section>
@@ -137,9 +109,8 @@ export default function Home() {
                   Browse & Filter
                 </h3>
                 <p className="text-gray-600 leading-relaxed">
-                  Explore driving schools across Dubai. Use filters to find
-                  schools that match your location, budget, and license type
-                  preferences.
+                  Explore schools across Dubai and filter by location, budget,
+                  and license type.
                 </p>
               </div>
             </motion.div>
@@ -171,9 +142,8 @@ export default function Home() {
                   Compare Options
                 </h3>
                 <p className="text-gray-600 leading-relaxed">
-                  Select up to 3 schools to compare side-by-side. Review
-                  pricing, ratings, features, and student feedback to make an
-                  informed choice.
+                  Compare up to 3 schools side-by-side based on pricing,
+                  ratings, and reviews.
                 </p>
               </div>
             </motion.div>
@@ -205,8 +175,8 @@ export default function Home() {
                   Enroll & Learn
                 </h3>
                 <p className="text-gray-600 leading-relaxed">
-                  Contact your chosen school directly to enroll. Start your
-                  journey to becoming a confident, licensed driver in Dubai.
+                  Contact your chosen school to enroll and start your journey to
+                  becoming a licensed driver.
                 </p>
               </div>
             </motion.div>

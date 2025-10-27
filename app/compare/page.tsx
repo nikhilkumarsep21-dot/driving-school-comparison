@@ -9,15 +9,23 @@ import Link from "next/link";
 import Image from "next/image";
 import {
   ArrowLeft,
-  Phone,
-  Mail,
-  MapPin,
   X,
   GraduationCap,
   BookOpen,
+  Clock,
+  Users,
+  DollarSign,
+  FileText,
+  CheckCircle2,
+  MessageSquare,
 } from "lucide-react";
-import { SchoolWithCourses, LicenseType } from "@/lib/types";
+import {
+  SchoolWithCourses,
+  LicenseType,
+  CourseLevelWithRelations,
+} from "@/lib/types";
 import { motion } from "framer-motion";
+import { EnquiryModal } from "@/components/enquiry-modal";
 
 export default function ComparePage() {
   const {
@@ -31,6 +39,20 @@ export default function ComparePage() {
     null
   );
   const [isLoading, setIsLoading] = useState(true);
+  const [imageErrors, setImageErrors] = useState<Record<string, boolean>>({});
+  const [enquirySchoolId, setEnquirySchoolId] = useState<string | null>(null);
+  const [enquirySchoolName, setEnquirySchoolName] = useState<string | null>(null);
+  const [isEnquiryModalOpen, setIsEnquiryModalOpen] = useState(false);
+
+  const handleImageError = (schoolId: string) => {
+    setImageErrors((prev) => ({ ...prev, [schoolId]: true }));
+  };
+
+  const handleEnquireClick = (schoolId: string, schoolName: string) => {
+    setEnquirySchoolId(schoolId);
+    setEnquirySchoolName(schoolName);
+    setIsEnquiryModalOpen(true);
+  };
 
   useEffect(() => {
     const loadAllDetails = async () => {
@@ -114,6 +136,15 @@ export default function ComparePage() {
 
   const licenseTypesArray = Array.from(allLicenseTypes.values());
 
+  // Get filtered courses for the selected license type
+  const getFilteredCourses = (school: SchoolWithCourses) => {
+    return selectedLicenseType
+      ? school.course_levels?.filter(
+          (course) => course.license_type_id === selectedLicenseType
+        )
+      : school.course_levels;
+  };
+
   return (
     <div className="min-h-screen bg-white">
       <section className="relative overflow-hidden bg-gradient-to-br from-gold-600 to-gold-700 py-12 sm:py-16">
@@ -141,7 +172,9 @@ export default function ComparePage() {
                 </h3>
                 <div className="flex flex-wrap gap-2">
                   <Button
-                    variant={selectedLicenseType === null ? "default" : "outline"}
+                    variant={
+                      selectedLicenseType === null ? "default" : "outline"
+                    }
                     size="sm"
                     onClick={() => setSelectedLicenseType(null)}
                     className={
@@ -156,7 +189,9 @@ export default function ComparePage() {
                     <Button
                       key={licenseType.id}
                       variant={
-                        selectedLicenseType === licenseType.id ? "default" : "outline"
+                        selectedLicenseType === licenseType.id
+                          ? "default"
+                          : "outline"
                       }
                       size="sm"
                       onClick={() => setSelectedLicenseType(licenseType.id)}
@@ -201,17 +236,24 @@ export default function ComparePage() {
                           </button>
 
                           <div className="relative aspect-[4/3] overflow-hidden rounded-lg mb-4 bg-gradient-to-br from-gold-100 to-sand-100">
-                            <Image
-                              src={
-                                school.logo_url ||
-                                `https://ui-avatars.com/api/?name=${encodeURIComponent(
-                                  school.name
-                                )}&background=f59e0b&color=fff&size=400`
-                              }
-                              alt={school.name}
-                              fill
-                              className="object-cover"
-                            />
+                            {!imageErrors[school.id] ? (
+                              <Image
+                                src={
+                                  school.logo_url ||
+                                  `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                                    school.name
+                                  )}&background=f59e0b&color=fff&size=400`
+                                }
+                                alt={school.name}
+                                fill
+                                className="object-cover"
+                                onError={() => handleImageError(school.id)}
+                              />
+                            ) : (
+                              <div className="absolute inset-0 flex items-center justify-center">
+                                <GraduationCap className="h-24 w-24 text-gold-300" />
+                              </div>
+                            )}
                           </div>
 
                           <div className="space-y-3">
@@ -229,11 +271,21 @@ export default function ComparePage() {
                                 ({school.review_count})
                               </span>
                             </div>
-                            <Link href={`/school/${school.id}`}>
-                              <Button className="w-full bg-gold-500 hover:bg-gold-600">
-                                View Details
+                            <div className="space-y-2">
+                              <Link href={`/school/${school.id}`}>
+                                <Button className="w-full bg-gold-500 hover:bg-gold-600">
+                                  View Details
+                                </Button>
+                              </Link>
+                              <Button
+                                variant="outline"
+                                className="w-full border-gold-200 text-gold-700 hover:bg-gold-50"
+                                onClick={() => handleEnquireClick(school.id, school.name)}
+                              >
+                                <MessageSquare className="mr-2 h-4 w-4" />
+                                Enquire Now
                               </Button>
-                            </Link>
+                            </div>
                           </div>
                         </motion.div>
                       </th>
@@ -242,68 +294,365 @@ export default function ComparePage() {
                 </thead>
 
                 <tbody>
-                  <ComparisonRowData
-                    label="Locations"
-                    schools={schoolsWithDetails}
-                    renderCell={(school) => (
-                      <div className="text-center">
-                        <p className="font-semibold text-gray-900">
-                          {school.branch_locations?.length || 0} locations
-                        </p>
-                        <div className="mt-2 space-y-1">
-                          {school.branch_locations?.slice(0, 3).map((location: any) => (
-                            <p key={location.id} className="text-sm text-gray-500">
-                              {location.city}
-                            </p>
-                          ))}
-                          {(school.branch_locations?.length || 0) > 3 && (
-                            <p className="text-sm text-gray-500">
-                              +{(school.branch_locations?.length || 0) - 3} more
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                    )}
-                  />
+                  {selectedLicenseType ? (
+                    <>
+                      {/* Get all unique courses and their packages */}
+                      {(() => {
+                        // First, collect all courses by name
+                        const courseMap = new Map<
+                          string,
+                          CourseLevelWithRelations
+                        >();
+                        schoolsWithDetails.forEach((school) => {
+                          const filteredCourses = getFilteredCourses(school);
+                          filteredCourses?.forEach((course) => {
+                            if (!courseMap.has(course.name)) {
+                              courseMap.set(course.name, course);
+                            }
+                          });
+                        });
 
-                  <ComparisonRowData
-                    label="Contact"
-                    schools={schoolsWithDetails}
-                    renderCell={(school) => (
-                      <div className="text-center">
-                        <p className="font-semibold text-gray-900">
-                          {school.phone || "N/A"}
-                        </p>
-                        {school.email && (
-                          <p className="mt-1 text-sm text-gray-500">{school.email}</p>
-                        )}
-                      </div>
-                    )}
-                  />
+                        // For each course, collect all unique package combinations
+                        return Array.from(courseMap.values()).flatMap(
+                          (referenceCourse) => {
+                            // Collect all packages across all schools for this course
+                            const allPackages: Array<{
+                              shiftType: string;
+                              packageName: string;
+                              key: string;
+                            }> = [];
 
-                  <ComparisonRowData
-                    label="Course Offerings"
-                    schools={schoolsWithDetails}
-                    renderCell={(school) => (
-                      <div className="text-center">
-                        <p className="font-semibold text-gray-900">
-                          {school.course_levels?.length || 0} courses
-                        </p>
-                        <div className="mt-2 space-y-1">
-                          {school.course_levels?.slice(0, 3).map((course: any) => (
-                            <p key={course.id} className="text-sm text-gray-500">
-                              {course.license_type?.name} - {course.name}
-                            </p>
-                          ))}
-                          {(school.course_levels?.length || 0) > 3 && (
-                            <p className="text-sm text-gray-500">
-                              +{(school.course_levels?.length || 0) - 3} more
-                            </p>
-                          )}
+                            schoolsWithDetails.forEach((school) => {
+                              const schoolCourse = getFilteredCourses(
+                                school
+                              )?.find((c) => c.name === referenceCourse.name);
+
+                              schoolCourse?.shifts?.forEach((shift) => {
+                                shift.packages?.forEach((pkg) => {
+                                  const key = `${shift.type}-${pkg.name}`;
+                                  if (!allPackages.find((p) => p.key === key)) {
+                                    allPackages.push({
+                                      shiftType: shift.type,
+                                      packageName: pkg.name,
+                                      key,
+                                    });
+                                  }
+                                });
+                              });
+                            });
+
+                            return [
+                              // Course Header Row
+                              <tr key={`${referenceCourse.id}-header`}>
+                                <td className="sticky left-0 z-10 bg-gradient-to-r from-gold-50 to-white border-t border-r border-gray-200 p-6">
+                                  <div>
+                                    <h3 className="font-bold text-gray-900 text-lg mb-1">
+                                      {referenceCourse.name}
+                                    </h3>
+                                    {referenceCourse.description && (
+                                      <p className="text-xs text-gray-600 mt-1">
+                                        {referenceCourse.description}
+                                      </p>
+                                    )}
+                                  </div>
+                                </td>
+                                {schoolsWithDetails.map((school) => {
+                                  const schoolCourse = getFilteredCourses(
+                                    school
+                                  )?.find(
+                                    (c) => c.name === referenceCourse.name
+                                  );
+
+                                  return (
+                                    <td
+                                      key={school.id}
+                                      className="bg-white border-t border-r border-gray-200 p-6"
+                                    >
+                                      {schoolCourse ? (
+                                        <div className="flex flex-wrap gap-3 text-sm text-gray-600 justify-center">
+                                          {schoolCourse.duration_hours && (
+                                            <div className="flex items-center gap-1">
+                                              <Clock className="h-4 w-4 text-gold-600" />
+                                              <span>
+                                                {schoolCourse.duration_hours}h
+                                              </span>
+                                            </div>
+                                          )}
+                                          {schoolCourse.shifts &&
+                                            schoolCourse.shifts.length > 0 && (
+                                              <div className="flex items-center gap-1">
+                                                <Users className="h-4 w-4 text-gold-600" />
+                                                <span>
+                                                  {schoolCourse.shifts.length}{" "}
+                                                  shifts
+                                                </span>
+                                              </div>
+                                            )}
+                                        </div>
+                                      ) : (
+                                        <p className="text-center text-gray-400 text-sm">
+                                          Not available
+                                        </p>
+                                      )}
+                                    </td>
+                                  );
+                                })}
+                              </tr>,
+
+                              // Package Rows - One row per unique package combination
+                              ...allPackages.map((packageInfo) => (
+                                <tr
+                                  key={`${referenceCourse.id}-${packageInfo.key}`}
+                                >
+                                  <td className="sticky left-0 z-10 bg-white border-t border-r border-gray-200 p-6">
+                                    <div>
+                                      <div className="flex items-center gap-2 mb-1">
+                                        <div className="h-6 w-0.5 bg-gold-500 rounded-full" />
+                                        <span className="text-xs font-semibold text-gold-700">
+                                          {packageInfo.shiftType} Shift
+                                        </span>
+                                      </div>
+                                      <h4 className="font-bold text-gray-900">
+                                        {packageInfo.packageName}
+                                      </h4>
+                                    </div>
+                                  </td>
+                                  {schoolsWithDetails.map((school) => {
+                                    const schoolCourse = getFilteredCourses(
+                                      school
+                                    )?.find(
+                                      (c) => c.name === referenceCourse.name
+                                    );
+
+                                    // Find matching package
+                                    let matchingPackage = null;
+                                    let matchingShift = null;
+
+                                    if (schoolCourse) {
+                                      for (const shift of schoolCourse.shifts ||
+                                        []) {
+                                        const pkg = shift.packages?.find(
+                                          (p) =>
+                                            `${shift.type}-${p.name}` ===
+                                            packageInfo.key
+                                        );
+                                        if (pkg) {
+                                          matchingPackage = pkg;
+                                          matchingShift = shift;
+                                          break;
+                                        }
+                                      }
+                                    }
+
+                                    return (
+                                      <td
+                                        key={school.id}
+                                        className="bg-white border-t border-r border-gray-200 p-6"
+                                      >
+                                        {matchingPackage && matchingShift ? (
+                                          <motion.div
+                                            initial={{ opacity: 0, y: 10 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            transition={{ duration: 0.3 }}
+                                            className="group relative bg-white border border-gray-200 rounded-lg hover:border-gold-300 hover:shadow-md transition-all duration-300 overflow-hidden"
+                                          >
+                                            {/* Price Header */}
+                                            <div className="bg-gradient-to-r from-gold-50/50 via-white to-transparent px-4 py-3 border-b border-gray-100">
+                                              <div className="text-center">
+                                                <div className="text-xs text-gray-500 font-medium">
+                                                  Total Fee
+                                                </div>
+                                                <div className="text-xl font-bold text-gold-600">
+                                                  AED{" "}
+                                                  {matchingPackage.fee_aed.toLocaleString()}
+                                                </div>
+                                              </div>
+                                            </div>
+
+                                            {/* Package Details */}
+                                            {matchingPackage.details && (
+                                              <div className="p-4">
+                                                <div className="space-y-4">
+                                                  {/* Training Schedule */}
+                                                  {(matchingPackage.details
+                                                    .class_timings ||
+                                                    matchingPackage.details
+                                                      .training_days ||
+                                                    matchingPackage.details
+                                                      .hours_per_week) && (
+                                                    <div className="space-y-2">
+                                                      <div className="flex items-center gap-2 pb-1.5 border-b border-gray-100">
+                                                        <div className="p-1.5 bg-purple-50 rounded-md">
+                                                          <Clock className="h-3.5 w-3.5 text-purple-600" />
+                                                        </div>
+                                                        <h6 className="text-xs font-bold text-gray-900">
+                                                          Training Schedule
+                                                        </h6>
+                                                      </div>
+                                                      <div className="space-y-1.5">
+                                                        {matchingPackage.details
+                                                          .class_timings && (
+                                                          <div className="flex items-start gap-1.5 text-xs">
+                                                            <span className="text-gray-600 min-w-[120px]">
+                                                              Class Timings:
+                                                            </span>
+                                                            <span className="text-gray-900 font-medium">
+                                                              {
+                                                                matchingPackage
+                                                                  .details
+                                                                  .class_timings
+                                                              }
+                                                            </span>
+                                                          </div>
+                                                        )}
+                                                        {matchingPackage.details
+                                                          .training_days && (
+                                                          <div className="flex items-start gap-1.5 text-xs">
+                                                            <span className="text-gray-600 min-w-[120px]">
+                                                              Training Days:
+                                                            </span>
+                                                            <span className="text-gray-900 font-medium">
+                                                              {
+                                                                matchingPackage
+                                                                  .details
+                                                                  .training_days
+                                                              }
+                                                            </span>
+                                                          </div>
+                                                        )}
+                                                        {matchingPackage.details
+                                                          .hours_per_week && (
+                                                          <div className="flex items-start gap-1.5 text-xs">
+                                                            <span className="text-gray-600 min-w-[120px]">
+                                                              Hours Per Week:
+                                                            </span>
+                                                            <span className="text-gray-900 font-medium">
+                                                              {
+                                                                matchingPackage
+                                                                  .details
+                                                                  .hours_per_week
+                                                              }
+                                                            </span>
+                                                          </div>
+                                                        )}
+                                                      </div>
+                                                    </div>
+                                                  )}
+
+                                                  {/* Fee Details */}
+                                                  {matchingPackage.details
+                                                    .training_fee_per_hour && (
+                                                    <div className="space-y-2">
+                                                      <div className="flex items-center gap-2 pb-1.5 border-b border-gray-100">
+                                                        <div className="p-1.5 bg-gold-50 rounded-md">
+                                                          <DollarSign className="h-3.5 w-3.5 text-gold-600" />
+                                                        </div>
+                                                        <h6 className="text-xs font-bold text-gray-900">
+                                                          Fee Details
+                                                        </h6>
+                                                      </div>
+                                                      <div className="space-y-1.5">
+                                                        <div className="flex items-start justify-between gap-2 text-xs">
+                                                          <span className="text-gray-600">
+                                                            Training Fee Per
+                                                            Hour:
+                                                          </span>
+                                                          <span className="text-gray-900 font-medium">
+                                                            AED{" "}
+                                                            {
+                                                              matchingPackage
+                                                                .details
+                                                                .training_fee_per_hour
+                                                            }
+                                                          </span>
+                                                        </div>
+                                                      </div>
+                                                    </div>
+                                                  )}
+
+                                                  {/* VAT Info */}
+                                                  {matchingPackage.details
+                                                    .vat && (
+                                                    <div className="space-y-2">
+                                                      <div className="flex items-center gap-2 pb-1.5 border-b border-gray-100">
+                                                        <div className="p-1.5 bg-blue-50 rounded-md">
+                                                          <FileText className="h-3.5 w-3.5 text-blue-600" />
+                                                        </div>
+                                                        <h6 className="text-xs font-bold text-gray-900">
+                                                          VAT Information
+                                                        </h6>
+                                                      </div>
+                                                      <div className="text-xs text-gray-700">
+                                                        {
+                                                          matchingPackage
+                                                            .details.vat
+                                                        }
+                                                      </div>
+                                                    </div>
+                                                  )}
+
+                                                  {/* Notes */}
+                                                  {matchingPackage.details
+                                                    .notes && (
+                                                    <div className="space-y-2">
+                                                      <div className="flex items-center gap-2 pb-1.5 border-b border-gray-100">
+                                                        <div className="p-1.5 bg-green-50 rounded-md">
+                                                          <BookOpen className="h-3.5 w-3.5 text-green-600" />
+                                                        </div>
+                                                        <h6 className="text-xs font-bold text-gray-900">
+                                                          Additional Notes
+                                                        </h6>
+                                                      </div>
+                                                      <div className="text-xs text-gray-700">
+                                                        {
+                                                          matchingPackage
+                                                            .details.notes
+                                                        }
+                                                      </div>
+                                                    </div>
+                                                  )}
+                                                </div>
+                                              </div>
+                                            )}
+
+                                            {/* Bottom Accent Bar */}
+                                            <div className="h-0.5 bg-gradient-to-r from-transparent via-gold-400 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                                          </motion.div>
+                                        ) : (
+                                          <p className="text-center text-gray-400 text-sm py-4">
+                                            Not available
+                                          </p>
+                                        )}
+                                      </td>
+                                    );
+                                  })}
+                                </tr>
+                              )),
+                            ];
+                          }
+                        );
+                      })()}
+                    </>
+                  ) : (
+                    <tr>
+                      <td
+                        colSpan={schoolsWithDetails.length + 1}
+                        className="border-t border-gray-200"
+                      >
+                        <div className="py-16 text-center bg-blue-50">
+                          <BookOpen className="h-12 w-12 text-blue-600 mx-auto mb-4" />
+                          <h3 className="text-xl font-bold text-gray-900 mb-2">
+                            Select a License Type
+                          </h3>
+                          <p className="text-gray-600 max-w-2xl mx-auto">
+                            Choose a specific license type above to compare
+                            detailed course information, pricing, and packages
+                            across schools.
+                          </p>
                         </div>
-                      </div>
-                    )}
-                  />
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
 
                 <tfoot>
@@ -316,50 +665,20 @@ export default function ComparePage() {
                 </tfoot>
               </table>
             </div>
-
-            {selectedLicenseType === null && licenseTypesArray.length > 0 && (
-              <div className="mt-8 text-center bg-blue-50 rounded-xl p-8 border border-blue-200">
-                <BookOpen className="h-12 w-12 text-blue-600 mx-auto mb-4" />
-                <h3 className="text-xl font-bold text-gray-900 mb-2">
-                  Select a License Type
-                </h3>
-                <p className="text-gray-600 max-w-2xl mx-auto">
-                  Choose a specific license type above to compare detailed
-                  course information, pricing, and packages across schools.
-                </p>
-              </div>
-            )}
           </div>
         </Container>
       </div>
+
+      <EnquiryModal
+        isOpen={isEnquiryModalOpen}
+        onClose={() => {
+          setIsEnquiryModalOpen(false);
+          setEnquirySchoolId(null);
+          setEnquirySchoolName(null);
+        }}
+        schoolId={enquirySchoolId || undefined}
+        schoolName={enquirySchoolName || undefined}
+      />
     </div>
-  );
-}
-
-interface ComparisonRowDataProps {
-  label: string;
-  schools: any[];
-  renderCell: (school: any) => React.ReactNode;
-}
-
-function ComparisonRowData({
-  label,
-  schools,
-  renderCell,
-}: ComparisonRowDataProps) {
-  return (
-    <tr>
-      <td className="sticky left-0 z-10 bg-white border-t border-r border-gray-200 p-6">
-        <h3 className="font-semibold text-gray-900">{label}</h3>
-      </td>
-      {schools.map((school) => (
-        <td
-          key={school.id}
-          className="bg-white border-t border-r border-gray-200 p-6"
-        >
-          {renderCell(school)}
-        </td>
-      ))}
-    </tr>
   );
 }
