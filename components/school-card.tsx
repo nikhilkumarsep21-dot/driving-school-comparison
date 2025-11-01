@@ -134,9 +134,6 @@ export function SchoolCard({ school, index = 0 }: SchoolCardProps) {
           <div className="flex items-center justify-between gap-4 w-full px-1">
             <div className="flex items-center gap-1">
               <StarRating rating={school.rating} size="sm" />
-              <span className="font-semibold text-gray-900 text-xs">
-                {school.rating}
-              </span>
             </div>
             <span className="flex items-center gap-1 text-xs text-gray-500">
               <Users className="h-3 w-3" />

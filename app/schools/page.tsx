@@ -6,13 +6,16 @@ import { Container } from "@/components/layout/container";
 import { SchoolCard } from "@/components/school-card";
 import { Filters } from "@/components/filters";
 import { LoadingCard } from "@/components/ui/loading-card";
+import { QuickMatchInlineForm } from "@/components/quick-match-inline-form";
 import { SchoolWithLocations, FilterOptions } from "@/lib/types";
+import { getUserDetailsFromCookie } from "@/lib/cookies";
 import { GraduationCap } from "lucide-react";
 
 export default function SchoolsPage() {
   const searchParams = useSearchParams();
   const [schools, setSchools] = useState<SchoolWithLocations[]>([]);
   const [loading, setLoading] = useState(true);
+  const [hasUserDetails, setHasUserDetails] = useState<boolean | null>(null);
   const [filters, setFilters] = useState<FilterOptions>({
     search: "",
     licenseTypes: [],
@@ -25,6 +28,12 @@ export default function SchoolsPage() {
     sortBy: "recommended",
   });
   const [preAppliedFilters, setPreAppliedFilters] = useState(false);
+
+  // Check for user details in cookies on mount
+  useEffect(() => {
+    const userDetails = getUserDetailsFromCookie();
+    setHasUserDetails(!!userDetails);
+  }, []);
 
   useEffect(() => {
     const licenseType = searchParams.get("licenseType");
@@ -91,6 +100,68 @@ export default function SchoolsPage() {
 
     return () => clearTimeout(debounce);
   }, [filters]);
+
+  // Show loading state while checking cookies
+  if (hasUserDetails === null) {
+    return (
+      <div className="pb-20 bg-white">
+        <section className="relative overflow-hidden bg-gradient-to-br from-gold-600 to-gold-700 py-12 sm:py-16">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_white_1px,_transparent_1px)] bg-[length:24px_24px] opacity-20" />
+          <Container className="relative">
+            <div className="mx-auto max-w-3xl text-center pt-12">
+              <h1 className="mb-4 text-4xl font-bold tracking-tight text-white sm:text-5xl">
+                Browse Driving Schools
+              </h1>
+              <p className="text-lg text-gold-100">
+                Compare and find the perfect driving school that matches your
+                needs
+              </p>
+            </div>
+          </Container>
+        </section>
+        <Container>
+          <div className="py-8">
+            <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <LoadingCard key={i} />
+              ))}
+            </div>
+          </div>
+        </Container>
+      </div>
+    );
+  }
+
+  // Show quick match form if user details not found
+  if (!hasUserDetails) {
+    return (
+      <div className="pb-20 bg-white">
+        <section className="relative overflow-hidden bg-gradient-to-br from-gold-600 to-gold-700 py-12 sm:py-16">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_white_1px,_transparent_1px)] bg-[length:24px_24px] opacity-20" />
+          <Container className="relative">
+            <div className="mx-auto max-w-3xl text-center pt-12">
+              <h1 className="mb-4 text-4xl font-bold tracking-tight text-white sm:text-5xl">
+                Welcome! Let's Get Started
+              </h1>
+              <p className="text-lg text-gold-100">
+                Please complete the form below to browse driving schools
+              </p>
+            </div>
+          </Container>
+        </section>
+        <Container>
+          <div className="py-8">
+            <div className="mx-auto max-w-4xl">
+              <QuickMatchInlineForm
+                selectedCategory={2}
+                onComplete={() => setHasUserDetails(true)}
+              />
+            </div>
+          </div>
+        </Container>
+      </div>
+    );
+  }
 
   return (
     <div className="pb-20 bg-white">
