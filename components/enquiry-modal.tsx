@@ -33,6 +33,14 @@ interface EnquiryModalProps {
   onClose: () => void;
   schoolId?: string;
   schoolName?: string;
+  prefilledName?: string;
+  prefilledEmail?: string;
+  prefilledPhone?: string;
+  prefilledLicenseType?: string;
+  prefilledLicenseStatus?: string;
+  prefilledPackageType?: string;
+  prefilledLocation?: string;
+  prefilledStartTime?: string;
 }
 
 export function EnquiryModal({
@@ -40,6 +48,14 @@ export function EnquiryModal({
   onClose,
   schoolId,
   schoolName,
+  prefilledName,
+  prefilledEmail,
+  prefilledPhone,
+  prefilledLicenseType,
+  prefilledLicenseStatus,
+  prefilledPackageType,
+  prefilledLocation,
+  prefilledStartTime,
 }: EnquiryModalProps) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -57,19 +73,43 @@ export function EnquiryModal({
 
   useEffect(() => {
     if (isOpen) {
-      // Load user details from cookie if available
-      const userDetails = getUserDetailsFromCookie();
-      if (userDetails) {
-        setName(userDetails.name || "");
-        setEmail(userDetails.email || "");
-        setPhone(userDetails.phone || "");
+      // Use prefilled data if provided, otherwise load from cookie
+      if (prefilledName || prefilledEmail || prefilledPhone) {
+        setName(prefilledName || "");
+        setEmail(prefilledEmail || "");
+        setPhone(prefilledPhone || "");
+      } else {
+        const userDetails = getUserDetailsFromCookie();
+        if (userDetails) {
+          setName(userDetails.name || "");
+          setEmail(userDetails.email || "");
+          setPhone(userDetails.phone || "");
+        }
       }
+
+      // Set other prefilled fields
+      if (prefilledLicenseType) setLicenseType(prefilledLicenseType);
+      if (prefilledLicenseStatus) setLicenseStatus(prefilledLicenseStatus);
+      if (prefilledPackageType) setPackageType(prefilledPackageType);
+      if (prefilledLocation) setLocation(prefilledLocation);
+      if (prefilledStartTime) setStartTime(prefilledStartTime);
+
       // Fetch cities when modal opens
       if (cities.length === 0) {
         fetchCities();
       }
     }
-  }, [isOpen]);
+  }, [
+    isOpen,
+    prefilledName,
+    prefilledEmail,
+    prefilledPhone,
+    prefilledLicenseType,
+    prefilledLicenseStatus,
+    prefilledPackageType,
+    prefilledLocation,
+    prefilledStartTime,
+  ]);
 
   const fetchCities = async () => {
     if (!schoolId) {

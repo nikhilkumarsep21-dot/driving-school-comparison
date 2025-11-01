@@ -1395,6 +1395,18 @@ export function QuickMatchInlineForm({
         }}
         schoolId={enquirySchoolId || undefined}
         schoolName={enquirySchoolName || undefined}
+        prefilledName={leadName}
+        prefilledEmail={leadEmail}
+        prefilledPhone={leadPhone}
+        prefilledLicenseType={
+          selectedCategory ? CATEGORY_TYPES[selectedCategory]?.label : undefined
+        }
+        prefilledLicenseStatus={
+          hasLicense === "yes" ? "yes" : hasLicense === "no" ? "no" : undefined
+        }
+        prefilledPackageType={selectedShiftType || undefined}
+        prefilledLocation={location || undefined}
+        prefilledStartTime={startTime || undefined}
       />
     </>
   );
