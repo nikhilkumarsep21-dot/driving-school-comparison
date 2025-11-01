@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 import {
   ArrowLeft,
   ArrowRight,
@@ -10,6 +11,7 @@ import {
   X,
   GitCompare,
   MessageSquare,
+  GraduationCap,
 } from "lucide-react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -48,23 +50,28 @@ import { EnquiryModal } from "./enquiry-modal";
 interface CategoryFormModalProps {
   isOpen: boolean;
   onClose: () => void;
-  selectedCategory: number;
+  selectedCategory?: number;
 }
 
 const STEPS = [
-  { step: 1, title: "Location", description: "Choose your preferred area" },
   {
-    step: 2,
+    step: 1,
+    title: "License Type",
+    description: "Choose your license category",
+  },
+  { step: 2, title: "Location", description: "Choose your preferred area" },
+  {
+    step: 3,
     title: "Experience",
     description: "Tell us about your driving experience",
   },
   {
-    step: 3,
+    step: 4,
     title: "Package Type",
     description: "Select your preferred package type",
   },
   {
-    step: 4,
+    step: 5,
     title: "Packages",
     description: "View available packages",
   },
@@ -73,12 +80,15 @@ const STEPS = [
 export function CategoryFormModal({
   isOpen,
   onClose,
-  selectedCategory,
+  selectedCategory: initialCategory,
 }: CategoryFormModalProps) {
   const router = useRouter();
   const { addSchool, removeSchool, isInComparison, canAddMore } =
     useComparisonStore();
   const [currentStep, setCurrentStep] = useState(1);
+  const [selectedCategory, setSelectedCategory] = useState<number | null>(
+    initialCategory || null
+  );
   const [location, setLocation] = useState("");
   const [hasLicense, setHasLicense] = useState<string>("");
   const [experienceLevel, setExperienceLevel] = useState<string>("");
@@ -101,8 +111,12 @@ export function CategoryFormModal({
 
   useEffect(() => {
     if (isOpen) {
-      console.log("🚪 Modal opened, fetching cities...");
-      fetchCities();
+      console.log("🚪 Modal opened");
+      // If category is already selected, skip to step 2 and fetch cities
+      if (selectedCategory) {
+        setCurrentStep(2);
+        fetchCities();
+      }
     }
   }, [isOpen]);
 
@@ -114,18 +128,29 @@ export function CategoryFormModal({
       selectedShiftType,
       selectedCategory,
       shouldFetchPackages:
-        currentStep === 4 && location && experienceLevel && selectedShiftType,
+        currentStep === 5 &&
+        location &&
+        experienceLevel &&
+        selectedShiftType &&
+        selectedCategory,
     });
 
-    if (currentStep === 4 && location && experienceLevel && selectedShiftType) {
+    if (
+      currentStep === 5 &&
+      location &&
+      experienceLevel &&
+      selectedShiftType &&
+      selectedCategory
+    ) {
       console.log("✅ Conditions met for packages, calling fetchPackages...");
       fetchPackages();
     } else {
       console.log("❌ Not fetching because:", {
-        isStep4: currentStep === 4,
+        isStep5: currentStep === 5,
         hasLocation: !!location,
         hasExperienceLevel: !!experienceLevel,
         hasShiftType: !!selectedShiftType,
+        hasCategory: !!selectedCategory,
       });
     }
   }, [
@@ -160,6 +185,12 @@ export function CategoryFormModal({
 
   const fetchPackages = async () => {
     console.log("🎬 fetchPackages STARTED");
+
+    if (!selectedCategory) {
+      console.error("❌ No category selected");
+      return;
+    }
+
     setLoadingPackages(true);
     try {
       const licenseTypeName = CATEGORY_TYPES[selectedCategory]?.label;
@@ -358,14 +389,19 @@ export function CategoryFormModal({
     const newErrors: Record<string, string> = {};
 
     if (step === 1) {
-      if (!location) newErrors.location = "Please select a location";
+      if (!selectedCategory)
+        newErrors.category = "Please select a license type";
     }
 
     if (step === 2) {
-      if (!hasLicense) newErrors.hasLicense = "Please select an option";
+      if (!location) newErrors.location = "Please select a location";
     }
 
     if (step === 3) {
+      if (!hasLicense) newErrors.hasLicense = "Please select an option";
+    }
+
+    if (step === 4) {
       if (!selectedShiftType)
         newErrors.shiftType = "Please select a shift type";
     }
@@ -382,7 +418,16 @@ export function CategoryFormModal({
       return;
     }
 
-    if (currentStep === 2) {
+    if (currentStep === 1) {
+      // After selecting license type, fetch cities
+      setCurrentStep(2);
+      if (cities.length === 0) {
+        fetchCities();
+      }
+      return;
+    }
+
+    if (currentStep === 3) {
       // Set experience level based on license answer
       const newExperienceLevel = hasLicense === "yes" ? "expert" : "beginner";
       console.log(
@@ -393,8 +438,8 @@ export function CategoryFormModal({
       );
       setExperienceLevel(newExperienceLevel);
 
-      // Move to step 3 and fetch shift types
-      setCurrentStep(3);
+      // Move to step 4 and fetch shift types
+      setCurrentStep(4);
       // Fetch shift types for the next step
       setTimeout(() => {
         fetchShiftTypesForStep3(newExperienceLevel);
@@ -402,7 +447,7 @@ export function CategoryFormModal({
       return;
     }
 
-    if (currentStep < 4) {
+    if (currentStep < 5) {
       console.log("📈 Moving to step:", currentStep + 1);
       setCurrentStep(currentStep + 1);
     }
@@ -410,6 +455,12 @@ export function CategoryFormModal({
 
   const fetchShiftTypesForStep3 = async (expLevel: string) => {
     console.log("🎬 fetchShiftTypesForStep3 STARTED");
+
+    if (!selectedCategory) {
+      console.error("❌ No category selected");
+      return;
+    }
+
     setLoadingShiftTypes(true);
     try {
       const licenseTypeName = CATEGORY_TYPES[selectedCategory]?.label;
@@ -541,6 +592,11 @@ export function CategoryFormModal({
   };
 
   const handleSubmit = () => {
+    if (!selectedCategory) {
+      toast.error("Please select a license type");
+      return;
+    }
+
     toast.success("Finding schools for you...");
 
     const params = new URLSearchParams({
@@ -556,6 +612,7 @@ export function CategoryFormModal({
 
   const handleModalClose = () => {
     setCurrentStep(1);
+    setSelectedCategory(initialCategory || null);
     setLocation("");
     setHasLicense("");
     setExperienceLevel("");
@@ -574,13 +631,15 @@ export function CategoryFormModal({
     <Dialog open={isOpen} onOpenChange={handleModalClose}>
       <DialogContent
         className={`${
-          currentStep === 4 ? "max-w-7xl" : "max-w-2xl"
+          currentStep === 5 ? "max-w-7xl" : "max-w-2xl"
         } max-h-[90vh] overflow-y-auto transition-all duration-300`}
       >
         <div className="relative">
           <div className="mb-8">
             <h2 className="text-2xl font-bold text-gray-900 mb-2">
-              {CATEGORY_TYPES[selectedCategory]?.label || "License Category"}
+              {selectedCategory
+                ? CATEGORY_TYPES[selectedCategory]?.label
+                : "Find Your Perfect Driving School"}
             </h2>
             <p className="text-gray-600">
               Complete the steps below to get started
@@ -624,6 +683,73 @@ export function CategoryFormModal({
               {currentStep === 1 && (
                 <div className="space-y-6">
                   <div>
+                    <Label className="text-base font-semibold mb-4 block">
+                      Choose Your License Type
+                    </Label>
+                    <p className="text-sm text-gray-600 mb-6">
+                      Select the driving license category you want to pursue
+                    </p>
+
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4 max-h-[400px] overflow-y-auto pr-2">
+                      {Object.entries(CATEGORY_TYPES).map(([id, category]) => {
+                        const isSelected = selectedCategory === Number(id);
+                        return (
+                          <button
+                            key={id}
+                            onClick={() => setSelectedCategory(Number(id))}
+                            className={`
+                              relative p-6 rounded-xl border-2 transition-all text-center
+                              ${
+                                isSelected
+                                  ? "border-gold-600 bg-gold-50 shadow-md"
+                                  : "border-gray-200 hover:border-gold-300 hover:shadow-sm"
+                              }
+                            `}
+                          >
+                            <div className="flex flex-col items-center gap-3">
+                              <div
+                                className={`
+                                w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center
+                                ${isSelected ? "bg-gold-100" : ""}
+                              `}
+                              >
+                                <GraduationCap
+                                  className={`h-8 w-8 ${
+                                    isSelected
+                                      ? "text-gold-600"
+                                      : "text-gray-600"
+                                  }`}
+                                />
+                              </div>
+                              <span
+                                className={`font-medium text-sm ${
+                                  isSelected ? "text-gold-700" : "text-gray-900"
+                                }`}
+                              >
+                                {category.label}
+                              </span>
+                            </div>
+                            {isSelected && (
+                              <div className="absolute top-2 right-2">
+                                <Check className="h-5 w-5 text-gold-600" />
+                              </div>
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
+                    {errors.category && (
+                      <p className="text-sm text-red-600 mt-2">
+                        {errors.category}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {currentStep === 2 && (
+                <div className="space-y-6">
+                  <div>
                     <Label
                       htmlFor="location"
                       className="text-base font-semibold mb-2 block"
@@ -661,7 +787,7 @@ export function CategoryFormModal({
                 </div>
               )}
 
-              {currentStep === 2 && (
+              {currentStep === 3 && (
                 <div className="space-y-6">
                   <div>
                     <Label className="text-base font-semibold mb-4 block">
@@ -723,7 +849,7 @@ export function CategoryFormModal({
                 </div>
               )}
 
-              {currentStep === 3 && (
+              {currentStep === 4 && (
                 <div className="space-y-6">
                   <div>
                     <Label className="text-base font-semibold mb-2 block">
@@ -785,7 +911,7 @@ export function CategoryFormModal({
                 </div>
               )}
 
-              {currentStep === 4 && (
+              {currentStep === 5 && (
                 <div className="space-y-6">
                   <div className="text-center mb-6">
                     <h3 className="text-xl font-semibold mb-2">
@@ -963,7 +1089,7 @@ export function CategoryFormModal({
             )}
 
             <div className={currentStep === 1 ? "ml-auto" : "ml-auto"}>
-              {currentStep < 4 ? (
+              {currentStep < 5 ? (
                 <Button
                   onClick={handleNext}
                   className="h-12 px-8 bg-gold-600 hover:bg-gold-700"

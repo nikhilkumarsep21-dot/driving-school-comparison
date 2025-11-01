@@ -6,14 +6,19 @@ import { Container } from "@/components/layout/container";
 import { Button } from "@/components/ui/button";
 import { FeaturedSchools } from "@/components/featured-schools";
 import { CategorySelection } from "@/components/category-selection";
+import { QuickMatchSection } from "@/components/quick-match-section";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
-import { Award, ArrowRight, GitCompare } from "lucide-react";
+import {
+  Award,
+  ArrowRight,
+  Users,
+  TrendingUp,
+  ShieldCheck,
+} from "lucide-react";
 
 export default function Home() {
   const categoryRef = useScrollAnimation({ threshold: 0.2 });
   const featuredRef = useScrollAnimation({ threshold: 0.2 });
-  const howItWorksRef = useScrollAnimation({ threshold: 0.2 });
-  const ctaRef = useScrollAnimation({ threshold: 0.3 });
   return (
     <div className="flex flex-col">
       <section className="relative overflow-hidden bg-gradient-to-br from-gold-600 to-gold-700 pt-20 py-20 sm:py-32">
@@ -59,136 +64,23 @@ export default function Home() {
       </section>
 
       <section
-        ref={howItWorksRef.ref as any}
-        className="py-20 sm:py-28 bg-white"
-      >
-        <Container>
-          <motion.div
-            className="mx-auto max-w-3xl text-center mb-16"
-            initial={{ opacity: 0, y: 30 }}
-            animate={
-              howItWorksRef.isInView
-                ? { opacity: 1, y: 0 }
-                : { opacity: 0, y: 30 }
-            }
-            transition={{ duration: 0.7, ease: "easeOut" }}
-          >
-            <h2 className="text-4xl font-bold text-gray-900 sm:text-5xl mb-4">
-              How It Works
-            </h2>
-            <p className="text-lg text-gray-600">
-              Three simple steps to find your ideal driving school
-            </p>
-          </motion.div>
-
-          <div className="grid gap-8 md:grid-cols-3">
-            <motion.div
-              className="relative"
-              initial={{ opacity: 0, y: 40 }}
-              animate={
-                howItWorksRef.isInView
-                  ? { opacity: 1, y: 0 }
-                  : { opacity: 0, y: 40 }
-              }
-              transition={{ duration: 0.7, delay: 0.2, ease: "easeOut" }}
-            >
-              <div className="flex flex-col items-center text-center">
-                <motion.div
-                  className="mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-gold-600 text-2xl font-bold text-white shadow-lg"
-                  initial={{ scale: 0.8, rotate: -10 }}
-                  animate={
-                    howItWorksRef.isInView
-                      ? { scale: 1, rotate: 0 }
-                      : { scale: 0.8, rotate: -10 }
-                  }
-                  transition={{ duration: 0.6, delay: 0.3, ease: "easeOut" }}
-                >
-                  1
-                </motion.div>
-                <h3 className="mb-3 text-2xl font-bold text-gray-900">
-                  Browse & Filter
-                </h3>
-                <p className="text-gray-600 leading-relaxed">
-                  Explore schools across Dubai and filter by location, budget,
-                  and license type.
-                </p>
-              </div>
-            </motion.div>
-
-            <motion.div
-              className="relative"
-              initial={{ opacity: 0, y: 40 }}
-              animate={
-                howItWorksRef.isInView
-                  ? { opacity: 1, y: 0 }
-                  : { opacity: 0, y: 40 }
-              }
-              transition={{ duration: 0.7, delay: 0.4, ease: "easeOut" }}
-            >
-              <div className="flex flex-col items-center text-center">
-                <motion.div
-                  className="mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-gold-600 text-2xl font-bold text-white shadow-lg"
-                  initial={{ scale: 0.8, rotate: -10 }}
-                  animate={
-                    howItWorksRef.isInView
-                      ? { scale: 1, rotate: 0 }
-                      : { scale: 0.8, rotate: -10 }
-                  }
-                  transition={{ duration: 0.6, delay: 0.5, ease: "easeOut" }}
-                >
-                  2
-                </motion.div>
-                <h3 className="mb-3 text-2xl font-bold text-gray-900">
-                  Compare Options
-                </h3>
-                <p className="text-gray-600 leading-relaxed">
-                  Compare up to 3 schools side-by-side based on pricing,
-                  ratings, and reviews.
-                </p>
-              </div>
-            </motion.div>
-
-            <motion.div
-              className="relative"
-              initial={{ opacity: 0, y: 40 }}
-              animate={
-                howItWorksRef.isInView
-                  ? { opacity: 1, y: 0 }
-                  : { opacity: 0, y: 40 }
-              }
-              transition={{ duration: 0.7, delay: 0.6, ease: "easeOut" }}
-            >
-              <div className="flex flex-col items-center text-center">
-                <motion.div
-                  className="mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-gold-600 text-2xl font-bold text-white shadow-lg"
-                  initial={{ scale: 0.8, rotate: -10 }}
-                  animate={
-                    howItWorksRef.isInView
-                      ? { scale: 1, rotate: 0 }
-                      : { scale: 0.8, rotate: -10 }
-                  }
-                  transition={{ duration: 0.6, delay: 0.7, ease: "easeOut" }}
-                >
-                  3
-                </motion.div>
-                <h3 className="mb-3 text-2xl font-bold text-gray-900">
-                  Enroll & Learn
-                </h3>
-                <p className="text-gray-600 leading-relaxed">
-                  Contact your chosen school to enroll and start your journey to
-                  becoming a licensed driver.
-                </p>
-              </div>
-            </motion.div>
-          </div>
-        </Container>
-      </section>
-
-      <section
         ref={categoryRef.ref as any}
-        className="py-20 sm:py-28 bg-gray-50"
+        className="relative py-24 sm:py-32 bg-gradient-to-b from-white via-gold-50/30 to-white overflow-hidden"
       >
-        <Container>
+        {/* Decorative Elements */}
+        <div className="absolute top-20 left-10 w-72 h-72 bg-gold-200/20 rounded-full blur-3xl" />
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-gold-300/15 rounded-full blur-3xl" />
+        <div className="absolute top-1/2 left-1/4 w-3 h-3 bg-gold-400 rounded-full animate-pulse" />
+        <div
+          className="absolute top-1/3 right-1/3 w-2 h-2 bg-gold-500 rounded-full animate-pulse"
+          style={{ animationDelay: "150ms" }}
+        />
+        <div
+          className="absolute bottom-1/4 left-1/2 w-4 h-4 bg-gold-300 rounded-full animate-pulse"
+          style={{ animationDelay: "300ms" }}
+        />
+
+        <Container className="relative">
           <motion.div
             className="mx-auto max-w-3xl text-center mb-16"
             initial={{ opacity: 0, y: 30 }}
@@ -199,8 +91,14 @@ export default function Home() {
             }
             transition={{ duration: 0.7, ease: "easeOut" }}
           >
-            <h2 className="text-4xl font-bold text-gray-900 sm:text-5xl mb-4">
-              Choose Your License Type
+            <div className="inline-flex items-center gap-2 rounded-full bg-gold-100 px-4 py-2 text-sm font-medium text-gold-800 mb-6">
+              <Award className="h-4 w-4" />
+              Choose Your Vehicle
+            </div>
+            <h2 className="text-4xl font-bold sm:text-5xl mb-4">
+              <span className="bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
+                Choose Your License Type
+              </span>
             </h2>
             <p className="text-lg text-gray-600">
               Select the driving license category that matches your needs and
@@ -222,8 +120,26 @@ export default function Home() {
         </Container>
       </section>
 
-      <section ref={featuredRef.ref as any} className="py-20 sm:py-28 bg-white">
-        <Container>
+      <QuickMatchSection />
+
+      <section
+        ref={featuredRef.ref as any}
+        className="relative py-24 sm:py-32 bg-gradient-to-b from-white via-gray-50 to-white overflow-hidden"
+      >
+        {/* Decorative Elements */}
+        <div className="absolute top-10 right-10 w-80 h-80 bg-gold-200/20 rounded-full blur-3xl" />
+        <div className="absolute bottom-10 left-10 w-96 h-96 bg-gold-100/30 rounded-full blur-3xl" />
+
+        {/* Floating decorative shapes */}
+        <div className="absolute top-1/4 left-10 w-20 h-20 border-2 border-gold-200 rounded-lg rotate-12 opacity-30" />
+        <div className="absolute bottom-1/3 right-20 w-16 h-16 border-2 border-gold-300 rounded-full opacity-20" />
+        <div className="absolute top-1/2 right-1/4 w-3 h-3 bg-gold-400 rounded-full animate-pulse" />
+        <div
+          className="absolute top-2/3 left-1/3 w-2 h-2 bg-gold-500 rounded-full animate-pulse"
+          style={{ animationDelay: "150ms" }}
+        />
+
+        <Container className="relative">
           <motion.div
             className="mx-auto max-w-3xl text-center mb-16"
             initial={{ opacity: 0, y: 30 }}
@@ -234,8 +150,14 @@ export default function Home() {
             }
             transition={{ duration: 0.7, ease: "easeOut" }}
           >
-            <h2 className="text-4xl font-bold text-gray-900 sm:text-5xl mb-4">
-              Featured Partner Schools
+            <div className="inline-flex items-center gap-2 rounded-full bg-gold-100 px-4 py-2 text-sm font-medium text-gold-800 mb-6">
+              <ShieldCheck className="h-4 w-4" />
+              Verified Partners
+            </div>
+            <h2 className="text-4xl font-bold sm:text-5xl mb-4">
+              <span className="bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
+                Featured Partner Schools
+              </span>
             </h2>
             <p className="text-lg text-gray-600">
               Top-rated driving schools trusted by thousands of students across
@@ -258,8 +180,7 @@ export default function Home() {
             <Link href="/schools">
               <Button
                 size="lg"
-                variant="outline"
-                className="h-12 px-8 border-2 border-gold-200 hover:bg-gold-50 hover:border-gold-300"
+                className="h-14 px-10 bg-gradient-to-r from-gold-600 to-gold-700 hover:from-gold-700 hover:to-gold-800 text-white shadow-lg hover:shadow-xl transition-all"
               >
                 View All Schools
                 <ArrowRight className="ml-2 h-5 w-5" />
