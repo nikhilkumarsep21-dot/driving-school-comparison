@@ -1,0 +1,52 @@
+create table public.shifts (
+  id uuid not null default gen_random_uuid (),
+  course_level_id uuid not null,
+  type text not null,
+  description text null,
+  created_at timestamp with time zone null default now(),
+  constraint shifts_pkey primary key (id),
+  constraint shifts_course_level_id_type_key unique (course_level_id, type),
+  constraint shifts_course_level_id_fkey foreign KEY (course_level_id) references course_levels (id) on delete CASCADE
+) TABLESPACE pg_default;
+
+create index IF not exists idx_shifts_course_level_id on public.shifts using btree (course_level_id) TABLESPACE pg_default;
+
+create table public.packages (
+  id uuid not null default gen_random_uuid (),
+  shift_id uuid not null,
+  name text not null,
+  fee_aed numeric(10, 2) not null,
+  details jsonb null,
+  created_at timestamp with time zone null default now(),
+  constraint packages_pkey primary key (id),
+  constraint packages_shift_id_fkey foreign KEY (shift_id) references shifts (id) on delete CASCADE
+) TABLESPACE pg_default;
+
+create index IF not exists idx_packages_shift_id on public.packages using btree (shift_id) TABLESPACE pg_default;
+
+create table public.packages (
+  id uuid not null default gen_random_uuid (),
+  shift_id uuid not null,
+  name text not null,
+  fee_aed numeric(10, 2) not null,
+  details jsonb null,
+  created_at timestamp with time zone null default now(),
+  constraint packages_pkey primary key (id),
+  constraint packages_shift_id_fkey foreign KEY (shift_id) references shifts (id) on delete CASCADE
+) TABLESPACE pg_default;
+
+create index IF not exists idx_packages_shift_id on public.packages using btree (shift_id) TABLESPACE pg_default;
+
+create table public.packages (
+  id uuid not null default gen_random_uuid (),
+  shift_id uuid not null,
+  name text not null,
+  fee_aed numeric(10, 2) not null,
+  details jsonb null,
+  created_at timestamp with time zone null default now(),
+  constraint packages_pkey primary key (id),
+  constraint packages_shift_id_fkey foreign KEY (shift_id) references shifts (id) on delete CASCADE
+) TABLESPACE pg_default;
+
+create index IF not exists idx_packages_shift_id on public.packages using btree (shift_id) TABLESPACE pg_default;
+
