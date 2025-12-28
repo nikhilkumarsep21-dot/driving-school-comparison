@@ -48,7 +48,7 @@ export function EnquiryDetailsDialog({
 
         <div className="space-y-4">
           <div>
-            <h3 className="text-sm font-medium text-slate-500 mb-2">
+            <h3 className="font-heading text-sm font-medium text-slate-500 mb-2">
               Contact Information
             </h3>
             <div className="space-y-2">
@@ -70,7 +70,7 @@ export function EnquiryDetailsDialog({
           <Separator />
 
           <div>
-            <h3 className="text-sm font-medium text-slate-500 mb-2">
+            <h3 className="font-heading text-sm font-medium text-slate-500 mb-2">
               Enquiry Details
             </h3>
             <div className="space-y-2">
@@ -119,7 +119,7 @@ export function EnquiryDetailsDialog({
             <>
               <Separator />
               <div>
-                <h3 className="text-sm font-medium text-slate-500 mb-2">
+                <h3 className="font-heading text-sm font-medium text-slate-500 mb-2">
                   Message
                 </h3>
                 <p className="text-sm bg-slate-50 p-3 rounded-lg">
@@ -132,7 +132,7 @@ export function EnquiryDetailsDialog({
           <Separator />
 
           <div>
-            <h3 className="text-sm font-medium text-slate-500 mb-2">
+            <h3 className="font-heading text-sm font-medium text-slate-500 mb-2">
               Metadata
             </h3>
             <div className="space-y-2">

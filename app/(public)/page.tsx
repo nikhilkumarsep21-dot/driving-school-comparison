@@ -38,7 +38,7 @@ export default function Home() {
             </motion.div>
 
             <motion.h1
-              className="mb-6 pb-2 text-5xl font-bold tracking-tight text-white sm:text-6xl lg:text-7xl"
+              className="font-heading mb-6 pb-2 text-5xl font-bold tracking-tight text-white sm:text-6xl lg:text-7xl"
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.2, ease: "easeOut" }}
@@ -95,7 +95,7 @@ export default function Home() {
               <Award className="h-4 w-4" />
               Choose Your Vehicle
             </div>
-            <h2 className="text-4xl font-bold sm:text-5xl mb-4">
+            <h2 className="font-heading text-4xl font-bold sm:text-5xl mb-4">
               <span className="bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
                 Choose Your License Type
               </span>
@@ -154,7 +154,7 @@ export default function Home() {
               <ShieldCheck className="h-4 w-4" />
               Verified Partners
             </div>
-            <h2 className="text-4xl font-bold sm:text-5xl mb-4">
+            <h2 className="font-heading text-4xl font-bold sm:text-5xl mb-4">
               <span className="bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
                 Featured Partner Schools
               </span>

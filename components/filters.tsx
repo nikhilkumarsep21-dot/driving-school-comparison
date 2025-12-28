@@ -199,7 +199,9 @@ export function Filters({ filters, onFiltersChange }: FiltersProps) {
 
       <div className="rounded-2xl bg-white p-6 shadow-soft">
         <div className="mb-6 flex items-center justify-between">
-          <h2 className="text-lg font-bold text-gray-900">Filters</h2>
+          <h2 className="font-heading text-lg font-bold text-gray-900">
+            Filters
+          </h2>
           {activeFilterCount > 0 && (
             <Button
               variant="ghost"

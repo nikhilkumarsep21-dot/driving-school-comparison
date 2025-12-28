@@ -131,7 +131,7 @@ export default function SchoolDetailPage() {
       <Container>
         <div className="flex min-h-[60vh] flex-col items-center justify-center py-16 text-center">
           <GraduationCap className="h-24 w-24 text-gray-300 mb-4" />
-          <h1 className="mb-4 text-3xl font-bold text-gray-900">
+          <h1 className="font-heading mb-4 text-3xl font-bold text-gray-900">
             School Not Found
           </h1>
           <p className="mb-8 max-w-md text-gray-600">
@@ -204,7 +204,7 @@ export default function SchoolDetailPage() {
                 )}
               </div>
               <div className="flex-1">
-                <h1 className="text-4xl font-bold text-white mb-3">
+                <h1 className="font-heading text-4xl font-bold text-white mb-3">
                   {school.name}
                 </h1>
                 <div className="flex items-center gap-4 text-white/90">
@@ -246,7 +246,7 @@ export default function SchoolDetailPage() {
         <div className="py-12 space-y-12">
           {school.course_levels && school.course_levels.length > 0 && (
             <section>
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">
+              <h2 className="font-heading text-2xl font-bold text-gray-900 mb-6">
                 Course Offerings
               </h2>
               {uniqueLicenseTypes && uniqueLicenseTypes.length > 0 && (
@@ -318,7 +318,7 @@ export default function SchoolDetailPage() {
                         <div className="flex items-start justify-between mb-4">
                           <div className="flex-1">
                             <div className="flex items-center gap-3 mb-2">
-                              <h3 className="text-xl font-bold text-gray-900">
+                              <h3 className="font-heading text-xl font-bold text-gray-900">
                                 {course.name}
                               </h3>
                               <span className="text-xs px-3 py-1 bg-gold-100 text-gold-700 rounded-full font-semibold">
@@ -408,7 +408,7 @@ export default function SchoolDetailPage() {
                                                 {shift.type} Shift
                                               </span>
                                             </div>
-                                            <h5 className="text-lg font-bold text-gray-900">
+                                            <h5 className="font-heading text-lg font-bold text-gray-900">
                                               {pkg.name}
                                             </h5>
                                             {shift.description && (
@@ -444,7 +444,7 @@ export default function SchoolDetailPage() {
                                                     <div className="p-1.5 bg-blue-50 rounded-md">
                                                       <FileText className="h-3.5 w-3.5 text-blue-600" />
                                                     </div>
-                                                    <h6 className="text-xs font-bold text-gray-900">
+                                                    <h6 className="font-heading text-xs font-bold text-gray-900">
                                                       Documents Required
                                                     </h6>
                                                   </div>
@@ -481,7 +481,7 @@ export default function SchoolDetailPage() {
                                                     <div className="p-1.5 bg-purple-50 rounded-md">
                                                       <BookOpen className="h-3.5 w-3.5 text-purple-600" />
                                                     </div>
-                                                    <h6 className="text-xs font-bold text-gray-900">
+                                                    <h6 className="font-heading text-xs font-bold text-gray-900">
                                                       Course Details
                                                     </h6>
                                                   </div>
@@ -532,7 +532,7 @@ export default function SchoolDetailPage() {
                                                     <div className="p-1.5 bg-green-50 rounded-md">
                                                       <GraduationCap className="h-3.5 w-3.5 text-green-600" />
                                                     </div>
-                                                    <h6 className="text-xs font-bold text-gray-900">
+                                                    <h6 className="font-heading text-xs font-bold text-gray-900">
                                                       Lecture Details
                                                     </h6>
                                                   </div>
@@ -584,7 +584,7 @@ export default function SchoolDetailPage() {
                                                     <div className="p-1.5 bg-gold-50 rounded-md">
                                                       <DollarSign className="h-3.5 w-3.5 text-gold-600" />
                                                     </div>
-                                                    <h6 className="text-xs font-bold text-gray-900">
+                                                    <h6 className="font-heading text-xs font-bold text-gray-900">
                                                       Fee Breakdown
                                                     </h6>
                                                   </div>
@@ -657,7 +657,7 @@ export default function SchoolDetailPage() {
                                                       <div className="p-1.5 bg-gray-50 rounded-md">
                                                         <FileText className="h-3.5 w-3.5 text-gray-600" />
                                                       </div>
-                                                      <h6 className="text-xs font-bold text-gray-900">
+                                                      <h6 className="font-heading text-xs font-bold text-gray-900">
                                                         Additional Information
                                                       </h6>
                                                     </div>

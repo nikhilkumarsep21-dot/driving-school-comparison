@@ -174,7 +174,8 @@ export function CategoryFormModal({
       const uniqueCities = Array.from(
         new Set(data?.map((item) => item.city) || [])
       ).sort();
-      setCities(uniqueCities);
+      // Add "Others" option at the end
+      setCities([...uniqueCities, "Others"]);
     } catch (error) {
       console.error("Error fetching cities:", error);
       toast.error("Failed to load cities");
@@ -636,7 +637,7 @@ export function CategoryFormModal({
       >
         <div className="relative">
           <div className="mb-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">
+            <h2 className="font-heading text-2xl font-bold text-gray-900 mb-2">
               {selectedCategory
                 ? CATEGORY_TYPES[selectedCategory]?.label
                 : "Find Your Perfect Driving School"}
@@ -914,7 +915,7 @@ export function CategoryFormModal({
               {currentStep === 5 && (
                 <div className="space-y-6">
                   <div className="text-center mb-6">
-                    <h3 className="text-xl font-semibold mb-2">
+                    <h3 className="font-heading text-xl font-semibold mb-2">
                       Available Schools in {location}
                     </h3>
                     <p className="text-sm text-gray-600">
@@ -968,7 +969,7 @@ export function CategoryFormModal({
                                   >
                                     <div className="space-y-2">
                                       <div className="flex items-start justify-between gap-2">
-                                        <h5 className="font-semibold text-sm text-gray-900 line-clamp-2">
+                                        <h5 className="font-heading font-semibold text-sm text-gray-900 line-clamp-2">
                                           {pkg.name}
                                         </h5>
                                       </div>

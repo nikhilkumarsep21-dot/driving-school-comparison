@@ -153,7 +153,7 @@ export default function ComparePage() {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_white_1px,_transparent_1px)] bg-[length:24px_24px] opacity-20" />
         <Container className="relative">
           <div className="mx-auto max-w-3xl text-center pt-12">
-            <h1 className="mb-4 text-4xl font-bold tracking-tight text-white sm:text-5xl">
+            <h1 className="font-heading mb-4 text-4xl font-bold tracking-tight text-white sm:text-5xl">
               Compare Schools
             </h1>
             <p className="text-lg text-gold-100">
@@ -169,7 +169,7 @@ export default function ComparePage() {
           <div className="py-8">
             {licenseTypesArray.length > 0 && (
               <div className="mb-8">
-                <h3 className="mb-4 text-sm font-semibold text-gray-700">
+                <h3 className="font-heading mb-4 text-sm font-semibold text-gray-700">
                   Filter by License Type
                 </h3>
                 <div className="flex flex-wrap gap-2">
@@ -215,7 +215,7 @@ export default function ComparePage() {
                 <thead>
                   <tr>
                     <th className="sticky left-0 z-20 bg-white border-b border-r border-gray-200 p-6 text-left">
-                      <h3 className="text-sm font-semibold uppercase tracking-wider text-gray-500">
+                      <h3 className="font-heading text-sm font-semibold uppercase tracking-wider text-gray-500">
                         Comparison Criteria
                       </h3>
                     </th>
@@ -259,7 +259,7 @@ export default function ComparePage() {
                           </div>
 
                           <div className="space-y-3">
-                            <h3 className="text-lg font-bold text-gray-900">
+                            <h3 className="font-heading text-lg font-bold text-gray-900">
                               {school.name}
                             </h3>
                             <div className="flex items-center justify-between gap-2 w-full px-1">
@@ -350,7 +350,7 @@ export default function ComparePage() {
                               <tr key={`${referenceCourse.id}-header`}>
                                 <td className="sticky left-0 z-10 bg-gradient-to-r from-gold-50 to-white border-t border-r border-gray-200 p-6">
                                   <div>
-                                    <h3 className="font-bold text-gray-900 text-lg mb-1">
+                                    <h3 className="font-heading font-bold text-gray-900 text-lg mb-1">
                                       {referenceCourse.name}
                                     </h3>
                                     {referenceCourse.description && (
@@ -416,7 +416,7 @@ export default function ComparePage() {
                                           {packageInfo.shiftType} Shift
                                         </span>
                                       </div>
-                                      <h4 className="font-bold text-gray-900">
+                                      <h4 className="font-heading font-bold text-gray-900">
                                         {packageInfo.packageName}
                                       </h4>
                                     </div>
@@ -489,7 +489,7 @@ export default function ComparePage() {
                                                         <div className="p-1.5 bg-purple-50 rounded-md">
                                                           <Clock className="h-3.5 w-3.5 text-purple-600" />
                                                         </div>
-                                                        <h6 className="text-xs font-bold text-gray-900">
+                                                        <h6 className="font-heading text-xs font-bold text-gray-900">
                                                           Training Schedule
                                                         </h6>
                                                       </div>
@@ -551,7 +551,7 @@ export default function ComparePage() {
                                                         <div className="p-1.5 bg-gold-50 rounded-md">
                                                           <DollarSign className="h-3.5 w-3.5 text-gold-600" />
                                                         </div>
-                                                        <h6 className="text-xs font-bold text-gray-900">
+                                                        <h6 className="font-heading text-xs font-bold text-gray-900">
                                                           Fee Details
                                                         </h6>
                                                       </div>
@@ -582,7 +582,7 @@ export default function ComparePage() {
                                                         <div className="p-1.5 bg-blue-50 rounded-md">
                                                           <FileText className="h-3.5 w-3.5 text-blue-600" />
                                                         </div>
-                                                        <h6 className="text-xs font-bold text-gray-900">
+                                                        <h6 className="font-heading text-xs font-bold text-gray-900">
                                                           VAT Information
                                                         </h6>
                                                       </div>
@@ -603,7 +603,7 @@ export default function ComparePage() {
                                                         <div className="p-1.5 bg-green-50 rounded-md">
                                                           <BookOpen className="h-3.5 w-3.5 text-green-600" />
                                                         </div>
-                                                        <h6 className="text-xs font-bold text-gray-900">
+                                                        <h6 className="font-heading text-xs font-bold text-gray-900">
                                                           Additional Notes
                                                         </h6>
                                                       </div>
@@ -645,7 +645,7 @@ export default function ComparePage() {
                       >
                         <div className="py-16 text-center bg-blue-50">
                           <BookOpen className="h-12 w-12 text-blue-600 mx-auto mb-4" />
-                          <h3 className="text-xl font-bold text-gray-900 mb-2">
+                          <h3 className="font-heading text-xl font-bold text-gray-900 mb-2">
                             Select a License Type
                           </h3>
                           <p className="text-gray-600 max-w-2xl mx-auto">

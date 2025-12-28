@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { ChevronDown, ChevronUp, LucideIcon } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useState } from "react";
+import { ChevronDown, ChevronUp, LucideIcon } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface ComparisonSectionProps {
   title: string;
@@ -18,8 +18,8 @@ export function ComparisonSection({
   icon: Icon,
   children,
   defaultExpanded = false,
-  colorClass = 'text-blue-600',
-  bgClass = 'bg-blue-50',
+  colorClass = "text-blue-600",
+  bgClass = "bg-blue-50",
 }: ComparisonSectionProps) {
   const [isExpanded, setIsExpanded] = useState(defaultExpanded);
 
@@ -33,7 +33,9 @@ export function ComparisonSection({
           <div className={`p-2 ${bgClass} rounded-lg`}>
             <Icon className={`h-5 w-5 ${colorClass}`} />
           </div>
-          <h3 className="text-lg font-bold text-gray-900">{title}</h3>
+          <h3 className="font-heading text-lg font-bold text-gray-900">
+            {title}
+          </h3>
         </div>
         {isExpanded ? (
           <ChevronUp className="h-5 w-5 text-gray-500" />
@@ -46,7 +48,7 @@ export function ComparisonSection({
         {isExpanded && (
           <motion.div
             initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
+            animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.3 }}
             className="overflow-hidden"
