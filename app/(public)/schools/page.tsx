@@ -109,7 +109,7 @@ export default function SchoolsPage() {
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_white_1px,_transparent_1px)] bg-[length:24px_24px] opacity-20" />
           <Container className="relative">
             <div className="mx-auto max-w-3xl text-center pt-12">
-              <h1 className="mb-4 text-4xl font-bold tracking-tight text-white sm:text-5xl">
+              <h1 className="font-heading mb-4 text-4xl font-bold tracking-tight text-white sm:text-5xl">
                 Browse Driving Schools
               </h1>
               <p className="text-lg text-gold-100">
@@ -140,7 +140,7 @@ export default function SchoolsPage() {
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_white_1px,_transparent_1px)] bg-[length:24px_24px] opacity-20" />
           <Container className="relative">
             <div className="mx-auto max-w-3xl text-center pt-12">
-              <h1 className="mb-4 text-4xl font-bold tracking-tight text-white sm:text-5xl">
+              <h1 className="font-heading mb-4 text-4xl font-bold tracking-tight text-white sm:text-5xl">
                 Welcome! Let's Get Started
               </h1>
               <p className="text-lg text-gold-100">
@@ -169,7 +169,7 @@ export default function SchoolsPage() {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_white_1px,_transparent_1px)] bg-[length:24px_24px] opacity-20" />
         <Container className="relative">
           <div className="mx-auto max-w-3xl text-center pt-12">
-            <h1 className="mb-4 text-4xl font-bold tracking-tight text-white sm:text-5xl">
+            <h1 className="font-heading mb-4 text-4xl font-bold tracking-tight text-white sm:text-5xl">
               Browse Driving Schools
             </h1>
             <p className="text-lg text-gold-100">
@@ -230,7 +230,7 @@ export default function SchoolsPage() {
                   <div className="mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-gray-100">
                     <GraduationCap className="h-10 w-10 text-gray-400" />
                   </div>
-                  <h3 className="mb-2 text-lg font-semibold text-gray-900">
+                  <h3 className="font-heading mb-2 text-lg font-semibold text-gray-900">
                     No schools found
                   </h3>
                   <p className="mb-6 text-gray-600">

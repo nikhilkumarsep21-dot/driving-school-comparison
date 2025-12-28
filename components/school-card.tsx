@@ -126,7 +126,7 @@ export function SchoolCard({ school, index = 0 }: SchoolCardProps) {
       <div className="flex flex-col space-y-4 p-5 w-full flex-1">
         <div className="space-y-2 flex-1">
           <Link href={`/school/${school.id}`}>
-            <h3 className="text-lg font-bold text-gray-900 transition-colors hover:text-gold-600 line-clamp-2 min-h-[3.5rem]">
+            <h3 className="font-heading text-lg font-bold text-gray-900 transition-colors hover:text-gold-600 line-clamp-2 min-h-[3.5rem]">
               {school.name}
             </h3>
           </Link>

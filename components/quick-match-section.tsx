@@ -41,7 +41,7 @@ export function QuickMatchSection() {
                 Quick Match Tool
               </div>
 
-              <h2 className="text-4xl font-bold text-gray-900 sm:text-5xl mb-6">
+              <h2 className="font-heading text-4xl font-bold text-gray-900 sm:text-5xl mb-6">
                 Find Your Perfect Match in{" "}
                 <span className="bg-gradient-to-r from-gold-600 to-gold-500 bg-clip-text text-transparent">
                   Minutes
@@ -116,7 +116,7 @@ export function QuickMatchSection() {
                       1
                     </div>
                     <div>
-                      <h4 className="font-semibold text-gray-900">
+                      <h4 className="font-heading font-semibold text-gray-900">
                         License Type
                       </h4>
                       <p className="text-sm text-gray-500">
@@ -130,7 +130,9 @@ export function QuickMatchSection() {
                       2
                     </div>
                     <div>
-                      <h4 className="font-semibold text-gray-900">Location</h4>
+                      <h4 className="font-heading font-semibold text-gray-900">
+                        Location
+                      </h4>
                       <p className="text-sm text-gray-500">
                         Where are you based?
                       </p>
@@ -142,7 +144,7 @@ export function QuickMatchSection() {
                       3
                     </div>
                     <div>
-                      <h4 className="font-semibold text-gray-900">
+                      <h4 className="font-heading font-semibold text-gray-900">
                         Experience
                       </h4>
                       <p className="text-sm text-gray-500">
@@ -156,7 +158,7 @@ export function QuickMatchSection() {
                       4
                     </div>
                     <div>
-                      <h4 className="font-semibold text-gray-900">
+                      <h4 className="font-heading font-semibold text-gray-900">
                         Package Type
                       </h4>
                       <p className="text-sm text-gray-500">
@@ -170,7 +172,7 @@ export function QuickMatchSection() {
                       5
                     </div>
                     <div>
-                      <h4 className="font-semibold text-gray-900">
+                      <h4 className="font-heading font-semibold text-gray-900">
                         Your Results
                       </h4>
                       <p className="text-sm text-gray-500">

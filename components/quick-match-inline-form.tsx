@@ -121,7 +121,8 @@ export function QuickMatchInlineForm({
       const uniqueCities = Array.from(
         new Set(data?.map((item) => item.city) || [])
       ).sort();
-      setCities(uniqueCities);
+      // Add "Others" option at the end
+      setCities([...uniqueCities, "Others"]);
     } catch (error) {
       console.error("Error fetching cities:", error);
       toast.error("Failed to load cities");
@@ -386,7 +387,7 @@ export function QuickMatchInlineForm({
     <>
       <div className="bg-white rounded-2xl shadow-xl border-2 border-gold-200 p-8">
         <div className="mb-6">
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">
+          <h2 className="font-heading text-2xl font-bold text-gray-900 mb-2">
             {selectedCategory
               ? CATEGORY_TYPES[selectedCategory]?.label
               : "Quick Match"}{" "}
@@ -1190,7 +1191,7 @@ export function QuickMatchInlineForm({
                         7
                       </div>
                       <div>
-                        <h3 className="text-base font-semibold">
+                        <h3 className="font-heading text-base font-semibold">
                           Available Schools in {location}
                         </h3>
                         <p className="text-sm text-gray-600">
@@ -1202,7 +1203,7 @@ export function QuickMatchInlineForm({
                       </div>
                     </div>
                     <div className="hidden md:block">
-                      <h3 className="text-base font-semibold">
+                      <h3 className="font-heading text-base font-semibold">
                         Available Schools in {location}
                       </h3>
                       <p className="text-sm text-gray-600">
@@ -1260,7 +1261,7 @@ export function QuickMatchInlineForm({
                                   >
                                     <div className="space-y-2">
                                       <div className="flex items-start justify-between gap-2">
-                                        <h5 className="font-semibold text-sm text-gray-900 line-clamp-2">
+                                        <h5 className="font-heading font-semibold text-sm text-gray-900 line-clamp-2">
                                           {pkg.name}
                                         </h5>
                                       </div>

@@ -36,7 +36,9 @@ export function DashboardHeader({ user }: DashboardHeaderProps) {
     <header className="border-b bg-white px-6 py-4">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Dashboard</h1>
+          <h1 className="font-heading text-2xl font-bold text-slate-900">
+            Dashboard
+          </h1>
         </div>
 
         <div className="flex items-center gap-4">

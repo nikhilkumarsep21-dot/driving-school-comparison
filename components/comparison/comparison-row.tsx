@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { SchoolWithCourses } from '@/lib/types';
+import { SchoolWithCourses } from "@/lib/types";
 
 interface ComparisonRowProps {
   label: string;
@@ -13,12 +13,14 @@ export function ComparisonRow({
   label,
   branches,
   renderCell,
-  className = '',
+  className = "",
 }: ComparisonRowProps) {
   return (
     <tr className={className}>
       <td className="sticky left-0 z-10 bg-white border-t border-r border-gray-200 p-4 align-top">
-        <h4 className="font-semibold text-gray-900 text-sm">{label}</h4>
+        <h4 className="font-heading font-semibold text-gray-900 text-sm">
+          {label}
+        </h4>
       </td>
       {branches.map((branch, index) => (
         <td
@@ -37,7 +39,7 @@ interface ComparisonEmptyCellProps {
 }
 
 export function ComparisonEmptyCell({
-  message = 'Not Available',
+  message = "Not Available",
 }: ComparisonEmptyCellProps) {
   return (
     <div className="flex items-center justify-center py-8 text-gray-400">

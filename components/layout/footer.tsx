@@ -25,7 +25,7 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className="mb-4 text-sm font-semibold text-white">
+            <h3 className="font-heading mb-4 text-sm font-semibold text-white">
               Quick Links
             </h3>
             <ul className="space-y-2">

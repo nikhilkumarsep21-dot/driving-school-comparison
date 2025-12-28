@@ -126,7 +126,8 @@ export function EnquiryModal({
         const uniqueCities = Array.from(
           new Set(data?.map((item) => item.city) || [])
         ).sort();
-        setCities(uniqueCities);
+        // Add "Others" option at the end
+        setCities([...uniqueCities, "Others"]);
       } catch (error) {
         console.error("Error fetching cities:", error);
       } finally {
@@ -149,7 +150,8 @@ export function EnquiryModal({
       const uniqueCities = Array.from(
         new Set(data?.map((item) => item.city) || [])
       ).sort();
-      setCities(uniqueCities);
+      // Add "Others" option at the end
+      setCities([...uniqueCities, "Others"]);
     } catch (error) {
       console.error("Error fetching cities:", error);
     } finally {
@@ -292,7 +294,7 @@ export function EnquiryModal({
           >
             {/* Personal Information Section */}
             <div className="space-y-3">
-              <h3 className="text-sm font-semibold text-gray-700 border-b pb-2">
+              <h3 className="font-heading text-sm font-semibold text-gray-700 border-b pb-2">
                 Personal Information
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -365,7 +367,7 @@ export function EnquiryModal({
 
             {/* Course Preferences Section */}
             <div className="space-y-3">
-              <h3 className="text-sm font-semibold text-gray-700 border-b pb-2">
+              <h3 className="font-heading text-sm font-semibold text-gray-700 border-b pb-2">
                 Course Preferences
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -557,7 +559,7 @@ export function EnquiryModal({
 
             {/* Additional Message Section */}
             <div className="space-y-3">
-              <h3 className="text-sm font-semibold text-gray-700 border-b pb-2">
+              <h3 className="font-heading text-sm font-semibold text-gray-700 border-b pb-2">
                 Additional Information
               </h3>
               <div className="space-y-2">

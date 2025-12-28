@@ -121,7 +121,9 @@ export default function EnquiriesPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-3xl font-bold text-slate-900">Enquiries</h2>
+        <h2 className="font-heading text-3xl font-bold text-slate-900">
+          Enquiries
+        </h2>
         <p className="text-slate-500 mt-1">
           Manage and respond to customer enquiries
         </p>

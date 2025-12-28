@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import { cn } from "@/lib/utils"; // Assuming you have a `cn` utility from shadcn
 
 /**
@@ -19,7 +19,12 @@ interface FeatureCardProps {
  * A responsive and theme-adaptive card component to highlight features.
  * Built with shadcn/ui principles.
  */
-export const FeatureCard = ({ icon, title, description, className }: FeatureCardProps) => {
+export const FeatureCard = ({
+  icon,
+  title,
+  description,
+  className,
+}: FeatureCardProps) => {
   return (
     <div
       className={cn(
@@ -30,12 +35,10 @@ export const FeatureCard = ({ icon, title, description, className }: FeatureCard
       )}
     >
       {/* Icon container */}
-      <div className="mb-6 bg-secondary p-4 rounded-full">
-        {icon}
-      </div>
+      <div className="mb-6 bg-secondary p-4 rounded-full">{icon}</div>
 
       {/* Title */}
-      <h3 className="text-lg font-semibold mb-2 tracking-tight">
+      <h3 className="font-heading text-lg font-semibold mb-2 tracking-tight">
         {title}
       </h3>
 

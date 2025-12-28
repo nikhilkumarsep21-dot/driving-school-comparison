@@ -45,7 +45,9 @@ export default async function DashboardPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-3xl font-bold text-slate-900">Overview</h2>
+        <h2 className="font-heading text-3xl font-bold text-slate-900">
+          Overview
+        </h2>
         <p className="text-slate-500 mt-1">
           Welcome back! Here's what's happening with your driving school
           platform.
