@@ -221,23 +221,32 @@ export function EnquiryModal({
         phone: phone.trim(),
       });
 
-      // Save enquiry to database
-      const { error } = await supabase.from("user_queries").insert({
-        name: name.trim(),
-        email: email.trim(),
-        phone: phone.trim(),
-        school_id: schoolId || null,
-        school_name: schoolName || null,
-        message: message.trim() || null,
-        status: "pending",
-        license_type: licenseType || null,
-        license_status: licenseStatus || null,
-        package_type: packageType || null,
-        location: location || null,
-        start_time: startTime || null,
+      // Submit enquiry via API (saves to DB and sends email)
+      const response = await fetch("/api/enquiries", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: name.trim(),
+          email: email.trim(),
+          phone: phone.trim(),
+          schoolId: schoolId || null,
+          schoolName: schoolName || null,
+          message: message.trim() || null,
+          licenseType: licenseType || null,
+          licenseStatus: licenseStatus || null,
+          packageType: packageType || null,
+          location: location || null,
+          startTime: startTime || null,
+        }),
       });
 
-      if (error) throw error;
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || "Failed to submit enquiry");
+      }
 
       toast.success("Enquiry submitted successfully!", {
         description: "We'll get back to you soon.",

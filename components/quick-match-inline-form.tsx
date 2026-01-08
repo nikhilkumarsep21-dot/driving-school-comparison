@@ -330,24 +330,34 @@ export function QuickMatchInlineForm({
         ? CATEGORY_TYPES[selectedCategory]?.label
         : null;
 
-      const { error } = await supabase.from("user_queries").insert({
-        name: leadName.trim(),
-        email: leadEmail.trim() || null,
-        phone: leadPhone.trim(),
-        school_id: null,
-        school_name: null,
-        message: `Interested in ${
-          licenseTypeName || "driving license"
-        } - ${experienceLevel} level - ${selectedShiftType} package - Location: ${location} - Start: ${startTime}`,
-        status: "pending",
-        license_type: licenseTypeName || null,
-        license_status: hasLicense || null,
-        package_type: selectedShiftType || null,
-        location: location || null,
-        start_time: startTime || null,
+      // Submit enquiry via API (saves to DB and sends email)
+      const response = await fetch("/api/enquiries", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: leadName.trim(),
+          email: leadEmail.trim() || null,
+          phone: leadPhone.trim(),
+          schoolId: null,
+          schoolName: null,
+          message: `Interested in ${
+            licenseTypeName || "driving license"
+          } - ${experienceLevel} level - ${selectedShiftType} package - Location: ${location} - Start: ${startTime}`,
+          licenseType: licenseTypeName || null,
+          licenseStatus: hasLicense || null,
+          packageType: selectedShiftType || null,
+          location: location || null,
+          startTime: startTime || null,
+        }),
       });
 
-      if (error) throw error;
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || "Failed to save details");
+      }
 
       setLeadCaptured(true);
       toast.success("Details saved successfully!", {
@@ -442,8 +452,8 @@ export function QuickMatchInlineForm({
                     hasLicense
                       ? "bg-gold-600 text-white"
                       : selectedCategory
-                      ? "bg-gray-200 text-gray-600"
-                      : "bg-gray-100 text-gray-400"
+                        ? "bg-gray-200 text-gray-600"
+                        : "bg-gray-100 text-gray-400"
                   }`}
                 >
                   {hasLicense ? <Check className="h-5 w-5" /> : "2"}
@@ -460,8 +470,8 @@ export function QuickMatchInlineForm({
                     hasLicense
                       ? "text-gold-600"
                       : selectedCategory
-                      ? "text-gray-600"
-                      : "text-gray-400"
+                        ? "text-gray-600"
+                        : "text-gray-400"
                   }`}
                 >
                   License Status
@@ -480,8 +490,8 @@ export function QuickMatchInlineForm({
                     selectedShiftType
                       ? "bg-gold-600 text-white"
                       : hasLicense
-                      ? "bg-gray-200 text-gray-600"
-                      : "bg-gray-100 text-gray-400"
+                        ? "bg-gray-200 text-gray-600"
+                        : "bg-gray-100 text-gray-400"
                   }`}
                 >
                   {selectedShiftType ? <Check className="h-5 w-5" /> : "3"}
@@ -498,8 +508,8 @@ export function QuickMatchInlineForm({
                     selectedShiftType
                       ? "text-gold-600"
                       : hasLicense
-                      ? "text-gray-600"
-                      : "text-gray-400"
+                        ? "text-gray-600"
+                        : "text-gray-400"
                   }`}
                 >
                   Package Type
@@ -518,8 +528,8 @@ export function QuickMatchInlineForm({
                     location
                       ? "bg-gold-600 text-white"
                       : selectedShiftType
-                      ? "bg-gray-200 text-gray-600"
-                      : "bg-gray-100 text-gray-400"
+                        ? "bg-gray-200 text-gray-600"
+                        : "bg-gray-100 text-gray-400"
                   }`}
                 >
                   {location ? <Check className="h-5 w-5" /> : "4"}
@@ -536,8 +546,8 @@ export function QuickMatchInlineForm({
                     location
                       ? "text-gold-600"
                       : selectedShiftType
-                      ? "text-gray-600"
-                      : "text-gray-400"
+                        ? "text-gray-600"
+                        : "text-gray-400"
                   }`}
                 >
                   Location
@@ -554,8 +564,8 @@ export function QuickMatchInlineForm({
                     startTime
                       ? "bg-gold-600 text-white"
                       : location
-                      ? "bg-gray-200 text-gray-600"
-                      : "bg-gray-100 text-gray-400"
+                        ? "bg-gray-200 text-gray-600"
+                        : "bg-gray-100 text-gray-400"
                   }`}
                 >
                   {startTime ? <Check className="h-5 w-5" /> : "5"}
@@ -572,8 +582,8 @@ export function QuickMatchInlineForm({
                     startTime
                       ? "text-gold-600"
                       : location
-                      ? "text-gray-600"
-                      : "text-gray-400"
+                        ? "text-gray-600"
+                        : "text-gray-400"
                   }`}
                 >
                   Start Date
@@ -590,8 +600,8 @@ export function QuickMatchInlineForm({
                     leadCaptured
                       ? "bg-gold-600 text-white"
                       : startTime
-                      ? "bg-gray-200 text-gray-600"
-                      : "bg-gray-100 text-gray-400"
+                        ? "bg-gray-200 text-gray-600"
+                        : "bg-gray-100 text-gray-400"
                   }`}
                 >
                   {leadCaptured ? <Check className="h-5 w-5" /> : "6"}
@@ -608,8 +618,8 @@ export function QuickMatchInlineForm({
                     leadCaptured
                       ? "text-gold-600"
                       : startTime
-                      ? "text-gray-600"
-                      : "text-gray-400"
+                        ? "text-gray-600"
+                        : "text-gray-400"
                   }`}
                 >
                   Your Details
@@ -628,8 +638,8 @@ export function QuickMatchInlineForm({
                     leadCaptured && Object.keys(groupedPackages).length > 0
                       ? "bg-gold-600 text-white"
                       : leadCaptured
-                      ? "bg-gray-200 text-gray-600"
-                      : "bg-gray-100 text-gray-400"
+                        ? "bg-gray-200 text-gray-600"
+                        : "bg-gray-100 text-gray-400"
                   }`}
                 >
                   7
@@ -641,8 +651,8 @@ export function QuickMatchInlineForm({
                     leadCaptured && Object.keys(groupedPackages).length > 0
                       ? "text-gold-600"
                       : leadCaptured
-                      ? "text-gray-600"
-                      : "text-gray-400"
+                        ? "text-gray-600"
+                        : "text-gray-400"
                   }`}
                 >
                   Results

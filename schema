@@ -1,52 +1,88 @@
-create table public.shifts (
-  id uuid not null default gen_random_uuid (),
-  course_level_id uuid not null,
-  type text not null,
-  description text null,
-  created_at timestamp with time zone null default now(),
-  constraint shifts_pkey primary key (id),
-  constraint shifts_course_level_id_type_key unique (course_level_id, type),
-  constraint shifts_course_level_id_fkey foreign KEY (course_level_id) references course_levels (id) on delete CASCADE
-) TABLESPACE pg_default;
+-- WARNING: This schema is for context only and is not meant to be run.
+-- Table order and constraints may not be valid for execution.
 
-create index IF not exists idx_shifts_course_level_id on public.shifts using btree (course_level_id) TABLESPACE pg_default;
-
-create table public.packages (
-  id uuid not null default gen_random_uuid (),
-  shift_id uuid not null,
-  name text not null,
-  fee_aed numeric(10, 2) not null,
-  details jsonb null,
-  created_at timestamp with time zone null default now(),
-  constraint packages_pkey primary key (id),
-  constraint packages_shift_id_fkey foreign KEY (shift_id) references shifts (id) on delete CASCADE
-) TABLESPACE pg_default;
-
-create index IF not exists idx_packages_shift_id on public.packages using btree (shift_id) TABLESPACE pg_default;
-
-create table public.packages (
-  id uuid not null default gen_random_uuid (),
-  shift_id uuid not null,
-  name text not null,
-  fee_aed numeric(10, 2) not null,
-  details jsonb null,
-  created_at timestamp with time zone null default now(),
-  constraint packages_pkey primary key (id),
-  constraint packages_shift_id_fkey foreign KEY (shift_id) references shifts (id) on delete CASCADE
-) TABLESPACE pg_default;
-
-create index IF not exists idx_packages_shift_id on public.packages using btree (shift_id) TABLESPACE pg_default;
-
-create table public.packages (
-  id uuid not null default gen_random_uuid (),
-  shift_id uuid not null,
-  name text not null,
-  fee_aed numeric(10, 2) not null,
-  details jsonb null,
-  created_at timestamp with time zone null default now(),
-  constraint packages_pkey primary key (id),
-  constraint packages_shift_id_fkey foreign KEY (shift_id) references shifts (id) on delete CASCADE
-) TABLESPACE pg_default;
-
-create index IF not exists idx_packages_shift_id on public.packages using btree (shift_id) TABLESPACE pg_default;
-
+CREATE TABLE public.branch_locations (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  school_id uuid NOT NULL,
+  name text NOT NULL,
+  address text NOT NULL,
+  city text NOT NULL,
+  contact text,
+  email text,
+  normal_hours text,
+  directions_url text,
+  coordinates jsonb,
+  created_at timestamp with time zone DEFAULT now(),
+  CONSTRAINT branch_locations_pkey PRIMARY KEY (id),
+  CONSTRAINT branch_locations_school_id_fkey FOREIGN KEY (school_id) REFERENCES public.schools(id)
+);
+CREATE TABLE public.course_levels (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  school_id uuid NOT NULL,
+  license_type_id uuid NOT NULL,
+  name text NOT NULL,
+  duration_hours integer,
+  description text,
+  created_at timestamp with time zone DEFAULT now(),
+  experience_level text,
+  CONSTRAINT course_levels_pkey PRIMARY KEY (id),
+  CONSTRAINT course_levels_school_id_fkey FOREIGN KEY (school_id) REFERENCES public.schools(id),
+  CONSTRAINT course_levels_license_type_id_fkey FOREIGN KEY (license_type_id) REFERENCES public.license_types(id)
+);
+CREATE TABLE public.license_types (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  name text NOT NULL UNIQUE,
+  description text,
+  created_at timestamp with time zone DEFAULT now(),
+  CONSTRAINT license_types_pkey PRIMARY KEY (id)
+);
+CREATE TABLE public.packages (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  shift_id uuid NOT NULL,
+  name text NOT NULL,
+  fee_aed numeric NOT NULL,
+  details jsonb,
+  created_at timestamp with time zone DEFAULT now(),
+  CONSTRAINT packages_pkey PRIMARY KEY (id),
+  CONSTRAINT packages_shift_id_fkey FOREIGN KEY (shift_id) REFERENCES public.shifts(id)
+);
+CREATE TABLE public.schools (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  name text NOT NULL,
+  website text,
+  phone text,
+  email text,
+  logo_url text,
+  rating numeric DEFAULT 4.2 CHECK (rating >= 0::numeric AND rating <= 5::numeric),
+  review_count integer DEFAULT 0,
+  created_at timestamp with time zone DEFAULT now(),
+  CONSTRAINT schools_pkey PRIMARY KEY (id)
+);
+CREATE TABLE public.shifts (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  course_level_id uuid NOT NULL,
+  type text NOT NULL,
+  description text,
+  created_at timestamp with time zone DEFAULT now(),
+  CONSTRAINT shifts_pkey PRIMARY KEY (id),
+  CONSTRAINT shifts_course_level_id_fkey FOREIGN KEY (course_level_id) REFERENCES public.course_levels(id)
+);
+CREATE TABLE public.user_queries (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  name character varying NOT NULL,
+  email character varying,
+  phone character varying NOT NULL,
+  school_id uuid,
+  school_name character varying,
+  message text,
+  status character varying DEFAULT 'pending'::character varying,
+  created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+  updated_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+  license_type character varying,
+  license_status character varying,
+  package_type character varying,
+  location character varying,
+  start_time character varying,
+  CONSTRAINT user_queries_pkey PRIMARY KEY (id),
+  CONSTRAINT user_queries_school_id_fkey FOREIGN KEY (school_id) REFERENCES public.schools(id)
+);
