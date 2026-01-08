@@ -7,7 +7,17 @@ export async function GET() {
 
     const { data: courseShifts, error } = await supabase
       .from("shifts")
-      .select("*")
+      .select(
+        `
+        *,
+        course_levels (
+          id,
+          name,
+          schools (id, name),
+          license_types (id, name)
+        )
+      `
+      )
       .order("created_at", { ascending: false });
 
     if (error) {

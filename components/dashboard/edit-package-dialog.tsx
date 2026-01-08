@@ -26,6 +26,11 @@ import { toast } from "sonner";
 interface Shift {
   id: string;
   type: string;
+  course_levels?: {
+    name: string;
+    schools: { name: string };
+    license_types: { name: string };
+  };
 }
 
 interface CoursePackage {
@@ -174,7 +179,9 @@ export function EditPackageDialog({
                 <SelectContent>
                   {shifts.map((shift) => (
                     <SelectItem key={shift.id} value={shift.id}>
-                      {shift.type}
+                      {shift.course_levels?.schools?.name} -{" "}
+                      {shift.course_levels?.license_types?.name} -{" "}
+                      {shift.course_levels?.name} ({shift.type})
                     </SelectItem>
                   ))}
                 </SelectContent>

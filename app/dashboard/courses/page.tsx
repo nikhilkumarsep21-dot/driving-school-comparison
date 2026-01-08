@@ -57,6 +57,11 @@ interface CourseShift {
   course_level_id: string;
   type: string;
   description: string;
+  course_levels?: {
+    name: string;
+    schools: { name: string };
+    license_types: { name: string };
+  };
 }
 
 interface CoursePackage {
@@ -65,6 +70,14 @@ interface CoursePackage {
   name: string;
   fee_aed: number;
   details: any;
+  shifts?: {
+    type: string;
+    course_levels?: {
+      name: string;
+      schools: { name: string };
+      license_types: { name: string };
+    };
+  };
 }
 
 export default function CoursesPage() {
@@ -357,7 +370,10 @@ export default function CoursesPage() {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Type</TableHead>
+                      <TableHead>School</TableHead>
+                      <TableHead>License Type</TableHead>
+                      <TableHead>Course Level</TableHead>
+                      <TableHead>Shift Type</TableHead>
                       <TableHead>Description</TableHead>
                       <TableHead>Actions</TableHead>
                     </TableRow>
@@ -366,7 +382,7 @@ export default function CoursesPage() {
                     {courseShifts.length === 0 ? (
                       <TableRow>
                         <TableCell
-                          colSpan={3}
+                          colSpan={6}
                           className="text-center py-8 text-slate-500"
                         >
                           No course shifts found
@@ -375,6 +391,18 @@ export default function CoursesPage() {
                     ) : (
                       courseShifts.map((shift) => (
                         <TableRow key={shift.id}>
+                          <TableCell>
+                            {shift.course_levels?.schools?.name || "N/A"}
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant="outline">
+                              {shift.course_levels?.license_types?.name ||
+                                "N/A"}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            {shift.course_levels?.name || "N/A"}
+                          </TableCell>
                           <TableCell className="font-medium">
                             <Badge>{shift.type}</Badge>
                           </TableCell>
@@ -432,7 +460,11 @@ export default function CoursesPage() {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Name</TableHead>
+                      <TableHead>School</TableHead>
+                      <TableHead>License Type</TableHead>
+                      <TableHead>Course Level</TableHead>
+                      <TableHead>Shift</TableHead>
+                      <TableHead>Package Name</TableHead>
                       <TableHead>Fee (AED)</TableHead>
                       <TableHead>Actions</TableHead>
                     </TableRow>
@@ -441,7 +473,7 @@ export default function CoursesPage() {
                     {coursePackages.length === 0 ? (
                       <TableRow>
                         <TableCell
-                          colSpan={3}
+                          colSpan={7}
                           className="text-center py-8 text-slate-500"
                         >
                           No course packages found
@@ -450,6 +482,23 @@ export default function CoursesPage() {
                     ) : (
                       coursePackages.map((pkg) => (
                         <TableRow key={pkg.id}>
+                          <TableCell>
+                            {pkg.shifts?.course_levels?.schools?.name || "N/A"}
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant="outline">
+                              {pkg.shifts?.course_levels?.license_types?.name ||
+                                "N/A"}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            {pkg.shifts?.course_levels?.name || "N/A"}
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant="secondary">
+                              {pkg.shifts?.type || "N/A"}
+                            </Badge>
+                          </TableCell>
                           <TableCell className="font-medium">
                             {pkg.name}
                           </TableCell>

@@ -147,8 +147,9 @@ export function EditShiftDialog({
                   <SelectValue placeholder="Select a course level" />
                 </SelectTrigger>
                 <SelectContent>
-                  {courseLevels.map((level) => (
+                  {courseLevels.map((level: any) => (
                     <SelectItem key={level.id} value={level.id}>
+                      {level.schools?.name} - {level.license_types?.name} -{" "}
                       {level.name}
                     </SelectItem>
                   ))}
