@@ -456,7 +456,7 @@ export function CategorySelection() {
 
   return (
     <div className="space-y-8">
-      <div className="grid gap-4 grid-cols-7 overflow-x-auto">
+      <div className="grid gap-3 sm:gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7">
         {CATEGORY_CONFIG.map((category, index) => {
           const licenseInfo = CATEGORY_TYPES[category.id];
           const isSelected = selectedCategory === category.id;
@@ -467,7 +467,7 @@ export function CategorySelection() {
               onClick={() => handleCategoryClick(category.id)}
               className={[
                 "group relative overflow-hidden",
-                "rounded-xl border bg-card text-card-foreground px-8 py-2 flex flex-col items-center text-center",
+                "rounded-xl border bg-card text-card-foreground px-3 sm:px-6 md:px-8 py-2 flex flex-col items-center text-center",
                 "transition-all duration-300 ease-in-out",
                 isSelected
                   ? "shadow-xl border-gold-600 -translate-y-2"
@@ -480,9 +480,9 @@ export function CategorySelection() {
               whileTap={{ scale: 0.98 }}
             >
               <div className="relative z-10">
-                <div className="mb-4 flex items-center justify-center">
+                <div className="mb-3 sm:mb-4 flex items-center justify-center">
                   <div
-                    className={`relative w-28 h-28 rounded-full bg-[#e5edef] p-6 transition-transform duration-300 ease-out shadow-sm ${
+                    className={`relative w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 rounded-full bg-[#e5edef] p-3 sm:p-4 md:p-5 lg:p-6 transition-transform duration-300 ease-out shadow-sm ${
                       isSelected
                         ? "scale-110 bg-gold-100"
                         : "group-hover:scale-110"
@@ -504,7 +504,7 @@ export function CategorySelection() {
                   </div>
                 </div>
                 <h3
-                  className={`text-base font-medium text-center transition-colors ${
+                  className={`text-xs sm:text-sm md:text-base font-medium text-center transition-colors ${
                     isSelected
                       ? "text-gold-600"
                       : "text-gray-900 group-hover:text-gold-600"
@@ -535,19 +535,19 @@ export function CategorySelection() {
             transition={{ duration: 0.4, ease: "easeInOut" }}
             className="overflow-hidden"
           >
-            <div className="bg-white rounded-2xl shadow-xl border-2 border-gold-200 p-8">
-              <div className="mb-6">
-                <h2 className="font-heading text-2xl font-bold text-gray-900 mb-2">
+            <div className="bg-white rounded-2xl shadow-xl border-2 border-gold-200 p-4 sm:p-6 md:p-8">
+              <div className="mb-4 sm:mb-6">
+                <h2 className="font-heading text-xl sm:text-2xl font-bold text-gray-900 mb-2">
                   {CATEGORY_TYPES[selectedCategory]?.label ||
                     "License Category"}
                 </h2>
-                <p className="text-gray-600">
+                <p className="text-sm sm:text-base text-gray-600">
                   Fill in your preferences to find the perfect driving school
                 </p>
               </div>
 
               {/* Inline Form with Vertical Stepper */}
-              <div className="flex gap-8">
+              <div className="flex flex-col lg:flex-row gap-6 sm:gap-8">
                 {/* Vertical Stepper */}
                 <div className="hidden md:flex flex-col gap-6 min-w-[200px]">
                   {/* Step 1 */}

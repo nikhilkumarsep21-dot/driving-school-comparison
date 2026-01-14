@@ -52,17 +52,17 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 px-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="space-y-1">
-          <CardTitle className="font-heading text-2xl font-bold">
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 px-4 py-8 sm:py-12">
+      <Card className="w-full max-w-md shadow-lg">
+        <CardHeader className="space-y-1 px-4 sm:px-6 pt-6">
+          <CardTitle className="font-heading text-xl sm:text-2xl font-bold">
             Dashboard Login
           </CardTitle>
-          <CardDescription>
+          <CardDescription className="text-sm sm:text-base">
             Enter your credentials to access the admin dashboard
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="px-4 sm:px-6 pb-6">
           <form onSubmit={handleSignIn} className="space-y-4">
             {error && (
               <Alert variant="destructive">

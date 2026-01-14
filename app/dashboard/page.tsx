@@ -43,19 +43,19 @@ export default async function DashboardPage() {
   const stats = await getStats();
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <div>
-        <h2 className="font-heading text-3xl font-bold text-slate-900">
+        <h2 className="font-heading text-2xl sm:text-3xl font-bold text-slate-900">
           Overview
         </h2>
-        <p className="text-slate-500 mt-1">
+        <p className="text-sm sm:text-base text-slate-500 mt-1">
           Welcome back! Here's what's happening with your driving school
           platform.
         </p>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
@@ -117,10 +117,16 @@ export default async function DashboardPage() {
       {/* Recent Enquiries */}
       <Card>
         <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle>Recent Enquiries</CardTitle>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-0">
+            <CardTitle className="text-base sm:text-lg">
+              Recent Enquiries
+            </CardTitle>
             <Link href="/dashboard/enquiries">
-              <Button variant="outline" size="sm">
+              <Button
+                variant="outline"
+                size="sm"
+                className="w-full sm:w-auto text-xs sm:text-sm"
+              >
                 View All
               </Button>
             </Link>
@@ -128,19 +134,21 @@ export default async function DashboardPage() {
         </CardHeader>
         <CardContent>
           {stats.recentEnquiries.length === 0 ? (
-            <div className="text-center py-8 text-slate-500">
+            <div className="text-center py-8 text-slate-500 text-sm sm:text-base">
               No enquiries yet
             </div>
           ) : (
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               {stats.recentEnquiries.map((enquiry: any) => (
                 <div
                   key={enquiry.id}
-                  className="flex items-start justify-between border-b pb-4 last:border-0 last:pb-0"
+                  className="flex flex-col sm:flex-row sm:items-start justify-between border-b pb-3 sm:pb-4 last:border-0 last:pb-0 gap-2 sm:gap-0"
                 >
                   <div className="space-y-1">
-                    <div className="flex items-center gap-2">
-                      <p className="font-medium">{enquiry.name}</p>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <p className="font-medium text-sm sm:text-base">
+                        {enquiry.name}
+                      </p>
                       <Badge
                         variant={
                           enquiry.status === "pending" ? "secondary" : "default"
@@ -161,7 +169,7 @@ export default async function DashboardPage() {
                       </p>
                     )}
                   </div>
-                  <div className="text-sm text-slate-500">
+                  <div className="text-xs sm:text-sm text-slate-500 flex-shrink-0">
                     {new Date(enquiry.created_at).toLocaleDateString()}
                   </div>
                 </div>

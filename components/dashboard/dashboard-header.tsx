@@ -33,10 +33,10 @@ export function DashboardHeader({ user }: DashboardHeaderProps) {
     user.email?.split("@")[0].substring(0, 2).toUpperCase() || "AD";
 
   return (
-    <header className="border-b bg-white px-6 py-4">
+    <header className="border-b bg-white px-4 sm:px-6 py-3 sm:py-4">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="font-heading text-2xl font-bold text-slate-900">
+          <h1 className="font-heading text-xl sm:text-2xl font-bold text-slate-900">
             Dashboard
           </h1>
         </div>

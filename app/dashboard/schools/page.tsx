@@ -103,17 +103,20 @@ export default function SchoolsPage() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-4 sm:space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-0">
         <div>
-          <h2 className="font-heading text-3xl font-bold text-slate-900">
+          <h2 className="font-heading text-2xl sm:text-3xl font-bold text-slate-900">
             Schools
           </h2>
-          <p className="text-slate-500 mt-1">
+          <p className="text-sm sm:text-base text-slate-500 mt-1">
             Manage driving schools on your platform
           </p>
         </div>
-        <Button onClick={() => setAddDialogOpen(true)}>
+        <Button
+          onClick={() => setAddDialogOpen(true)}
+          className="w-full sm:w-auto"
+        >
           <Plus className="h-4 w-4 mr-2" />
           Add School
         </Button>
@@ -122,7 +125,7 @@ export default function SchoolsPage() {
       <Card>
         <CardHeader>
           <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-            <CardTitle>All Schools</CardTitle>
+            <CardTitle className="text-base sm:text-lg">All Schools</CardTitle>
             <div className="relative w-full sm:w-64">
               <Search className="absolute left-2 top-2.5 h-4 w-4 text-slate-500" />
               <Input

@@ -23,12 +23,12 @@ export function QuickMatchSection() {
 
   return (
     <>
-      <section className="relative overflow-hidden bg-gradient-to-br from-gold-50 via-white to-gold-50 py-20 sm:py-28">
+      <section className="relative overflow-hidden bg-gradient-to-br from-gold-50 via-white to-gold-50 py-12 sm:py-20 md:py-28">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,_rgba(234,179,8,0.1)_0%,_transparent_50%)]" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,_rgba(234,179,8,0.08)_0%,_transparent_50%)]" />
 
         <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid gap-12 lg:grid-cols-2 lg:gap-16 items-center">
+          <div className="grid gap-8 sm:gap-12 lg:grid-cols-2 lg:gap-16 items-center">
             {/* Left Column - Content */}
             <motion.div
               initial={{ opacity: 0, x: -30 }}
@@ -36,19 +36,19 @@ export function QuickMatchSection() {
               viewport={{ once: true }}
               transition={{ duration: 0.7, ease: "easeOut" }}
             >
-              <div className="inline-flex items-center gap-2 rounded-full bg-gold-100 px-4 py-2 text-sm font-medium text-gold-800 shadow-sm mb-6">
-                <Sparkles className="h-4 w-4" />
+              <div className="inline-flex items-center gap-1.5 sm:gap-2 rounded-full bg-gold-100 px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium text-gold-800 shadow-sm mb-4 sm:mb-6">
+                <Sparkles className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                 Quick Match Tool
               </div>
 
-              <h2 className="font-heading text-4xl font-bold text-gray-900 sm:text-5xl mb-6">
+              <h2 className="font-heading text-2xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4 sm:mb-6">
                 Find Your Perfect Match in{" "}
                 <span className="bg-gradient-to-r from-gold-600 to-gold-500 bg-clip-text text-transparent">
                   Minutes
                 </span>
               </h2>
 
-              <p className="text-xl text-gray-600 mb-8 leading-relaxed">
+              <p className="text-base sm:text-xl text-gray-600 mb-6 sm:mb-8 leading-relaxed">
                 Answer a few quick questions and get your best options instantly
                 —
                 <span className="font-semibold text-gray-900">
@@ -58,7 +58,7 @@ export function QuickMatchSection() {
                 .
               </p>
 
-              <div className="space-y-4 mb-10">
+              <div className="space-y-3 sm:space-y-4 mb-6 sm:mb-10">
                 {benefits.map((benefit, index) => (
                   <motion.div
                     key={benefit}
@@ -69,9 +69,11 @@ export function QuickMatchSection() {
                     className="flex items-start gap-3"
                   >
                     <div className="flex-shrink-0 mt-0.5">
-                      <CheckCircle className="h-6 w-6 text-gold-600" />
+                      <CheckCircle className="h-5 w-5 sm:h-6 sm:w-6 text-gold-600" />
                     </div>
-                    <p className="text-lg text-gray-700">{benefit}</p>
+                    <p className="text-sm sm:text-base md:text-lg text-gray-700">
+                      {benefit}
+                    </p>
                   </motion.div>
                 ))}
               </div>
@@ -85,16 +87,16 @@ export function QuickMatchSection() {
                 <Button
                   size="lg"
                   onClick={handleOpenForm}
-                  className="h-14 px-10 text-lg bg-gold-600 hover:bg-gold-700 shadow-lg hover:shadow-xl transition-all"
+                  className="h-12 sm:h-14 px-6 sm:px-10 text-base sm:text-lg bg-gold-600 hover:bg-gold-700 shadow-lg hover:shadow-xl transition-all w-full sm:w-auto"
                 >
                   {isFormOpen ? "Close Form" : "Get Started Now"}
                   <ArrowRight
-                    className={`ml-2 h-5 w-5 transition-transform ${
+                    className={`ml-2 h-4 w-4 sm:h-5 sm:w-5 transition-transform ${
                       isFormOpen ? "rotate-90" : ""
                     }`}
                   />
                 </Button>
-                <p className="text-sm text-gray-500 mt-4">
+                <p className="text-xs sm:text-sm text-gray-500 mt-3 sm:mt-4">
                   ✨ Takes less than 2 minutes
                 </p>
               </motion.div>
@@ -106,7 +108,7 @@ export function QuickMatchSection() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.7, ease: "easeOut" }}
-              className="relative"
+              className="relative hidden lg:block"
             >
               <div className="relative rounded-2xl bg-white p-8 shadow-2xl border border-gold-200">
                 {/* Mock Form Preview */}

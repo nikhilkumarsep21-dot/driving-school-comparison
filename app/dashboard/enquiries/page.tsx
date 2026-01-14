@@ -119,12 +119,12 @@ export default function EnquiriesPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <div>
-        <h2 className="font-heading text-3xl font-bold text-slate-900">
+        <h2 className="font-heading text-2xl sm:text-3xl font-bold text-slate-900">
           Enquiries
         </h2>
-        <p className="text-slate-500 mt-1">
+        <p className="text-sm sm:text-base text-slate-500 mt-1">
           Manage and respond to customer enquiries
         </p>
       </div>
@@ -132,7 +132,9 @@ export default function EnquiriesPage() {
       <Card>
         <CardHeader>
           <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-            <CardTitle>All Enquiries</CardTitle>
+            <CardTitle className="text-base sm:text-lg">
+              All Enquiries
+            </CardTitle>
             <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
               <div className="relative w-full sm:w-64">
                 <Search className="absolute left-2 top-2.5 h-4 w-4 text-slate-500" />
