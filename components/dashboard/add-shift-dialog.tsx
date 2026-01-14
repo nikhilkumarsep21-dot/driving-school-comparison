@@ -139,22 +139,15 @@ export function AddShiftDialog({
 
           <div className="space-y-2">
             <Label htmlFor="type">Shift Type *</Label>
-            <Select
+            <Input
+              id="type"
               value={formData.type}
-              onValueChange={(value) =>
-                setFormData({ ...formData, type: value })
+              onChange={(e) =>
+                setFormData({ ...formData, type: e.target.value })
               }
+              placeholder="Enter shift type (e.g., Regular, Night, Weekend)"
               required
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select shift type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="Regular">Regular</SelectItem>
-                <SelectItem value="Night">Night</SelectItem>
-                <SelectItem value="Weekend">Weekend</SelectItem>
-              </SelectContent>
-            </Select>
+            />
           </div>
 
           <div className="space-y-2">
