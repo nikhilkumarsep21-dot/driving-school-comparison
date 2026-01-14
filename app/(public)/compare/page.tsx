@@ -84,20 +84,20 @@ export default function ComparePage() {
   if (schools.length === 0) {
     return (
       <Container>
-        <div className="flex min-h-[60vh] flex-col items-center justify-center py-16 text-center">
+        <div className="flex min-h-[60vh] flex-col items-center justify-center py-12 sm:py-16 text-center px-4">
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ type: "spring", duration: 0.5 }}
-            className="mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-gold-100 to-gold-200"
+            className="mb-4 sm:mb-6 flex h-20 w-20 sm:h-24 sm:w-24 items-center justify-center rounded-full bg-gradient-to-br from-gold-100 to-gold-200"
           >
-            <GraduationCap className="h-12 w-12 text-gold-600" />
+            <GraduationCap className="h-10 w-10 sm:h-12 sm:w-12 text-gold-600" />
           </motion.div>
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="mb-4 text-3xl font-bold text-gray-900"
+            className="mb-3 sm:mb-4 text-2xl sm:text-3xl font-bold text-gray-900"
           >
             No Schools to Compare
           </motion.h1>
@@ -105,7 +105,7 @@ export default function ComparePage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="mb-8 max-w-md text-gray-600"
+            className="mb-6 sm:mb-8 max-w-md text-sm sm:text-base text-gray-600"
           >
             Start by adding schools from the schools page to see a side-by-side
             comparison.
@@ -149,14 +149,14 @@ export default function ComparePage() {
 
   return (
     <div className="min-h-screen bg-white">
-      <section className="relative overflow-hidden bg-gradient-to-br from-gold-600 to-gold-700 py-12 sm:py-16">
+      <section className="relative overflow-hidden bg-gradient-to-br from-gold-600 to-gold-700 py-8 sm:py-12 md:py-16">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_white_1px,_transparent_1px)] bg-[length:24px_24px] opacity-20" />
         <Container className="relative">
-          <div className="mx-auto max-w-3xl text-center pt-12">
-            <h1 className="font-heading mb-4 text-4xl font-bold tracking-tight text-white sm:text-5xl">
+          <div className="mx-auto max-w-3xl text-center pt-6 sm:pt-12 px-4">
+            <h1 className="font-heading mb-3 sm:mb-4 text-2xl sm:text-4xl md:text-5xl font-bold tracking-tight text-white">
               Compare Schools
             </h1>
-            <p className="text-lg text-gold-100">
+            <p className="text-sm sm:text-base md:text-lg text-gold-100">
               Side-by-side comparison of {schoolsWithDetails.length}{" "}
               {schoolsWithDetails.length === 1 ? "school" : "schools"}
             </p>
@@ -164,12 +164,12 @@ export default function ComparePage() {
         </Container>
       </section>
 
-      <div className="pb-20">
+      <div className="pb-12 sm:pb-20">
         <Container>
-          <div className="py-8">
+          <div className="py-6 sm:py-8">
             {licenseTypesArray.length > 0 && (
-              <div className="mb-8">
-                <h3 className="font-heading mb-4 text-sm font-semibold text-gray-700">
+              <div className="mb-6 sm:mb-8 px-4 sm:px-0">
+                <h3 className="font-heading mb-3 sm:mb-4 text-xs sm:text-sm font-semibold text-gray-700">
                   Filter by License Type
                 </h3>
                 <div className="flex flex-wrap gap-2">
@@ -181,8 +181,8 @@ export default function ComparePage() {
                     onClick={() => setSelectedLicenseType(null)}
                     className={
                       selectedLicenseType === null
-                        ? "bg-gold-500 hover:bg-gold-600"
-                        : ""
+                        ? "bg-gold-500 hover:bg-gold-600 text-xs sm:text-sm"
+                        : "text-xs sm:text-sm"
                     }
                   >
                     All Types
@@ -199,8 +199,8 @@ export default function ComparePage() {
                       onClick={() => setSelectedLicenseType(licenseType.id)}
                       className={
                         selectedLicenseType === licenseType.id
-                          ? "bg-gold-500 hover:bg-gold-600"
-                          : ""
+                          ? "bg-gold-500 hover:bg-gold-600 text-xs sm:text-sm"
+                          : "text-xs sm:text-sm"
                       }
                     >
                       {licenseType.name}
@@ -210,19 +210,19 @@ export default function ComparePage() {
               </div>
             )}
 
-            <div className="overflow-x-auto -mx-4 px-4">
+            <div className="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
               <table className="w-full border-collapse min-w-[800px] border-l border-t border-gray-200">
                 <thead>
                   <tr>
-                    <th className="sticky left-0 z-20 bg-white border-b border-r border-gray-200 p-6 text-left">
-                      <h3 className="font-heading text-sm font-semibold uppercase tracking-wider text-gray-500">
+                    <th className="sticky left-0 z-20 bg-white border-b border-r border-gray-200 p-3 sm:p-6 text-left">
+                      <h3 className="font-heading text-xs sm:text-sm font-semibold uppercase tracking-wider text-gray-500">
                         Comparison Criteria
                       </h3>
                     </th>
                     {schoolsWithDetails.map((school, schoolIndex) => (
                       <th
                         key={school.id}
-                        className="bg-white border-b border-r border-gray-200 p-6 min-w-[320px]"
+                        className="bg-white border-b border-r border-gray-200 p-3 sm:p-6 min-w-[280px] sm:min-w-[320px]"
                       >
                         <motion.div
                           initial={{ opacity: 0, y: 20 }}
@@ -232,12 +232,12 @@ export default function ComparePage() {
                         >
                           <button
                             onClick={() => removeSchool(school.id)}
-                            className="absolute right-0 top-0 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-gray-600 transition-all hover:bg-red-500 hover:text-white hover:scale-110"
+                            className="absolute right-0 top-0 z-10 flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-full bg-gray-100 text-gray-600 transition-all hover:bg-red-500 hover:text-white hover:scale-110"
                           >
-                            <X className="h-4 w-4" />
+                            <X className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                           </button>
 
-                          <div className="relative aspect-[4/3] overflow-hidden rounded-lg mb-4 bg-gradient-to-br from-gold-100 to-sand-100">
+                          <div className="relative aspect-[4/3] overflow-hidden rounded-lg mb-3 sm:mb-4 bg-gradient-to-br from-gold-100 to-sand-100">
                             {!imageErrors[school.id] ? (
                               <Image
                                 src={
@@ -258,8 +258,8 @@ export default function ComparePage() {
                             )}
                           </div>
 
-                          <div className="space-y-3">
-                            <h3 className="font-heading text-lg font-bold text-gray-900">
+                          <div className="space-y-2 sm:space-y-3">
+                            <h3 className="font-heading text-base sm:text-lg font-bold text-gray-900">
                               {school.name}
                             </h3>
                             <div className="flex items-center justify-between gap-2 w-full px-1">
@@ -269,7 +269,7 @@ export default function ComparePage() {
                                   {school.rating}
                                 </span>
                               </div>
-                              <span className="text-sm text-gray-600">
+                              <span className="text-xs sm:text-sm text-gray-600">
                                 ({school.review_count})
                               </span>
                             </div>
@@ -348,9 +348,9 @@ export default function ComparePage() {
                             return [
                               // Course Header Row
                               <tr key={`${referenceCourse.id}-header`}>
-                                <td className="sticky left-0 z-10 bg-gradient-to-r from-gold-50 to-white border-t border-r border-gray-200 p-6">
+                                <td className="sticky left-0 z-10 bg-gradient-to-r from-gold-50 to-white border-t border-r border-gray-200 p-3 sm:p-6">
                                   <div>
-                                    <h3 className="font-heading font-bold text-gray-900 text-lg mb-1">
+                                    <h3 className="font-heading font-bold text-gray-900 text-base sm:text-lg mb-1">
                                       {referenceCourse.name}
                                     </h3>
                                     {referenceCourse.description && (
@@ -370,10 +370,10 @@ export default function ComparePage() {
                                   return (
                                     <td
                                       key={school.id}
-                                      className="bg-white border-t border-r border-gray-200 p-6"
+                                      className="bg-white border-t border-r border-gray-200 p-3 sm:p-6"
                                     >
                                       {schoolCourse ? (
-                                        <div className="flex flex-wrap gap-3 text-sm text-gray-600 justify-center">
+                                        <div className="flex flex-wrap gap-2 sm:gap-3 text-xs sm:text-sm text-gray-600 justify-center">
                                           {schoolCourse.duration_hours && (
                                             <div className="flex items-center gap-1">
                                               <Clock className="h-4 w-4 text-gold-600" />
@@ -408,15 +408,15 @@ export default function ComparePage() {
                                 <tr
                                   key={`${referenceCourse.id}-${packageInfo.key}`}
                                 >
-                                  <td className="sticky left-0 z-10 bg-white border-t border-r border-gray-200 p-6">
+                                  <td className="sticky left-0 z-10 bg-white border-t border-r border-gray-200 p-3 sm:p-6">
                                     <div>
                                       <div className="flex items-center gap-2 mb-1">
-                                        <div className="h-6 w-0.5 bg-gold-500 rounded-full" />
+                                        <div className="h-5 sm:h-6 w-0.5 bg-gold-500 rounded-full" />
                                         <span className="text-xs font-semibold text-gold-700">
                                           {packageInfo.shiftType} Shift
                                         </span>
                                       </div>
-                                      <h4 className="font-heading font-bold text-gray-900">
+                                      <h4 className="font-heading font-bold text-gray-900 text-sm sm:text-base">
                                         {packageInfo.packageName}
                                       </h4>
                                     </div>
@@ -451,7 +451,7 @@ export default function ComparePage() {
                                     return (
                                       <td
                                         key={school.id}
-                                        className="bg-white border-t border-r border-gray-200 p-6"
+                                        className="bg-white border-t border-r border-gray-200 p-3 sm:p-6"
                                       >
                                         {matchingPackage && matchingShift ? (
                                           <motion.div
@@ -461,12 +461,12 @@ export default function ComparePage() {
                                             className="group relative bg-white border border-gray-200 rounded-lg hover:border-gold-300 hover:shadow-md transition-all duration-300 overflow-hidden"
                                           >
                                             {/* Price Header */}
-                                            <div className="bg-gradient-to-r from-gold-50/50 via-white to-transparent px-4 py-3 border-b border-gray-100">
+                                            <div className="bg-gradient-to-r from-gold-50/50 via-white to-transparent px-3 sm:px-4 py-2.5 sm:py-3 border-b border-gray-100">
                                               <div className="text-center">
                                                 <div className="text-xs text-gray-500 font-medium">
                                                   Total Fee
                                                 </div>
-                                                <div className="text-xl font-bold text-gold-600">
+                                                <div className="text-lg sm:text-xl font-bold text-gold-600">
                                                   AED{" "}
                                                   {matchingPackage.fee_aed.toLocaleString()}
                                                 </div>
@@ -475,8 +475,8 @@ export default function ComparePage() {
 
                                             {/* Package Details */}
                                             {matchingPackage.details && (
-                                              <div className="p-4">
-                                                <div className="space-y-4">
+                                              <div className="p-3 sm:p-4">
+                                                <div className="space-y-3 sm:space-y-4">
                                                   {/* Training Schedule */}
                                                   {(matchingPackage.details
                                                     .class_timings ||

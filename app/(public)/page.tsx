@@ -21,36 +21,39 @@ export default function Home() {
   const featuredRef = useScrollAnimation({ threshold: 0.2 });
   return (
     <div className="flex flex-col">
-      <section className="relative overflow-hidden bg-gradient-to-br from-gold-600 to-gold-700 pt-20 py-20 sm:py-32">
+      <section className="relative overflow-hidden bg-gradient-to-br from-gold-600 to-gold-700 pt-16 pb-12 px-4 sm:pt-20 sm:pb-20 md:py-32">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_white_1px,_transparent_1px)] bg-[length:24px_24px] opacity-20" />
         <Container className="relative">
           <div className="text-center">
             <motion.div
-              className="mb-8 flex justify-center"
+              className="mb-6 sm:mb-8 flex justify-center"
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.6, ease: "easeOut" }}
             >
-              <div className="inline-flex items-center gap-2 rounded-full bg-white/80 px-6 py-3 text-sm font-medium text-gold-800 shadow-soft">
-                <Award className="h-5 w-5" />
-                Dubai's Most Trusted Driving School Platform
+              <div className="inline-flex items-center gap-1.5 sm:gap-2 rounded-full bg-white/80 px-3 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm font-medium text-gold-800 shadow-soft">
+                <Award className="h-4 w-4 sm:h-5 sm:w-5" />
+                <span className="hidden sm:inline">
+                  Dubai's Most Trusted Driving School Platform
+                </span>
+                <span className="sm:hidden">Dubai's Trusted Platform</span>
               </div>
             </motion.div>
 
             <motion.h1
-              className="font-heading mb-6 pb-2 text-5xl font-bold tracking-tight text-white sm:text-6xl lg:text-7xl"
+              className="font-heading mb-4 sm:mb-6 pb-2 text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-white"
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.2, ease: "easeOut" }}
             >
               Find Your Perfect
-              <span className="block bg-gradient-to-r from-white to-gold-100 bg-clip-text text-transparent pb-4">
+              <span className="block bg-gradient-to-r from-white to-gold-100 bg-clip-text text-transparent pb-2 sm:pb-4">
                 Driving School
               </span>
             </motion.h1>
 
             <motion.p
-              className="mb-12 text-xl text-gold-100 sm:text-2xl leading-relaxed"
+              className="mb-8 sm:mb-12 text-base sm:text-xl md:text-2xl text-gold-100 leading-relaxed px-2 sm:px-0"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.4, ease: "easeOut" }}
@@ -65,7 +68,7 @@ export default function Home() {
 
       <section
         ref={categoryRef.ref as any}
-        className="relative py-24 sm:py-32 bg-gradient-to-b from-white via-gold-50/30 to-white overflow-hidden"
+        className="relative py-12 sm:py-24 md:py-32 bg-gradient-to-b from-white via-gold-50/30 to-white overflow-hidden"
       >
         {/* Decorative Elements */}
         <div className="absolute top-20 left-10 w-72 h-72 bg-gold-200/20 rounded-full blur-3xl" />
@@ -80,9 +83,9 @@ export default function Home() {
           style={{ animationDelay: "300ms" }}
         />
 
-        <Container className="relative">
+        <Container className="relative px-4">
           <motion.div
-            className="mx-auto max-w-3xl text-center mb-16"
+            className="mx-auto max-w-3xl text-center mb-8 sm:mb-16"
             initial={{ opacity: 0, y: 30 }}
             animate={
               categoryRef.isInView
@@ -91,16 +94,16 @@ export default function Home() {
             }
             transition={{ duration: 0.7, ease: "easeOut" }}
           >
-            <div className="inline-flex items-center gap-2 rounded-full bg-gold-100 px-4 py-2 text-sm font-medium text-gold-800 mb-6">
-              <Award className="h-4 w-4" />
+            <div className="inline-flex items-center gap-1.5 sm:gap-2 rounded-full bg-gold-100 px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium text-gold-800 mb-4 sm:mb-6">
+              <Award className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               Choose Your Vehicle
             </div>
-            <h2 className="font-heading text-4xl font-bold sm:text-5xl mb-4">
+            <h2 className="font-heading text-2xl sm:text-4xl md:text-5xl font-bold mb-3 sm:mb-4">
               <span className="bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
                 Choose Your License Type
               </span>
             </h2>
-            <p className="text-lg text-gray-600">
+            <p className="text-sm sm:text-lg text-gray-600 px-4 sm:px-0">
               Select the driving license category that matches your needs and
               start exploring schools
             </p>
@@ -124,7 +127,7 @@ export default function Home() {
 
       <section
         ref={featuredRef.ref as any}
-        className="relative py-24 sm:py-32 bg-gradient-to-b from-white via-gray-50 to-white overflow-hidden"
+        className="relative py-12 sm:py-24 md:py-32 bg-gradient-to-b from-white via-gray-50 to-white overflow-hidden"
       >
         {/* Decorative Elements */}
         <div className="absolute top-10 right-10 w-80 h-80 bg-gold-200/20 rounded-full blur-3xl" />
@@ -139,9 +142,9 @@ export default function Home() {
           style={{ animationDelay: "150ms" }}
         />
 
-        <Container className="relative">
+        <Container className="relative px-4">
           <motion.div
-            className="mx-auto max-w-3xl text-center mb-16"
+            className="mx-auto max-w-3xl text-center mb-8 sm:mb-16"
             initial={{ opacity: 0, y: 30 }}
             animate={
               featuredRef.isInView
@@ -150,16 +153,16 @@ export default function Home() {
             }
             transition={{ duration: 0.7, ease: "easeOut" }}
           >
-            <div className="inline-flex items-center gap-2 rounded-full bg-gold-100 px-4 py-2 text-sm font-medium text-gold-800 mb-6">
-              <ShieldCheck className="h-4 w-4" />
+            <div className="inline-flex items-center gap-1.5 sm:gap-2 rounded-full bg-gold-100 px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium text-gold-800 mb-4 sm:mb-6">
+              <ShieldCheck className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               Verified Partners
             </div>
-            <h2 className="font-heading text-4xl font-bold sm:text-5xl mb-4">
+            <h2 className="font-heading text-2xl sm:text-4xl md:text-5xl font-bold mb-3 sm:mb-4">
               <span className="bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
                 Featured Partner Schools
               </span>
             </h2>
-            <p className="text-lg text-gray-600">
+            <p className="text-sm sm:text-lg text-gray-600 px-4 sm:px-0">
               Top-rated driving schools trusted by thousands of students across
               Dubai
             </p>
@@ -168,7 +171,7 @@ export default function Home() {
           <FeaturedSchools />
 
           <motion.div
-            className="mt-12 text-center"
+            className="mt-8 sm:mt-12 text-center"
             initial={{ opacity: 0, y: 20 }}
             animate={
               featuredRef.isInView
@@ -180,10 +183,10 @@ export default function Home() {
             <Link href="/schools">
               <Button
                 size="lg"
-                className="h-14 px-10 bg-gradient-to-r from-gold-600 to-gold-700 hover:from-gold-700 hover:to-gold-800 text-white shadow-lg hover:shadow-xl transition-all"
+                className="h-12 sm:h-14 px-6 sm:px-10 text-base sm:text-lg bg-gradient-to-r from-gold-600 to-gold-700 hover:from-gold-700 hover:to-gold-800 text-white shadow-lg hover:shadow-xl transition-all"
               >
                 View All Schools
-                <ArrowRight className="ml-2 h-5 w-5" />
+                <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
               </Button>
             </Link>
           </motion.div>

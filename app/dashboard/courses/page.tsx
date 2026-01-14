@@ -168,46 +168,81 @@ export default function CoursesPage() {
   }
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="font-heading text-3xl font-bold text-slate-900">
-          Courses
+    <div className="space-y-6 sm:space-y-8">
+      <div className="bg-gradient-to-r from-primary/10 via-primary/5 to-transparent p-6 sm:p-8 rounded-xl border border-primary/10">
+        <h2 className="font-heading text-2xl sm:text-3xl font-bold text-slate-900">
+          Courses Management
         </h2>
-        <p className="text-slate-500 mt-1">
-          Manage license types, course levels, shifts, and packages
+        <p className="text-sm sm:text-base text-slate-600 mt-2">
+          Manage license types, course levels, shifts, and packages for your
+          driving schools
         </p>
       </div>
 
-      <Tabs defaultValue="license-types" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="license-types">License Types</TabsTrigger>
-          <TabsTrigger value="levels">Course Levels</TabsTrigger>
-          <TabsTrigger value="shifts">Shifts</TabsTrigger>
-          <TabsTrigger value="packages">Packages</TabsTrigger>
+      <Tabs defaultValue="license-types" className="space-y-6">
+        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 h-auto bg-slate-100 p-1.5 rounded-lg">
+          <TabsTrigger
+            value="license-types"
+            className="text-xs sm:text-sm px-3 sm:px-4 py-2.5 data-[state=active]:bg-white data-[state=active]:shadow-sm rounded-md font-medium transition-all"
+          >
+            License Types
+          </TabsTrigger>
+          <TabsTrigger
+            value="levels"
+            className="text-xs sm:text-sm px-3 sm:px-4 py-2.5 data-[state=active]:bg-white data-[state=active]:shadow-sm rounded-md font-medium transition-all"
+          >
+            Course Levels
+          </TabsTrigger>
+          <TabsTrigger
+            value="shifts"
+            className="text-xs sm:text-sm px-3 sm:px-4 py-2.5 data-[state=active]:bg-white data-[state=active]:shadow-sm rounded-md font-medium transition-all"
+          >
+            Shifts
+          </TabsTrigger>
+          <TabsTrigger
+            value="packages"
+            className="text-xs sm:text-sm px-3 sm:px-4 py-2.5 data-[state=active]:bg-white data-[state=active]:shadow-sm rounded-md font-medium transition-all"
+          >
+            Packages
+          </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="license-types">
-          <Card>
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle>License Types</CardTitle>
+        <TabsContent value="license-types" className="space-y-4">
+          <Card className="border-slate-200 shadow-sm">
+            <CardHeader className="bg-slate-50/50 border-b">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
+                <div>
+                  <CardTitle className="text-lg sm:text-xl font-semibold">
+                    License Types
+                  </CardTitle>
+                  <p className="text-xs sm:text-sm text-slate-500 mt-1">
+                    Manage available license categories
+                  </p>
+                </div>
                 <Button
                   size="sm"
                   onClick={() => setAddLicenseTypeDialogOpen(true)}
+                  className="w-full sm:w-auto text-xs sm:text-sm shadow-sm"
                 >
                   <Plus className="h-4 w-4 mr-2" />
                   Add License Type
                 </Button>
               </div>
             </CardHeader>
-            <CardContent>
-              <div className="rounded-md border">
+            <CardContent className="p-0">
+              <div className="overflow-x-auto">
                 <Table>
                   <TableHeader>
-                    <TableRow>
-                      <TableHead>Name</TableHead>
-                      <TableHead>Description</TableHead>
-                      <TableHead>Actions</TableHead>
+                    <TableRow className="bg-slate-50 hover:bg-slate-50">
+                      <TableHead className="font-semibold text-slate-700">
+                        Name
+                      </TableHead>
+                      <TableHead className="font-semibold text-slate-700">
+                        Description
+                      </TableHead>
+                      <TableHead className="font-semibold text-slate-700 text-right">
+                        Actions
+                      </TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -215,22 +250,35 @@ export default function CoursesPage() {
                       <TableRow>
                         <TableCell
                           colSpan={3}
-                          className="text-center py-8 text-slate-500"
+                          className="text-center py-12 text-slate-500"
                         >
-                          No license types found
+                          <div className="flex flex-col items-center gap-2">
+                            <div className="h-12 w-12 rounded-full bg-slate-100 flex items-center justify-center">
+                              <Plus className="h-6 w-6 text-slate-400" />
+                            </div>
+                            <p className="font-medium">
+                              No license types found
+                            </p>
+                            <p className="text-sm">
+                              Get started by adding your first license type
+                            </p>
+                          </div>
                         </TableCell>
                       </TableRow>
                     ) : (
                       licenseTypes.map((licenseType) => (
-                        <TableRow key={licenseType.id}>
-                          <TableCell className="font-medium">
+                        <TableRow
+                          key={licenseType.id}
+                          className="hover:bg-slate-50/50"
+                        >
+                          <TableCell className="font-medium text-slate-900">
                             {licenseType.name}
                           </TableCell>
-                          <TableCell>
+                          <TableCell className="text-slate-600">
                             {licenseType.description || "N/A"}
                           </TableCell>
                           <TableCell>
-                            <div className="flex items-center gap-2">
+                            <div className="flex items-center justify-end gap-1">
                               <Button
                                 variant="ghost"
                                 size="sm"
@@ -238,6 +286,7 @@ export default function CoursesPage() {
                                   setItemToEdit(licenseType);
                                   setEditLicenseTypeDialogOpen(true);
                                 }}
+                                className="hover:bg-primary/10 hover:text-primary"
                               >
                                 <Edit className="h-4 w-4" />
                               </Button>
@@ -251,8 +300,9 @@ export default function CoursesPage() {
                                   });
                                   setDeleteDialogOpen(true);
                                 }}
+                                className="hover:bg-red-50 hover:text-red-600"
                               >
-                                <Trash2 className="h-4 w-4 text-red-500" />
+                                <Trash2 className="h-4 w-4" />
                               </Button>
                             </div>
                           </TableCell>
@@ -266,31 +316,51 @@ export default function CoursesPage() {
           </Card>
         </TabsContent>
 
-        <TabsContent value="levels">
-          <Card>
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle>Course Levels</CardTitle>
+        <TabsContent value="levels" className="space-y-4">
+          <Card className="border-slate-200 shadow-sm">
+            <CardHeader className="bg-slate-50/50 border-b">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
+                <div>
+                  <CardTitle className="text-lg sm:text-xl font-semibold">
+                    Course Levels
+                  </CardTitle>
+                  <p className="text-xs sm:text-sm text-slate-500 mt-1">
+                    Define course levels for each license type
+                  </p>
+                </div>
                 <Button
                   size="sm"
                   onClick={() => setAddCourseLevelDialogOpen(true)}
+                  className="w-full sm:w-auto text-xs sm:text-sm shadow-sm"
                 >
                   <Plus className="h-4 w-4 mr-2" />
                   Add Level
                 </Button>
               </div>
             </CardHeader>
-            <CardContent>
-              <div className="rounded-md border">
+            <CardContent className="p-0">
+              <div className="overflow-x-auto">
                 <Table>
                   <TableHeader>
-                    <TableRow>
-                      <TableHead>School</TableHead>
-                      <TableHead>License Type</TableHead>
-                      <TableHead>Name</TableHead>
-                      <TableHead>Experience Level</TableHead>
-                      <TableHead>Duration (hours)</TableHead>
-                      <TableHead>Actions</TableHead>
+                    <TableRow className="bg-slate-50 hover:bg-slate-50">
+                      <TableHead className="font-semibold text-slate-700">
+                        School
+                      </TableHead>
+                      <TableHead className="font-semibold text-slate-700">
+                        License Type
+                      </TableHead>
+                      <TableHead className="font-semibold text-slate-700">
+                        Name
+                      </TableHead>
+                      <TableHead className="font-semibold text-slate-700">
+                        Experience Level
+                      </TableHead>
+                      <TableHead className="font-semibold text-slate-700">
+                        Duration (hours)
+                      </TableHead>
+                      <TableHead className="font-semibold text-slate-700 text-right">
+                        Actions
+                      </TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -298,27 +368,46 @@ export default function CoursesPage() {
                       <TableRow>
                         <TableCell
                           colSpan={6}
-                          className="text-center py-8 text-slate-500"
+                          className="text-center py-12 text-slate-500"
                         >
-                          No course levels found
+                          <div className="flex flex-col items-center gap-2">
+                            <div className="h-12 w-12 rounded-full bg-slate-100 flex items-center justify-center">
+                              <Plus className="h-6 w-6 text-slate-400" />
+                            </div>
+                            <p className="font-medium">
+                              No course levels found
+                            </p>
+                            <p className="text-sm">
+                              Add course levels to organize your courses
+                            </p>
+                          </div>
                         </TableCell>
                       </TableRow>
                     ) : (
                       courseLevels.map((level) => (
-                        <TableRow key={level.id}>
-                          <TableCell>{level.schools?.name}</TableCell>
+                        <TableRow
+                          key={level.id}
+                          className="hover:bg-slate-50/50"
+                        >
+                          <TableCell className="text-slate-900">
+                            {level.schools?.name}
+                          </TableCell>
                           <TableCell>
-                            <Badge variant="outline">
+                            <Badge variant="outline" className="bg-primary/5">
                               {level.license_types?.name}
                             </Badge>
                           </TableCell>
-                          <TableCell className="font-medium">
+                          <TableCell className="font-medium text-slate-900">
                             {level.name}
                           </TableCell>
-                          <TableCell>{level.experience_level}</TableCell>
-                          <TableCell>{level.duration_hours}</TableCell>
+                          <TableCell className="text-slate-600">
+                            {level.experience_level}
+                          </TableCell>
+                          <TableCell className="text-slate-600">
+                            {level.duration_hours}
+                          </TableCell>
                           <TableCell>
-                            <div className="flex items-center gap-2">
+                            <div className="flex items-center justify-end gap-1">
                               <Button
                                 variant="ghost"
                                 size="sm"
@@ -326,6 +415,7 @@ export default function CoursesPage() {
                                   setItemToEdit(level);
                                   setEditCourseLevelDialogOpen(true);
                                 }}
+                                className="hover:bg-primary/10 hover:text-primary"
                               >
                                 <Edit className="h-4 w-4" />
                               </Button>
@@ -339,8 +429,9 @@ export default function CoursesPage() {
                                   });
                                   setDeleteDialogOpen(true);
                                 }}
+                                className="hover:bg-red-50 hover:text-red-600"
                               >
-                                <Trash2 className="h-4 w-4 text-red-500" />
+                                <Trash2 className="h-4 w-4" />
                               </Button>
                             </div>
                           </TableCell>
@@ -354,28 +445,51 @@ export default function CoursesPage() {
           </Card>
         </TabsContent>
 
-        <TabsContent value="shifts">
-          <Card>
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle>Course Shifts</CardTitle>
-                <Button size="sm" onClick={() => setAddShiftDialogOpen(true)}>
+        <TabsContent value="shifts" className="space-y-4">
+          <Card className="border-slate-200 shadow-sm">
+            <CardHeader className="bg-slate-50/50 border-b">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
+                <div>
+                  <CardTitle className="text-lg sm:text-xl font-semibold">
+                    Course Shifts
+                  </CardTitle>
+                  <p className="text-xs sm:text-sm text-slate-500 mt-1">
+                    Manage shift timings for course levels
+                  </p>
+                </div>
+                <Button
+                  size="sm"
+                  onClick={() => setAddShiftDialogOpen(true)}
+                  className="w-full sm:w-auto text-xs sm:text-sm shadow-sm"
+                >
                   <Plus className="h-4 w-4 mr-2" />
                   Add Shift
                 </Button>
               </div>
             </CardHeader>
-            <CardContent>
-              <div className="rounded-md border">
+            <CardContent className="p-0">
+              <div className="overflow-x-auto">
                 <Table>
                   <TableHeader>
-                    <TableRow>
-                      <TableHead>School</TableHead>
-                      <TableHead>License Type</TableHead>
-                      <TableHead>Course Level</TableHead>
-                      <TableHead>Shift Type</TableHead>
-                      <TableHead>Description</TableHead>
-                      <TableHead>Actions</TableHead>
+                    <TableRow className="bg-slate-50 hover:bg-slate-50">
+                      <TableHead className="font-semibold text-slate-700">
+                        School
+                      </TableHead>
+                      <TableHead className="font-semibold text-slate-700">
+                        License Type
+                      </TableHead>
+                      <TableHead className="font-semibold text-slate-700">
+                        Course Level
+                      </TableHead>
+                      <TableHead className="font-semibold text-slate-700">
+                        Shift Type
+                      </TableHead>
+                      <TableHead className="font-semibold text-slate-700">
+                        Description
+                      </TableHead>
+                      <TableHead className="font-semibold text-slate-700 text-right">
+                        Actions
+                      </TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -383,32 +497,49 @@ export default function CoursesPage() {
                       <TableRow>
                         <TableCell
                           colSpan={6}
-                          className="text-center py-8 text-slate-500"
+                          className="text-center py-12 text-slate-500"
                         >
-                          No course shifts found
+                          <div className="flex flex-col items-center gap-2">
+                            <div className="h-12 w-12 rounded-full bg-slate-100 flex items-center justify-center">
+                              <Plus className="h-6 w-6 text-slate-400" />
+                            </div>
+                            <p className="font-medium">
+                              No course shifts found
+                            </p>
+                            <p className="text-sm">
+                              Define shift timings for your courses
+                            </p>
+                          </div>
                         </TableCell>
                       </TableRow>
                     ) : (
                       courseShifts.map((shift) => (
-                        <TableRow key={shift.id}>
-                          <TableCell>
+                        <TableRow
+                          key={shift.id}
+                          className="hover:bg-slate-50/50"
+                        >
+                          <TableCell className="text-slate-900">
                             {shift.course_levels?.schools?.name || "N/A"}
                           </TableCell>
                           <TableCell>
-                            <Badge variant="outline">
+                            <Badge variant="outline" className="bg-primary/5">
                               {shift.course_levels?.license_types?.name ||
                                 "N/A"}
                             </Badge>
                           </TableCell>
-                          <TableCell>
+                          <TableCell className="text-slate-600">
                             {shift.course_levels?.name || "N/A"}
                           </TableCell>
-                          <TableCell className="font-medium">
-                            <Badge>{shift.type}</Badge>
-                          </TableCell>
-                          <TableCell>{shift.description || "N/A"}</TableCell>
                           <TableCell>
-                            <div className="flex items-center gap-2">
+                            <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-100">
+                              {shift.type}
+                            </Badge>
+                          </TableCell>
+                          <TableCell className="text-slate-600">
+                            {shift.description || "N/A"}
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex items-center justify-end gap-1">
                               <Button
                                 variant="ghost"
                                 size="sm"
@@ -416,6 +547,7 @@ export default function CoursesPage() {
                                   setItemToEdit(shift);
                                   setEditShiftDialogOpen(true);
                                 }}
+                                className="hover:bg-primary/10 hover:text-primary"
                               >
                                 <Edit className="h-4 w-4" />
                               </Button>
@@ -429,8 +561,9 @@ export default function CoursesPage() {
                                   });
                                   setDeleteDialogOpen(true);
                                 }}
+                                className="hover:bg-red-50 hover:text-red-600"
                               >
-                                <Trash2 className="h-4 w-4 text-red-500" />
+                                <Trash2 className="h-4 w-4" />
                               </Button>
                             </div>
                           </TableCell>
@@ -444,29 +577,54 @@ export default function CoursesPage() {
           </Card>
         </TabsContent>
 
-        <TabsContent value="packages">
-          <Card>
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle>Course Packages</CardTitle>
-                <Button size="sm" onClick={() => setAddPackageDialogOpen(true)}>
+        <TabsContent value="packages" className="space-y-4">
+          <Card className="border-slate-200 shadow-sm">
+            <CardHeader className="bg-slate-50/50 border-b">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
+                <div>
+                  <CardTitle className="text-lg sm:text-xl font-semibold">
+                    Course Packages
+                  </CardTitle>
+                  <p className="text-xs sm:text-sm text-slate-500 mt-1">
+                    Create and manage pricing packages
+                  </p>
+                </div>
+                <Button
+                  size="sm"
+                  onClick={() => setAddPackageDialogOpen(true)}
+                  className="w-full sm:w-auto text-xs sm:text-sm shadow-sm"
+                >
                   <Plus className="h-4 w-4 mr-2" />
                   Add Package
                 </Button>
               </div>
             </CardHeader>
-            <CardContent>
-              <div className="rounded-md border">
+            <CardContent className="p-0">
+              <div className="overflow-x-auto">
                 <Table>
                   <TableHeader>
-                    <TableRow>
-                      <TableHead>School</TableHead>
-                      <TableHead>License Type</TableHead>
-                      <TableHead>Course Level</TableHead>
-                      <TableHead>Shift</TableHead>
-                      <TableHead>Package Name</TableHead>
-                      <TableHead>Fee (AED)</TableHead>
-                      <TableHead>Actions</TableHead>
+                    <TableRow className="bg-slate-50 hover:bg-slate-50">
+                      <TableHead className="font-semibold text-slate-700">
+                        School
+                      </TableHead>
+                      <TableHead className="font-semibold text-slate-700">
+                        License Type
+                      </TableHead>
+                      <TableHead className="font-semibold text-slate-700">
+                        Course Level
+                      </TableHead>
+                      <TableHead className="font-semibold text-slate-700">
+                        Shift
+                      </TableHead>
+                      <TableHead className="font-semibold text-slate-700">
+                        Package Name
+                      </TableHead>
+                      <TableHead className="font-semibold text-slate-700">
+                        Fee (AED)
+                      </TableHead>
+                      <TableHead className="font-semibold text-slate-700 text-right">
+                        Actions
+                      </TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -474,37 +632,49 @@ export default function CoursesPage() {
                       <TableRow>
                         <TableCell
                           colSpan={7}
-                          className="text-center py-8 text-slate-500"
+                          className="text-center py-12 text-slate-500"
                         >
-                          No course packages found
+                          <div className="flex flex-col items-center gap-2">
+                            <div className="h-12 w-12 rounded-full bg-slate-100 flex items-center justify-center">
+                              <Plus className="h-6 w-6 text-slate-400" />
+                            </div>
+                            <p className="font-medium">
+                              No course packages found
+                            </p>
+                            <p className="text-sm">
+                              Create packages with pricing for your courses
+                            </p>
+                          </div>
                         </TableCell>
                       </TableRow>
                     ) : (
                       coursePackages.map((pkg) => (
-                        <TableRow key={pkg.id}>
-                          <TableCell>
+                        <TableRow key={pkg.id} className="hover:bg-slate-50/50">
+                          <TableCell className="text-slate-900">
                             {pkg.shifts?.course_levels?.schools?.name || "N/A"}
                           </TableCell>
                           <TableCell>
-                            <Badge variant="outline">
+                            <Badge variant="outline" className="bg-primary/5">
                               {pkg.shifts?.course_levels?.license_types?.name ||
                                 "N/A"}
                             </Badge>
                           </TableCell>
-                          <TableCell>
+                          <TableCell className="text-slate-600">
                             {pkg.shifts?.course_levels?.name || "N/A"}
                           </TableCell>
                           <TableCell>
-                            <Badge variant="secondary">
+                            <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-100">
                               {pkg.shifts?.type || "N/A"}
                             </Badge>
                           </TableCell>
-                          <TableCell className="font-medium">
+                          <TableCell className="font-medium text-slate-900">
                             {pkg.name}
                           </TableCell>
-                          <TableCell>{pkg.fee_aed.toLocaleString()}</TableCell>
+                          <TableCell className="font-semibold text-emerald-600">
+                            {pkg.fee_aed.toLocaleString()}
+                          </TableCell>
                           <TableCell>
-                            <div className="flex items-center gap-2">
+                            <div className="flex items-center justify-end gap-1">
                               <Button
                                 variant="ghost"
                                 size="sm"
@@ -512,6 +682,7 @@ export default function CoursesPage() {
                                   setItemToEdit(pkg);
                                   setEditPackageDialogOpen(true);
                                 }}
+                                className="hover:bg-primary/10 hover:text-primary"
                               >
                                 <Edit className="h-4 w-4" />
                               </Button>
@@ -525,8 +696,9 @@ export default function CoursesPage() {
                                   });
                                   setDeleteDialogOpen(true);
                                 }}
+                                className="hover:bg-red-50 hover:text-red-600"
                               >
-                                <Trash2 className="h-4 w-4 text-red-500" />
+                                <Trash2 className="h-4 w-4" />
                               </Button>
                             </div>
                           </TableCell>

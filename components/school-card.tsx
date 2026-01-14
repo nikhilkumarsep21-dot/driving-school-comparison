@@ -99,39 +99,41 @@ export function SchoolCard({ school, index = 0 }: SchoolCardProps) {
         </Link>
       </div>
 
-      <div className="absolute right-3 top-3 z-10">
+      <div className="absolute right-2 top-2 sm:right-3 sm:top-3 z-10">
         <Button
           size="sm"
           onClick={handleCompareClick}
           className={
             inComparison
-              ? "bg-gold-600 text-white hover:bg-gold-700 shadow-lg"
-              : "bg-white/90 text-gray-700 hover:bg-white shadow-soft backdrop-blur-sm"
+              ? "bg-gold-600 text-white hover:bg-gold-700 shadow-lg text-xs sm:text-sm"
+              : "bg-white/90 text-gray-700 hover:bg-white shadow-soft backdrop-blur-sm text-xs sm:text-sm"
           }
         >
           {inComparison ? (
             <>
-              <Check className="mr-1.5 h-4 w-4" />
-              Added
+              <Check className="mr-1 sm:mr-1.5 h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="hidden xs:inline">Added</span>
+              <span className="xs:hidden">✓</span>
             </>
           ) : (
             <>
-              <GitCompare className="mr-1.5 h-4 w-4" />
-              Compare
+              <GitCompare className="mr-1 sm:mr-1.5 h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="hidden xs:inline">Compare</span>
+              <span className="xs:hidden">+</span>
             </>
           )}
         </Button>
       </div>
 
-      <div className="flex flex-col space-y-4 p-5 w-full flex-1">
+      <div className="flex flex-col space-y-3 sm:space-y-4 p-4 sm:p-5 w-full flex-1">
         <div className="space-y-2 flex-1">
           <Link href={`/school/${school.id}`}>
-            <h3 className="font-heading text-lg font-bold text-gray-900 transition-colors hover:text-gold-600 line-clamp-2 min-h-[3.5rem]">
+            <h3 className="font-heading text-base sm:text-lg font-bold text-gray-900 transition-colors hover:text-gold-600 line-clamp-2 min-h-[3rem] sm:min-h-[3.5rem]">
               {school.name}
             </h3>
           </Link>
 
-          <div className="flex items-center justify-between gap-4 w-full px-1">
+          <div className="flex items-center justify-between gap-2 sm:gap-4 w-full px-1">
             <div className="flex items-center gap-1">
               <StarRating rating={school.rating} size="sm" />
             </div>
@@ -141,7 +143,7 @@ export function SchoolCard({ school, index = 0 }: SchoolCardProps) {
             </span>
           </div>
 
-          <div className="flex items-center gap-1.5 text-sm text-gray-600 min-h-[1.5rem]">
+          <div className="flex items-center gap-1.5 text-xs sm:text-sm text-gray-600 min-h-[1.5rem]">
             {primaryLocation && (
               <>
                 <MapPin className="h-4 w-4 text-gold-500 flex-shrink-0" />
@@ -155,12 +157,12 @@ export function SchoolCard({ school, index = 0 }: SchoolCardProps) {
           </div>
         </div>
 
-        <div className="border-t border-gray-100 pt-4 mt-auto space-y-2">
+        <div className="border-t border-gray-100 pt-3 sm:pt-4 mt-auto space-y-2">
           <Link href={`/school/${school.id}`}>
             <Button
               variant="outline"
               size="sm"
-              className="w-full border-gold-200 text-gold-700 transition-all hover:bg-gold-50 hover:border-gold-300"
+              className="w-full border-gold-200 text-gold-700 transition-all hover:bg-gold-50 hover:border-gold-300 text-xs sm:text-sm h-9 sm:h-10"
             >
               View Details
             </Button>
@@ -169,9 +171,9 @@ export function SchoolCard({ school, index = 0 }: SchoolCardProps) {
             variant="default"
             size="sm"
             onClick={handleEnquireClick}
-            className="w-full bg-gold-600 hover:bg-gold-700 text-white"
+            className="w-full bg-gold-600 hover:bg-gold-700 text-white text-xs sm:text-sm h-9 sm:h-10"
           >
-            <MessageSquare className="mr-2 h-4 w-4" />
+            <MessageSquare className="mr-1.5 sm:mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4" />
             Enquire Now
           </Button>
         </div>

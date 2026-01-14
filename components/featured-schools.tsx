@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { SchoolCard } from './school-card';
-import { LoadingCard } from './ui/loading-card';
-import { SchoolWithLocations } from '@/lib/types';
+import { useEffect, useState } from "react";
+import { SchoolCard } from "./school-card";
+import { LoadingCard } from "./ui/loading-card";
+import { SchoolWithLocations } from "@/lib/types";
 
 export function FeaturedSchools() {
   const [schools, setSchools] = useState<SchoolWithLocations[]>([]);
@@ -12,11 +12,11 @@ export function FeaturedSchools() {
   useEffect(() => {
     const fetchFeaturedSchools = async () => {
       try {
-        const response = await fetch('/api/schools?sortBy=rating');
+        const response = await fetch("/api/schools?sortBy=rating");
         const data = await response.json();
         setSchools(data.schools?.slice(0, 4) || []);
       } catch (error) {
-        console.error('Failed to fetch featured schools:', error);
+        console.error("Failed to fetch featured schools:", error);
       } finally {
         setLoading(false);
       }
@@ -27,7 +27,7 @@ export function FeaturedSchools() {
 
   if (loading) {
     return (
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
         {Array.from({ length: 4 }).map((_, i) => (
           <LoadingCard key={i} />
         ))}
@@ -36,7 +36,7 @@ export function FeaturedSchools() {
   }
 
   return (
-    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+    <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
       {schools.map((school, index) => (
         <SchoolCard key={school.id} school={school} index={index} />
       ))}

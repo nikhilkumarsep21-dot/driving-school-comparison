@@ -155,21 +155,24 @@ export default function SchoolDetailPage() {
       )
     : school.course_levels;
 
-  const uniqueLicenseTypes = school.course_levels?.reduce((acc, course) => {
-    if (
-      course.license_type &&
-      !acc.find((lt) => lt.id === course.license_type!.id)
-    ) {
-      acc.push(course.license_type);
-    }
-    return acc;
-  }, [] as Array<{ id: string; name: string }>);
+  const uniqueLicenseTypes = school.course_levels?.reduce(
+    (acc, course) => {
+      if (
+        course.license_type &&
+        !acc.find((lt) => lt.id === course.license_type!.id)
+      ) {
+        acc.push(course.license_type);
+      }
+      return acc;
+    },
+    [] as Array<{ id: string; name: string }>
+  );
 
   return (
     <div className="min-h-screen bg-white">
-      <div className="relative h-80 bg-gradient-to-br from-gold-600 to-gold-700 overflow-hidden">
+      <div className="relative h-auto sm:h-80 bg-gradient-to-br from-gold-600 to-gold-700 overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_white_1px,_transparent_1px)] bg-[length:24px_24px] opacity-20" />
-        <Container className="relative h-full flex items-center">
+        <Container className="relative h-full flex items-center py-8 sm:py-0">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -177,13 +180,13 @@ export default function SchoolDetailPage() {
           >
             <Link
               href="/schools"
-              className="inline-flex items-center text-white/90 hover:text-white mb-6 transition-colors"
+              className="inline-flex items-center text-white/90 hover:text-white mb-4 sm:mb-6 transition-colors text-sm"
             >
               <ArrowLeft className="mr-2 h-4 w-4" />
               Back to Schools
             </Link>
-            <div className="flex items-start gap-6">
-              <div className="relative w-32 h-32 rounded-xl overflow-hidden bg-white shadow-lg">
+            <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6">
+              <div className="relative w-20 h-20 sm:w-32 sm:h-32 rounded-xl overflow-hidden bg-white shadow-lg flex-shrink-0">
                 {!imageError ? (
                   <Image
                     src={
@@ -203,13 +206,13 @@ export default function SchoolDetailPage() {
                   </div>
                 )}
               </div>
-              <div className="flex-1">
-                <h1 className="font-heading text-4xl font-bold text-white mb-3">
+              <div className="flex-1 min-w-0">
+                <h1 className="font-heading text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-2 sm:mb-3">
                   {school.name}
                 </h1>
-                <div className="flex items-center gap-4 text-white/90">
+                <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-white/90 text-sm sm:text-base">
                   <div className="flex items-center gap-2">
-                    <StarRating rating={school.rating} size="md" />
+                    <StarRating rating={school.rating} size="sm" />
                     <span className="font-semibold">{school.rating}</span>
                     <span className="text-white/70">
                       ({school.review_count} reviews)
@@ -217,24 +220,30 @@ export default function SchoolDetailPage() {
                   </div>
                 </div>
               </div>
-              <div className="flex gap-3">
+              <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto">
                 <Button
                   onClick={() => setIsEnquiryModalOpen(true)}
-                  className="bg-white text-gold-700 hover:bg-white/90"
+                  className="bg-white text-gold-700 hover:bg-white/90 w-full sm:w-auto text-sm sm:text-base"
                 >
                   <MessageSquare className="mr-2 h-4 w-4" />
-                  Enquire Now
+                  <span className="hidden sm:inline">Enquire Now</span>
+                  <span className="sm:hidden">Enquire</span>
                 </Button>
                 <Button
                   onClick={handleCompareToggle}
                   className={
                     inComparison
-                      ? "bg-white text-gold-700 hover:bg-white/90"
-                      : "bg-white/10 text-white hover:bg-white/20 backdrop-blur-sm"
+                      ? "bg-white text-gold-700 hover:bg-white/90 w-full sm:w-auto text-sm sm:text-base"
+                      : "bg-white/10 text-white hover:bg-white/20 backdrop-blur-sm w-full sm:w-auto text-sm sm:text-base"
                   }
                 >
                   <GitCompare className="mr-2 h-4 w-4" />
-                  {inComparison ? "Remove from Compare" : "Add to Compare"}
+                  <span className="hidden sm:inline">
+                    {inComparison ? "Remove from Compare" : "Add to Compare"}
+                  </span>
+                  <span className="sm:hidden">
+                    {inComparison ? "Remove" : "Compare"}
+                  </span>
                 </Button>
               </div>
             </div>
@@ -243,14 +252,14 @@ export default function SchoolDetailPage() {
       </div>
 
       <Container>
-        <div className="py-12 space-y-12">
+        <div className="py-6 sm:py-12 space-y-8 sm:space-y-12">
           {school.course_levels && school.course_levels.length > 0 && (
             <section>
-              <h2 className="font-heading text-2xl font-bold text-gray-900 mb-6">
+              <h2 className="font-heading text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6">
                 Course Offerings
               </h2>
               {uniqueLicenseTypes && uniqueLicenseTypes.length > 0 && (
-                <div className="mb-6 flex flex-wrap gap-2">
+                <div className="mb-4 sm:mb-6 flex flex-wrap gap-2">
                   <Button
                     variant={
                       selectedLicenseType === null ? "default" : "outline"
@@ -259,8 +268,8 @@ export default function SchoolDetailPage() {
                     onClick={() => setSelectedLicenseType(null)}
                     className={
                       selectedLicenseType === null
-                        ? "bg-gold-500 hover:bg-gold-600"
-                        : ""
+                        ? "bg-gold-500 hover:bg-gold-600 text-xs sm:text-sm"
+                        : "text-xs sm:text-sm"
                     }
                   >
                     All Types
@@ -277,8 +286,8 @@ export default function SchoolDetailPage() {
                       onClick={() => setSelectedLicenseType(licenseType.id)}
                       className={
                         selectedLicenseType === licenseType.id
-                          ? "bg-gold-500 hover:bg-gold-600"
-                          : ""
+                          ? "bg-gold-500 hover:bg-gold-600 text-xs sm:text-sm"
+                          : "text-xs sm:text-sm"
                       }
                     >
                       {licenseType.name}
@@ -286,7 +295,7 @@ export default function SchoolDetailPage() {
                   ))}
                 </div>
               )}
-              <div className="space-y-6">
+              <div className="space-y-4 sm:space-y-6">
                 {filteredCourses?.map((course: CourseLevelWithRelations) => {
                   const isExpanded = expandedCourses.has(course.id);
                   const hasPackages = course.shifts?.some(
@@ -314,23 +323,23 @@ export default function SchoolDetailPage() {
                       className="border rounded-lg overflow-hidden hover:shadow-lg transition-shadow"
                     >
                       {/* Course Header */}
-                      <div className="p-6 bg-gradient-to-r from-gold-50 to-white">
-                        <div className="flex items-start justify-between mb-4">
-                          <div className="flex-1">
-                            <div className="flex items-center gap-3 mb-2">
-                              <h3 className="font-heading text-xl font-bold text-gray-900">
+                      <div className="p-4 sm:p-6 bg-gradient-to-r from-gold-50 to-white">
+                        <div className="flex flex-col sm:flex-row items-start justify-between mb-3 sm:mb-4 gap-3">
+                          <div className="flex-1 w-full">
+                            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-2">
+                              <h3 className="font-heading text-lg sm:text-xl font-bold text-gray-900">
                                 {course.name}
                               </h3>
-                              <span className="text-xs px-3 py-1 bg-gold-100 text-gold-700 rounded-full font-semibold">
+                              <span className="text-xs px-2 sm:px-3 py-1 bg-gold-100 text-gold-700 rounded-full font-semibold self-start">
                                 {course.license_type?.name}
                               </span>
                             </div>
                             {course.description && (
-                              <p className="text-sm text-gray-600 mb-3">
+                              <p className="text-xs sm:text-sm text-gray-600 mb-2 sm:mb-3">
                                 {course.description}
                               </p>
                             )}
-                            <div className="flex items-center gap-6 text-sm text-gray-600">
+                            <div className="flex flex-wrap items-center gap-3 sm:gap-6 text-xs sm:text-sm text-gray-600">
                               {course.duration_hours && (
                                 <div className="flex items-center gap-2">
                                   <Clock className="h-4 w-4 text-gold-600" />
@@ -364,7 +373,7 @@ export default function SchoolDetailPage() {
                               variant="ghost"
                               size="sm"
                               onClick={() => toggleCourseExpansion(course.id)}
-                              className="ml-4"
+                              className="w-full sm:w-auto sm:ml-4 text-xs sm:text-sm"
                             >
                               {isExpanded ? (
                                 <>
@@ -386,8 +395,8 @@ export default function SchoolDetailPage() {
                       {isExpanded &&
                         course.shifts &&
                         course.shifts.length > 0 && (
-                          <div className="p-6 border-t bg-white">
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                          <div className="p-4 sm:p-6 border-t bg-white">
+                            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4">
                               {course.shifts.flatMap(
                                 (shift) =>
                                   shift.packages?.map((pkg) => (
@@ -399,16 +408,16 @@ export default function SchoolDetailPage() {
                                       className="group relative bg-white border border-gray-200 rounded-lg hover:border-gold-300 hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col"
                                     >
                                       {/* Header Section with Price */}
-                                      <div className="bg-gradient-to-r from-gold-50/50 via-white to-transparent px-4 py-3 border-b border-gray-100">
-                                        <div className="flex items-center justify-between gap-4">
-                                          <div className="flex-1">
+                                      <div className="bg-gradient-to-r from-gold-50/50 via-white to-transparent px-3 sm:px-4 py-2.5 sm:py-3 border-b border-gray-100">
+                                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-4">
+                                          <div className="flex-1 w-full">
                                             <div className="flex items-center gap-2 mb-1">
-                                              <div className="h-6 w-0.5 bg-gold-500 rounded-full" />
+                                              <div className="h-5 sm:h-6 w-0.5 bg-gold-500 rounded-full" />
                                               <span className="text-xs font-semibold text-gold-700">
                                                 {shift.type} Shift
                                               </span>
                                             </div>
-                                            <h5 className="font-heading text-lg font-bold text-gray-900">
+                                            <h5 className="font-heading text-base sm:text-lg font-bold text-gray-900">
                                               {pkg.name}
                                             </h5>
                                             {shift.description && (
@@ -417,11 +426,11 @@ export default function SchoolDetailPage() {
                                               </p>
                                             )}
                                           </div>
-                                          <div className="text-right">
+                                          <div className="text-left sm:text-right w-full sm:w-auto">
                                             <div className="text-xs text-gray-500 font-medium">
                                               Total Fee
                                             </div>
-                                            <div className="text-xl font-bold text-gold-600">
+                                            <div className="text-lg sm:text-xl font-bold text-gold-600">
                                               AED {pkg.fee_aed.toLocaleString()}
                                             </div>
                                           </div>
@@ -430,8 +439,8 @@ export default function SchoolDetailPage() {
 
                                       {/* Package Details */}
                                       {pkg.details && (
-                                        <div className="p-4">
-                                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                                        <div className="p-3 sm:p-4">
+                                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                                             {/* Documents Required */}
                                             {pkg.details.documents_required &&
                                               Array.isArray(
@@ -715,7 +724,7 @@ export default function SchoolDetailPage() {
                       {!isExpanded &&
                         course.shifts &&
                         course.shifts.length > 0 && (
-                          <div className="px-6 pb-6">
+                          <div className="px-4 sm:px-6 pb-4 sm:pb-6">
                             <div className="flex flex-wrap gap-2">
                               {course.shifts.map((shift) => (
                                 <div
