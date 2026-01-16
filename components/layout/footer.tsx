@@ -1,6 +1,7 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Container } from "./container";
-import { GraduationCap, Mail, Phone, MapPin } from "lucide-react";
+import { Mail, Phone, MapPin } from "lucide-react";
 
 export function Footer() {
   return (
@@ -8,14 +9,15 @@ export function Footer() {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_white_1px,_transparent_1px)] bg-[length:24px_24px] opacity-20" />
       <Container className="relative">
         <div className="grid gap-8 py-8 md:grid-cols-4">
-          <div className="space-y-4">
+          <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-gold-500 to-gold-600">
-                <GraduationCap className="h-6 w-6 text-white" />
-              </div>
-              <div className="flex flex-col">
-                <span className="text-lg font-bold text-white">Simple</span>
-                <span className="text-xs text-gold-100">Compare & Choose</span>
+              <div className="relative h-14 w-36">
+                <Image
+                  src="/logo/logo.png"
+                  alt="Logo"
+                  fill
+                  className="object-contain brightness-0 invert"
+                />
               </div>
             </div>
             <p className="text-sm text-gold-100">
