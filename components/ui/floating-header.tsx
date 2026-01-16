@@ -1,6 +1,7 @@
 import React from "react";
 import Link from "next/link";
-import { GraduationCap, MenuIcon } from "lucide-react";
+import Image from "next/image";
+import { MenuIcon } from "lucide-react";
 import { Sheet, SheetContent, SheetFooter } from "@/components/ui/sheet";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -26,9 +27,19 @@ export function FloatingHeader() {
       )}
     >
       <nav className="mx-auto flex items-center justify-between p-1.5">
-        <Link href="/" className="flex cursor-pointer items-center gap-2 rounded-md px-2 py-1">
-          <GraduationCap className="size-5" />
-          <p className="font-mono text-base">Simple</p>
+        <Link
+          href="/"
+          className="flex cursor-pointer items-center rounded-md px-2 py-1"
+        >
+          <div className="relative h-8 w-24 sm:h-10 sm:w-32">
+            <Image
+              src="/logo/logo.png"
+              alt="Logo"
+              fill
+              className="object-contain"
+              priority
+            />
+          </div>
         </Link>
         <div className="hidden items-center gap-1 lg:flex ml-auto">
           {links.map((link) => (
