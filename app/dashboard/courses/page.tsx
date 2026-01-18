@@ -210,23 +210,13 @@ export default function CoursesPage() {
         <TabsContent value="license-types" className="space-y-4">
           <Card className="border-slate-200 shadow-sm">
             <CardHeader className="bg-slate-50/50 border-b">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
-                <div>
-                  <CardTitle className="text-lg sm:text-xl font-semibold">
-                    License Types
-                  </CardTitle>
-                  <p className="text-xs sm:text-sm text-slate-500 mt-1">
-                    Manage available license categories
-                  </p>
-                </div>
-                <Button
-                  size="sm"
-                  onClick={() => setAddLicenseTypeDialogOpen(true)}
-                  className="w-full sm:w-auto text-xs sm:text-sm shadow-sm"
-                >
-                  <Plus className="h-4 w-4 mr-2" />
-                  Add License Type
-                </Button>
+              <div>
+                <CardTitle className="text-lg sm:text-xl font-semibold">
+                  License Types
+                </CardTitle>
+                <p className="text-xs sm:text-sm text-slate-500 mt-1">
+                  Manage available license categories
+                </p>
               </div>
             </CardHeader>
             <CardContent className="p-0">
@@ -289,20 +279,6 @@ export default function CoursesPage() {
                                 className="hover:bg-primary/10 hover:text-primary"
                               >
                                 <Edit className="h-4 w-4" />
-                              </Button>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => {
-                                  setItemToDelete({
-                                    type: "license-types",
-                                    id: licenseType.id,
-                                  });
-                                  setDeleteDialogOpen(true);
-                                }}
-                                className="hover:bg-red-50 hover:text-red-600"
-                              >
-                                <Trash2 className="h-4 w-4" />
                               </Button>
                             </div>
                           </TableCell>

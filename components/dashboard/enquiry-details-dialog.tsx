@@ -15,6 +15,7 @@ interface Enquiry {
   school_name: string;
   license_type: string;
   license_status: string;
+  license_age: string;
   status: string;
   message: string;
   location: string;
@@ -90,6 +91,12 @@ export function EnquiryDetailsDialog({
                   {enquiry.license_status || "N/A"}
                 </span>
               </div>
+              {enquiry.license_age && (
+                <div className="flex justify-between">
+                  <span className="text-sm font-medium">License Age:</span>
+                  <span className="text-sm">{enquiry.license_age}</span>
+                </div>
+              )}
               <div className="flex justify-between">
                 <span className="text-sm font-medium">Package Type:</span>
                 <span className="text-sm">{enquiry.package_type || "N/A"}</span>

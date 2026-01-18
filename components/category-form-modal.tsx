@@ -91,6 +91,7 @@ export function CategoryFormModal({
   );
   const [location, setLocation] = useState("");
   const [hasLicense, setHasLicense] = useState<string>("");
+  const [licenseAge, setLicenseAge] = useState<string>("");
   const [experienceLevel, setExperienceLevel] = useState<string>("");
   const [selectedShiftType, setSelectedShiftType] = useState<string>("");
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -400,6 +401,9 @@ export function CategoryFormModal({
 
     if (step === 3) {
       if (!hasLicense) newErrors.hasLicense = "Please select an option";
+      if (hasLicense === "yes" && !licenseAge) {
+        newErrors.licenseAge = "Please select your license age";
+      }
     }
 
     if (step === 4) {
@@ -429,13 +433,20 @@ export function CategoryFormModal({
     }
 
     if (currentStep === 3) {
-      // Set experience level based on license answer
-      const newExperienceLevel = hasLicense === "yes" ? "expert" : "beginner";
+      // Set experience level based on license answer and age
+      let newExperienceLevel = "beginner";
+      if (hasLicense === "yes") {
+        // If they have a license, they're at least intermediate
+        // Could potentially differentiate between 2yrs and 5yrs in the future
+        newExperienceLevel = "expert";
+      }
       console.log(
         "🎯 Setting experience level:",
         newExperienceLevel,
         "from hasLicense:",
-        hasLicense
+        hasLicense,
+        "licenseAge:",
+        licenseAge
       );
       setExperienceLevel(newExperienceLevel);
 
@@ -605,6 +616,7 @@ export function CategoryFormModal({
       location: location,
       experience: experienceLevel,
       shiftType: selectedShiftType,
+      ...(licenseAge && { licenseAge: licenseAge }),
     });
 
     router.push(`/schools?${params.toString()}`);
@@ -616,6 +628,7 @@ export function CategoryFormModal({
     setSelectedCategory(initialCategory || null);
     setLocation("");
     setHasLicense("");
+    setLicenseAge("");
     setExperienceLevel("");
     setSelectedShiftType("");
     setErrors({});
@@ -840,12 +853,87 @@ export function CategoryFormModal({
                         {errors.hasLicense}
                       </p>
                     )}
-                    <p className="text-sm text-gray-600 mt-4">
-                      {hasLicense === "yes" &&
-                        "Great! You'll be categorized as an experienced driver."}
-                      {hasLicense === "no" &&
-                        "No problem! You'll start with beginner-friendly courses."}
-                    </p>
+
+                    {/* Nested question for license age */}
+                    <AnimatePresence>
+                      {hasLicense === "yes" && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: "auto" }}
+                          exit={{ opacity: 0, height: 0 }}
+                          transition={{ duration: 0.3 }}
+                          className="mt-6 overflow-hidden"
+                        >
+                          <div className="bg-gold-50/50 rounded-lg p-6 border-2 border-gold-200">
+                            <Label className="text-base font-semibold mb-4 block">
+                              How old is your home country license?
+                            </Label>
+                            <RadioGroup
+                              value={licenseAge}
+                              onValueChange={(value) => {
+                                setLicenseAge(value);
+                                setErrors((prev) => ({
+                                  ...prev,
+                                  licenseAge: "",
+                                }));
+                              }}
+                            >
+                              <div className="grid grid-cols-2 gap-4">
+                                <label
+                                  htmlFor="license-2yrs"
+                                  className={`
+                                    flex items-center justify-center gap-3 p-4 rounded-lg border-2 cursor-pointer transition-all bg-white
+                                    ${
+                                      licenseAge === "2yrs"
+                                        ? "border-gold-600 bg-gold-100 shadow-md"
+                                        : "border-gray-200 hover:border-gold-300"
+                                    }
+                                  `}
+                                >
+                                  <RadioGroupItem
+                                    value="2yrs"
+                                    id="license-2yrs"
+                                  />
+                                  <span className="font-medium">2+ Years</span>
+                                </label>
+                                <label
+                                  htmlFor="license-5yrs"
+                                  className={`
+                                    flex items-center justify-center gap-3 p-4 rounded-lg border-2 cursor-pointer transition-all bg-white
+                                    ${
+                                      licenseAge === "5yrs"
+                                        ? "border-gold-600 bg-gold-100 shadow-md"
+                                        : "border-gray-200 hover:border-gold-300"
+                                    }
+                                  `}
+                                >
+                                  <RadioGroupItem
+                                    value="5yrs"
+                                    id="license-5yrs"
+                                  />
+                                  <span className="font-medium">5+ Years</span>
+                                </label>
+                              </div>
+                            </RadioGroup>
+                            {errors.licenseAge && (
+                              <p className="text-sm text-red-600 mt-2">
+                                {errors.licenseAge}
+                              </p>
+                            )}
+                            <p className="text-xs text-gray-600 mt-3">
+                              This helps us match you with the right course
+                              level
+                            </p>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+
+                    {hasLicense === "no" && (
+                      <p className="text-sm text-gray-600 mt-4">
+                        No problem! You'll start with beginner-friendly courses.
+                      </p>
+                    )}
                   </div>
                 </div>
               )}

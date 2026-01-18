@@ -31,6 +31,7 @@ interface Enquiry {
   school_name: string;
   license_type: string;
   license_status: string;
+  license_age: string;
   status: string;
   message: string;
   location: string;

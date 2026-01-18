@@ -26,6 +26,7 @@ import {
 } from "@/lib/types";
 import { motion } from "framer-motion";
 import { EnquiryModal } from "@/components/enquiry-modal";
+import { getCurrentVehicleType } from "@/lib/cookies";
 
 export default function ComparePage() {
   const {
@@ -80,6 +81,37 @@ export default function ComparePage() {
   const schoolsWithDetails: SchoolWithCourses[] = schools
     .map((school) => getSchoolDetails(school.id))
     .filter((school): school is SchoolWithCourses => school !== undefined);
+
+  // Preselect license type from cookie after schools are loaded
+  useEffect(() => {
+    if (
+      !isLoading &&
+      schoolsWithDetails.length > 0 &&
+      selectedLicenseType === null
+    ) {
+      const savedVehicleType = getCurrentVehicleType();
+      if (savedVehicleType) {
+        // Find matching license type ID from available license types
+        const allLicenseTypes: Map<string, LicenseType> = new Map();
+        schoolsWithDetails.forEach((school) => {
+          school.course_levels?.forEach((course) => {
+            if (course.license_type) {
+              allLicenseTypes.set(course.license_type.id, course.license_type);
+            }
+          });
+        });
+
+        // Find license type that matches saved vehicle type name
+        const matchingLicenseType = Array.from(allLicenseTypes.values()).find(
+          (lt) => lt.name === savedVehicleType
+        );
+
+        if (matchingLicenseType) {
+          setSelectedLicenseType(matchingLicenseType.id);
+        }
+      }
+    }
+  }, [isLoading, schoolsWithDetails.length, selectedLicenseType]);
 
   if (schools.length === 0) {
     return (

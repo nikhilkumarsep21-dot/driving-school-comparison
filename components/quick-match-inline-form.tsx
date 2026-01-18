@@ -27,6 +27,7 @@ import { CATEGORY_TYPES } from "@/lib/constants";
 import {
   getUserDetailsFromCookie,
   saveUserDetailsToCookie,
+  updateCurrentVehicleType,
 } from "@/lib/cookies";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabase";
@@ -52,6 +53,7 @@ export function QuickMatchInlineForm({
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const [location, setLocation] = useState("");
   const [hasLicense, setHasLicense] = useState<string>("");
+  const [licenseAge, setLicenseAge] = useState<string>("");
   const [experienceLevel, setExperienceLevel] = useState<string>("");
   const [selectedShiftType, setSelectedShiftType] = useState<string>("");
   const [startTime, setStartTime] = useState<string>("");
@@ -133,15 +135,33 @@ export function QuickMatchInlineForm({
 
   const fetchPackages = async () => {
     if (!selectedCategory) return;
+    console.log("🔍 [QuickMatch fetchPackages] Starting package fetch...");
+    console.log("📋 [QuickMatch fetchPackages] Parameters:", {
+      selectedCategory,
+      location,
+      experienceLevel,
+      selectedShiftType,
+    });
+
     setLoadingPackages(true);
     try {
       const licenseTypeName = CATEGORY_TYPES[selectedCategory]?.label;
+      console.log(
+        "🎯 [QuickMatch fetchPackages] License type name:",
+        licenseTypeName
+      );
 
       if (!licenseTypeName) {
+        console.error(
+          "❌ [QuickMatch fetchPackages] Invalid category selected"
+        );
         toast.error("Invalid category selected");
         return;
       }
 
+      console.log(
+        "🔎 [QuickMatch fetchPackages] Fetching license type from database..."
+      );
       const { data: licenseType, error: licenseError } = await supabase
         .from("license_types")
         .select("id, name")
@@ -149,29 +169,60 @@ export function QuickMatchInlineForm({
         .single();
 
       if (licenseError) throw licenseError;
+      console.log(
+        "✅ [QuickMatch fetchPackages] License type found:",
+        licenseType
+      );
 
+      console.log(
+        "📍 [QuickMatch fetchPackages] Fetching schools in location:",
+        location
+      );
       const { data: schoolsInLocation, error: schoolError } = await supabase
         .from("branch_locations")
         .select("school_id, city")
         .eq("city", location);
 
       if (schoolError) throw schoolError;
+      console.log(
+        `✅ [QuickMatch fetchPackages] Found ${schoolsInLocation?.length || 0} branch locations`
+      );
 
       const schoolIds =
         schoolsInLocation?.map((branch) => branch.school_id) || [];
+      console.log(`🏫 [QuickMatch fetchPackages] School IDs:`, schoolIds);
 
       if (schoolIds.length === 0) {
+        console.warn(
+          "⚠️ [QuickMatch fetchPackages] No schools found in this location"
+        );
         setPackages([]);
         setGroupedPackages({});
         return;
       }
 
+      console.log("🔎 [QuickMatch fetchPackages] Fetching school details...");
       const { data: schools, error: schoolsError } = await supabase
         .from("schools")
         .select("id, name, logo_url, rating")
         .in("id", schoolIds);
 
       if (schoolsError) throw schoolsError;
+      console.log(
+        `✅ [QuickMatch fetchPackages] Found ${schools?.length || 0} schools`
+      );
+
+      console.log(
+        "📚 [QuickMatch fetchPackages] Fetching course levels and packages..."
+      );
+
+      // Debug: Log query parameters
+      console.log("🔍 [Debug] Query Parameters:", {
+        license_type_id: licenseType.id,
+        experience_level: experienceLevel,
+        school_ids: schoolIds,
+        schoolIds_count: schoolIds.length,
+      });
 
       const { data: courseLevels, error: courseError } = await supabase
         .from("course_levels")
@@ -197,7 +248,27 @@ export function QuickMatchInlineForm({
         .ilike("experience_level", experienceLevel)
         .in("school_id", schoolIds);
 
-      if (courseError) throw courseError;
+      // Debug: Log error and results
+      if (courseError) {
+        console.error("❌ [Debug] Course Error:", courseError);
+        throw courseError;
+      }
+
+      console.log("✅ [Debug] Course Levels Raw Data:", courseLevels);
+      console.log(
+        `✅ [QuickMatch fetchPackages] Found ${courseLevels?.length || 0} course levels`
+      );
+
+      // Debug: Log detailed structure
+      if (courseLevels && courseLevels.length > 0) {
+        console.log("🔍 [Debug] First Course Level Structure:", {
+          ...courseLevels[0],
+          shifts_count: courseLevels[0].shifts?.length || 0,
+          first_shift: courseLevels[0].shifts?.[0],
+        });
+      } else {
+        console.warn("⚠️ [Debug] No course levels returned. Check filters!");
+      }
 
       const packagesBySchool: Record<string, any> = {};
       const allPackages: any[] = [];
@@ -211,7 +282,14 @@ export function QuickMatchInlineForm({
           packages: [],
         };
       });
+      console.log(
+        "🗂️ [QuickMatch fetchPackages] Initialized package structure for schools"
+      );
 
+      console.log(
+        "🔄 [QuickMatch fetchPackages] Processing course levels and shifts..."
+      );
+      let totalPackagesProcessed = 0;
       courseLevels?.forEach((level: any) => {
         level.shifts?.forEach((shift: any) => {
           if (shift.type !== selectedShiftType) return;
@@ -225,6 +303,7 @@ export function QuickMatchInlineForm({
                 schoolId: level.school_id,
               };
               allPackages.push(packageWithMeta);
+              totalPackagesProcessed++;
 
               if (packagesBySchool[level.school_id]) {
                 packagesBySchool[level.school_id].packages.push(
@@ -235,20 +314,31 @@ export function QuickMatchInlineForm({
           }
         });
       });
+      console.log(
+        `✅ [QuickMatch fetchPackages] Processed ${totalPackagesProcessed} packages`
+      );
 
       const filteredPackagesBySchool = Object.fromEntries(
         Object.entries(packagesBySchool).filter(
           ([_, value]: [string, any]) => value.packages.length > 0
         )
       );
+      console.log(
+        `🎁 [QuickMatch fetchPackages] Final schools with packages: ${Object.keys(filteredPackagesBySchool).length}`
+      );
 
       setPackages(allPackages);
       setGroupedPackages(filteredPackagesBySchool);
+      console.log("✅ [QuickMatch fetchPackages] Successfully updated state");
     } catch (error) {
-      console.error("Error fetching packages:", error);
+      console.error(
+        "❌ [QuickMatch fetchPackages] Error fetching packages:",
+        error
+      );
       toast.error("Failed to load packages");
     } finally {
       setLoadingPackages(false);
+      console.log("🏁 [QuickMatch fetchPackages] Fetch complete");
     }
   };
 
@@ -325,6 +415,14 @@ export function QuickMatchInlineForm({
         phone: leadPhone.trim(),
       });
 
+      // Save current vehicle type to cookie
+      if (selectedCategory) {
+        const licenseTypeName = CATEGORY_TYPES[selectedCategory]?.label;
+        if (licenseTypeName) {
+          updateCurrentVehicleType(licenseTypeName);
+        }
+      }
+
       // Save lead to database
       const licenseTypeName = selectedCategory
         ? CATEGORY_TYPES[selectedCategory]?.label
@@ -347,6 +445,7 @@ export function QuickMatchInlineForm({
           } - ${experienceLevel} level - ${selectedShiftType} package - Location: ${location} - Start: ${startTime}`,
           licenseType: licenseTypeName || null,
           licenseStatus: hasLicense || null,
+          licenseAge: licenseAge || null,
           packageType: selectedShiftType || null,
           location: location || null,
           startTime: startTime || null,
@@ -388,6 +487,7 @@ export function QuickMatchInlineForm({
       experience: experienceLevel,
       shiftType: selectedShiftType,
       startTime: startTime,
+      ...(licenseAge && { licenseAge: licenseAge }),
     });
 
     router.push(`/schools?${params.toString()}`);
@@ -823,12 +923,84 @@ export function QuickMatchInlineForm({
                   {errors.hasLicense && (
                     <p className="text-sm text-red-600">{errors.hasLicense}</p>
                   )}
-                  {hasLicense && (
+
+                  {/* Nested question for license age */}
+                  <AnimatePresence>
+                    {hasLicense === "yes" && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.3 }}
+                        className="mt-6 overflow-hidden"
+                      >
+                        <div className="bg-gold-50/50 rounded-lg p-6 border-2 border-gold-200">
+                          <Label className="text-base font-semibold mb-4 block">
+                            How old is your home country license?
+                          </Label>
+                          <RadioGroup
+                            value={licenseAge}
+                            onValueChange={(value) => {
+                              setLicenseAge(value);
+                              setErrors((prev) => ({
+                                ...prev,
+                                licenseAge: "",
+                              }));
+                            }}
+                          >
+                            <div className="grid grid-cols-2 gap-4">
+                              <label
+                                htmlFor="license-2yrs-quick"
+                                className={`
+                                  flex items-center justify-center gap-3 p-4 rounded-lg border-2 cursor-pointer transition-all bg-white
+                                  ${
+                                    licenseAge === "2yrs"
+                                      ? "border-gold-600 bg-gold-100 shadow-md"
+                                      : "border-gray-200 hover:border-gold-300"
+                                  }
+                                `}
+                              >
+                                <RadioGroupItem
+                                  value="2yrs"
+                                  id="license-2yrs-quick"
+                                />
+                                <span className="font-medium">2+ Years</span>
+                              </label>
+                              <label
+                                htmlFor="license-5yrs-quick"
+                                className={`
+                                  flex items-center justify-center gap-3 p-4 rounded-lg border-2 cursor-pointer transition-all bg-white
+                                  ${
+                                    licenseAge === "5yrs"
+                                      ? "border-gold-600 bg-gold-100 shadow-md"
+                                      : "border-gray-200 hover:border-gold-300"
+                                  }
+                                `}
+                              >
+                                <RadioGroupItem
+                                  value="5yrs"
+                                  id="license-5yrs-quick"
+                                />
+                                <span className="font-medium">5+ Years</span>
+                              </label>
+                            </div>
+                          </RadioGroup>
+                          {errors.licenseAge && (
+                            <p className="text-sm text-red-600 mt-2">
+                              {errors.licenseAge}
+                            </p>
+                          )}
+                          <p className="text-xs text-gray-600 mt-3">
+                            This helps us match you with the right course level
+                          </p>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+
+                  {hasLicense === "no" && (
                     <p className="text-sm text-gray-600">
-                      {hasLicense === "yes" &&
-                        "Great! You'll be categorized as an experienced driver."}
-                      {hasLicense === "no" &&
-                        "No problem! You'll start with beginner-friendly courses."}
+                      No problem! You'll start with beginner-friendly courses.
                     </p>
                   )}
                 </motion.div>
