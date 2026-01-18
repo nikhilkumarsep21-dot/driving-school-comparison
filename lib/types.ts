@@ -111,6 +111,7 @@ export interface UserDetails {
   name: string;
   email: string;
   phone: string;
+  currentVehicleType?: string;
 }
 
 export type CategoryType =

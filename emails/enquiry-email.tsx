@@ -18,6 +18,7 @@ interface EnquiryEmailProps {
   message?: string;
   licenseType?: string;
   licenseStatus?: string;
+  licenseAge?: string;
   packageType?: string;
   location?: string;
   startTime?: string;
@@ -31,6 +32,7 @@ export const EnquiryEmail = ({
   message,
   licenseType,
   licenseStatus,
+  licenseAge,
   packageType,
   location,
   startTime,
@@ -80,6 +82,11 @@ export const EnquiryEmail = ({
             {licenseStatus && (
               <Text style={text}>
                 <strong>License Status:</strong> {licenseStatus}
+              </Text>
+            )}
+            {licenseAge && (
+              <Text style={text}>
+                <strong>License Age:</strong> {licenseAge}
               </Text>
             )}
             {packageType && (

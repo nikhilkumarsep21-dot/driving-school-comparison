@@ -40,6 +40,7 @@ import Link from "next/link";
 import {
   getUserDetailsFromCookie,
   saveUserDetailsToCookie,
+  updateCurrentVehicleType,
 } from "@/lib/cookies";
 
 const CATEGORY_CONFIG = [
@@ -88,6 +89,7 @@ export function CategorySelection() {
   const [imageErrors, setImageErrors] = useState<Record<number, boolean>>({});
   const [location, setLocation] = useState("");
   const [hasLicense, setHasLicense] = useState<string>("");
+  const [licenseAge, setLicenseAge] = useState<string>("");
   const [experienceLevel, setExperienceLevel] = useState<string>("");
   const [selectedShiftType, setSelectedShiftType] = useState<string>("");
   const [startTime, setStartTime] = useState<string>("");
@@ -141,6 +143,7 @@ export function CategorySelection() {
   const resetForm = () => {
     setLocation("");
     setHasLicense("");
+    setLicenseAge("");
     setExperienceLevel("");
     setSelectedShiftType("");
     setStartTime("");
@@ -199,46 +202,119 @@ export function CategorySelection() {
 
   const fetchPackages = async () => {
     if (!selectedCategory) return;
+
+    console.log(
+      "🔍 [CategorySelection fetchPackages] Starting fetchPackages..."
+    );
+    console.log("📋 [CategorySelection fetchPackages] Parameters:", {
+      selectedCategory,
+      location,
+      experienceLevel,
+      selectedShiftType,
+    });
+
     setLoadingPackages(true);
     try {
       const licenseTypeName = CATEGORY_TYPES[selectedCategory]?.label;
+      console.log(
+        "🎯 [CategorySelection fetchPackages] License type name:",
+        licenseTypeName
+      );
 
       if (!licenseTypeName) {
+        console.error(
+          "❌ [CategorySelection fetchPackages] Invalid license type name"
+        );
         toast.error("Invalid category selected");
         return;
       }
 
+      console.log(
+        "🔎 [CategorySelection fetchPackages] Querying license_types table..."
+      );
       const { data: licenseType, error: licenseError } = await supabase
         .from("license_types")
         .select("id, name")
         .eq("name", licenseTypeName)
         .single();
 
-      if (licenseError) throw licenseError;
+      if (licenseError) {
+        console.error(
+          "❌ [CategorySelection fetchPackages] License type error:",
+          licenseError
+        );
+        throw licenseError;
+      }
+      console.log(
+        "✅ [CategorySelection fetchPackages] Found license type:",
+        licenseType
+      );
 
+      console.log(
+        "📍 [CategorySelection fetchPackages] Querying branch_locations for location:",
+        location
+      );
       const { data: schoolsInLocation, error: schoolError } = await supabase
         .from("branch_locations")
         .select("school_id, city")
         .eq("city", location);
 
-      if (schoolError) throw schoolError;
+      if (schoolError) {
+        console.error(
+          "❌ [CategorySelection fetchPackages] Branch locations error:",
+          schoolError
+        );
+        throw schoolError;
+      }
+      console.log(
+        "✅ [CategorySelection fetchPackages] Found branch locations:",
+        schoolsInLocation?.length || 0
+      );
 
       const schoolIds =
         schoolsInLocation?.map((branch) => branch.school_id) || [];
+      console.log(
+        "🏫 [CategorySelection fetchPackages] School IDs in location:",
+        schoolIds
+      );
 
       if (schoolIds.length === 0) {
+        console.log(
+          "⚠️ [CategorySelection fetchPackages] No schools found in this location"
+        );
         setPackages([]);
         setGroupedPackages({});
         return;
       }
 
+      console.log(
+        "🔎 [CategorySelection fetchPackages] Fetching school details..."
+      );
       const { data: schools, error: schoolsError } = await supabase
         .from("schools")
         .select("id, name, logo_url, rating")
         .in("id", schoolIds);
 
-      if (schoolsError) throw schoolsError;
+      if (schoolsError) {
+        console.error(
+          "❌ [CategorySelection fetchPackages] Schools error:",
+          schoolsError
+        );
+        throw schoolsError;
+      }
+      console.log(
+        "✅ [CategorySelection fetchPackages] Found schools:",
+        schools?.length || 0
+      );
 
+      console.log(
+        "📚 [CategorySelection fetchPackages] Fetching course levels with filters:",
+        {
+          license_type_id: licenseType.id,
+          experience_level: experienceLevel,
+          school_ids: schoolIds,
+        }
+      );
       const { data: courseLevels, error: courseError } = await supabase
         .from("course_levels")
         .select(
@@ -263,11 +339,24 @@ export function CategorySelection() {
         .ilike("experience_level", experienceLevel)
         .in("school_id", schoolIds);
 
-      if (courseError) throw courseError;
+      if (courseError) {
+        console.error(
+          "❌ [CategorySelection fetchPackages] Course levels error:",
+          courseError
+        );
+        throw courseError;
+      }
+      console.log(
+        "✅ [CategorySelection fetchPackages] Found course levels:",
+        courseLevels?.length || 0
+      );
 
       const packagesBySchool: Record<string, any> = {};
       const allPackages: any[] = [];
 
+      console.log(
+        "🔄 [CategorySelection fetchPackages] Initializing package structures for schools..."
+      );
       schools?.forEach((school) => {
         packagesBySchool[school.id] = {
           schoolId: school.id,
@@ -278,11 +367,29 @@ export function CategorySelection() {
         };
       });
 
+      let totalPackagesProcessed = 0;
+      console.log(
+        "🔄 [CategorySelection fetchPackages] Processing course levels and packages..."
+      );
       courseLevels?.forEach((level: any) => {
+        console.log(
+          `📖 [CategorySelection fetchPackages] Processing course level: ${level.name} (school: ${level.school_id})`
+        );
         level.shifts?.forEach((shift: any) => {
-          if (shift.type !== selectedShiftType) return;
+          if (shift.type !== selectedShiftType) {
+            console.log(
+              `⏭️ [CategorySelection fetchPackages] Skipping shift type: ${shift.type} (looking for: ${selectedShiftType})`
+            );
+            return;
+          }
 
+          console.log(
+            `✅ [CategorySelection fetchPackages] Matching shift type found: ${shift.type}`
+          );
           if (shift.packages) {
+            console.log(
+              `📦 [CategorySelection fetchPackages] Processing ${shift.packages.length} packages in this shift`
+            );
             shift.packages.forEach((pkg: any) => {
               const packageWithMeta = {
                 ...pkg,
@@ -291,6 +398,7 @@ export function CategorySelection() {
                 schoolId: level.school_id,
               };
               allPackages.push(packageWithMeta);
+              totalPackagesProcessed++;
 
               if (packagesBySchool[level.school_id]) {
                 packagesBySchool[level.school_id].packages.push(
@@ -302,19 +410,39 @@ export function CategorySelection() {
         });
       });
 
+      console.log(
+        `🎁 [CategorySelection fetchPackages] Total packages processed: ${totalPackagesProcessed}`
+      );
+
       const filteredPackagesBySchool = Object.fromEntries(
         Object.entries(packagesBySchool).filter(
           ([_, value]: [string, any]) => value.packages.length > 0
         )
       );
 
+      console.log("🏁 [CategorySelection fetchPackages] Final results:", {
+        totalPackages: allPackages.length,
+        schoolsWithPackages: Object.keys(filteredPackagesBySchool).length,
+        schoolNames: Object.values(filteredPackagesBySchool).map(
+          (s: any) => s.schoolName
+        ),
+      });
+
       setPackages(allPackages);
       setGroupedPackages(filteredPackagesBySchool);
+
+      console.log(
+        "✅ [CategorySelection fetchPackages] fetchPackages completed successfully"
+      );
     } catch (error) {
-      console.error("Error fetching packages:", error);
+      console.error(
+        "❌ [CategorySelection fetchPackages] Error fetching packages:",
+        error
+      );
       toast.error("Failed to load packages");
     } finally {
       setLoadingPackages(false);
+      console.log("🏁 [CategorySelection fetchPackages] Loading state cleared");
     }
   };
 
@@ -391,6 +519,14 @@ export function CategorySelection() {
         phone: leadPhone.trim(),
       });
 
+      // Save current vehicle type to cookie
+      if (selectedCategory) {
+        const licenseTypeName = CATEGORY_TYPES[selectedCategory]?.label;
+        if (licenseTypeName) {
+          updateCurrentVehicleType(licenseTypeName);
+        }
+      }
+
       // Save lead to database
       const licenseTypeName = selectedCategory
         ? CATEGORY_TYPES[selectedCategory]?.label
@@ -413,6 +549,7 @@ export function CategorySelection() {
           } - ${experienceLevel} level - ${selectedShiftType} package - Location: ${location} - Start: ${startTime}`,
           licenseType: licenseTypeName || null,
           licenseStatus: hasLicense || null,
+          licenseAge: licenseAge || null,
           packageType: selectedShiftType || null,
           location: location || null,
           startTime: startTime || null,
@@ -449,6 +586,7 @@ export function CategorySelection() {
       experience: experienceLevel,
       shiftType: selectedShiftType,
       startTime: startTime,
+      ...(licenseAge && { licenseAge: licenseAge }),
     });
 
     router.push(`/schools?${params.toString()}`);
@@ -874,12 +1012,89 @@ export function CategorySelection() {
                         {errors.hasLicense}
                       </p>
                     )}
-                    {hasLicense && (
+
+                    {/* Nested question for license age */}
+                    <AnimatePresence>
+                      {hasLicense === "yes" && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: "auto" }}
+                          exit={{ opacity: 0, height: 0 }}
+                          transition={{ duration: 0.3 }}
+                          className="mt-6 overflow-hidden"
+                        >
+                          <div className="bg-gold-50/50 rounded-lg p-4 sm:p-6 border-2 border-gold-200">
+                            <Label className="text-sm sm:text-base font-semibold mb-3 sm:mb-4 block">
+                              How old is your home country license?
+                            </Label>
+                            <RadioGroup
+                              value={licenseAge}
+                              onValueChange={(value) => {
+                                setLicenseAge(value);
+                                setErrors((prev) => ({
+                                  ...prev,
+                                  licenseAge: "",
+                                }));
+                              }}
+                            >
+                              <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                                <label
+                                  htmlFor="license-2yrs"
+                                  className={`
+                                    flex items-center justify-center gap-2 sm:gap-3 p-3 sm:p-4 rounded-lg border-2 cursor-pointer transition-all bg-white
+                                    ${
+                                      licenseAge === "2yrs"
+                                        ? "border-gold-600 bg-gold-100 shadow-md"
+                                        : "border-gray-200 hover:border-gold-300"
+                                    }
+                                  `}
+                                >
+                                  <RadioGroupItem
+                                    value="2yrs"
+                                    id="license-2yrs"
+                                  />
+                                  <span className="font-medium text-sm sm:text-base">
+                                    2+ Years
+                                  </span>
+                                </label>
+                                <label
+                                  htmlFor="license-5yrs"
+                                  className={`
+                                    flex items-center justify-center gap-2 sm:gap-3 p-3 sm:p-4 rounded-lg border-2 cursor-pointer transition-all bg-white
+                                    ${
+                                      licenseAge === "5yrs"
+                                        ? "border-gold-600 bg-gold-100 shadow-md"
+                                        : "border-gray-200 hover:border-gold-300"
+                                    }
+                                  `}
+                                >
+                                  <RadioGroupItem
+                                    value="5yrs"
+                                    id="license-5yrs"
+                                  />
+                                  <span className="font-medium text-sm sm:text-base">
+                                    5+ Years
+                                  </span>
+                                </label>
+                              </div>
+                            </RadioGroup>
+                            {errors.licenseAge && (
+                              <p className="text-sm text-red-600 mt-2">
+                                {errors.licenseAge}
+                              </p>
+                            )}
+                            <p className="text-xs text-gray-600 mt-3">
+                              This helps us match you with the right course
+                              level
+                            </p>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+
+                    {hasLicense === "no" && (
                       <p className="text-sm text-gray-600">
-                        {hasLicense === "yes" &&
-                          "Great! You'll be categorized as an experienced driver."}
-                        {hasLicense === "no" &&
-                          "No problem! You'll start with beginner-friendly courses."}
+                        No problem! You'll start with beginner-friendly courses.
                       </p>
                     )}
                   </div>
