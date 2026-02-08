@@ -68,25 +68,25 @@ export function Footer() {
           <div>
             <h3 className="mb-4 text-sm font-semibold text-white">Contact</h3>
             <ul className="space-y-3">
-              <li className="flex items-center gap-2 text-sm text-gold-100">
+              {/* <li className="flex items-center gap-2 text-sm text-gold-100">
                 <MapPin className="h-4 w-4 text-white" />
                 Dubai, UAE
-              </li>
+              </li> */}
               <li className="flex items-center gap-2 text-sm text-gold-100">
                 <Mail className="h-4 w-4 text-white" />
-                info@dubaidrive.ae
+                info@simpleuae.ae
               </li>
-              <li className="flex items-center gap-2 text-sm text-gold-100">
+              {/* <li className="flex items-center gap-2 text-sm text-gold-100">
                 <Phone className="h-4 w-4 text-white" />
                 +971-4-XXX-XXXX
-              </li>
+              </li> */}
             </ul>
           </div>
         </div>
 
         <div className="border-t border-gray-200 py-6">
           <p className="text-center text-sm text-gold-100">
-            © {new Date().getFullYear()} Simple.ae All rights reserved.
+            © {new Date().getFullYear()} Simpleuae.ae All rights reserved.
           </p>
         </div>
       </Container>
