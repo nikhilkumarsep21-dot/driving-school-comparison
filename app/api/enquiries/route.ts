@@ -1,9 +1,8 @@
 import { createClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
-import { Resend } from "resend";
+import nodemailer from "nodemailer";
 import { EnquiryEmail } from "@/emails/enquiry-email";
-
-const resend = new Resend(process.env.RESEND_API_KEY);
+import { render } from "@react-email/render";
 
 export async function POST(request: Request) {
   try {
@@ -14,7 +13,7 @@ export async function POST(request: Request) {
     if (!data.name || !data.email || !data.phone) {
       return NextResponse.json(
         { error: "Name, email, and phone are required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -43,21 +42,26 @@ export async function POST(request: Request) {
       console.error("Database error:", dbError);
       return NextResponse.json(
         { error: "Failed to save enquiry" },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
-    // Send email notification
+    // Send email notification using Nodemailer
     try {
-      // Always use the email from environment config
-      const recipientEmail =
-        process.env.DEFAULT_ENQUIRY_EMAIL || "admin@example.com";
+      const transporter = nodemailer.createTransport({
+        host: process.env.EMAIL_HOST,
+        port: Number(process.env.EMAIL_PORT),
+        secure: true,
+        auth: {
+          user: process.env.EMAIL_USER,
+          pass: process.env.EMAIL_PASS,
+        },
+        connectionTimeout: 10000,
+      });
 
-      await resend.emails.send({
-        from: process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev",
-        to: recipientEmail,
-        subject: `New Lead Enquiry from ${data.name}${data.schoolName ? ` - ${data.schoolName}` : ""}`,
-        react: EnquiryEmail({
+      // Render the React email to HTML
+      const html = await render(
+        EnquiryEmail({
           name: data.name,
           email: data.email,
           phone: data.phone,
@@ -70,9 +74,14 @@ export async function POST(request: Request) {
           location: data.location,
           startTime: data.startTime,
         }),
-      });
+      );
 
-      console.log("Email sent successfully to:", recipientEmail);
+      await transporter.sendMail({
+        from: `"Driving School Leads" <${process.env.EMAIL_USER}>`,
+        to: process.env.EMAIL_USER,
+        subject: `New Lead: ${data.name} - Driving School Inquiry`,
+        html: html,
+      });
     } catch (emailError) {
       console.error("Email sending error:", emailError);
       // Don't fail the request if email fails - enquiry is already saved
@@ -93,7 +102,7 @@ export async function POST(request: Request) {
     console.error("Error processing enquiry:", error);
     return NextResponse.json(
       { error: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
